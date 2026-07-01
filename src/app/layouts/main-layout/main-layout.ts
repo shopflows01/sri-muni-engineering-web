@@ -25,12 +25,8 @@ export class MainLayout {
     this.mobileMenuOpen.set(false);
   }
 
-  expandSidebar() {
-    this.sidebarExpanded.set(true);
-  }
-
-  collapseSidebar() {
-    this.sidebarExpanded.set(false);
+  toggleSidebar() {
+    this.sidebarExpanded.update(v => !v);
   }
 
   logout() {

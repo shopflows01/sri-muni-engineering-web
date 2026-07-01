@@ -57,7 +57,8 @@ export class StockService {
   exportExcel(fromDate: string, toDate: string): Observable<Blob> {
     const params = new HttpParams()
       .set('fromDate', fromDate)
-      .set('toDate', toDate);
+      .set('toDate', toDate)
+      .set('period', 'monthly');
     return this.http.get(`${this.apiUrl}/export-excel`, { params, responseType: 'blob' });
   }
 }
