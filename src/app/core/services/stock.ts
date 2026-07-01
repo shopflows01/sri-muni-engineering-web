@@ -59,6 +59,10 @@ export class StockService {
       .set('fromDate', fromDate)
       .set('toDate', toDate)
       .set('period', 'monthly');
-    return this.http.get(`${this.apiUrl}/export-excel`, { params, responseType: 'blob' });
+    return this.http.get(`${this.apiUrl}/export-excel`, {
+      params,
+      responseType: 'blob',
+      headers: { 'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }
+    });
   }
 }

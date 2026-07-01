@@ -1,14 +1,20 @@
 <div class="flex h-screen bg-gray-50 overflow-hidden text-gray-800">
   <!-- Desktop Sidebar -->
   <aside [class]="sidebarExpanded() ? 'w-60' : 'w-[72px]'" class="hidden md:flex flex-col bg-brand transition-all duration-300 ease-in-out overflow-hidden">
-    <div class="p-3 flex items-center gap-3 border-b border-white/10 min-h-[64px]">
-      <button (click)="toggleSidebar()" class="flex items-center gap-3 w-full rounded-lg hover:bg-white/10 p-1 transition-colors">
-        <img src="assets/sme-logo.png" alt="SME Logo" class="h-11 w-11 object-contain flex-shrink-0 rounded-lg">
-        @if (sidebarExpanded()) {
-          <span class="text-white font-bold text-sm whitespace-nowrap">Sri Muni Engineering</span>
-        }
-      </button>
+    <div class="p-3 flex items-center gap-3 border-b border-white/10 min-h-[68px]">
+      <img src="assets/sme-logo.png" alt="SME Logo" class="h-12 w-12 object-contain flex-shrink-0">
+      @if (sidebarExpanded()) {
+        <span class="text-white font-bold text-sm whitespace-nowrap">Sri Muni Engineering</span>
+      }
     </div>
+    <!-- Toggle Button -->
+    <button (click)="toggleSidebar()" class="mx-2 mt-2 flex items-center justify-center p-2 rounded-lg text-white/70 hover:bg-white/15 hover:text-white transition-colors" title="Toggle Sidebar">
+      @if (sidebarExpanded()) {
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m11 17-5-5 5-5"/><path d="m18 17-5-5 5-5"/></svg>
+      } @else {
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 17 5-5-5-5"/><path d="m13 17 5-5-5-5"/></svg>
+      }
+    </button>
     <nav class="flex-1 p-2 space-y-1 overflow-y-auto">
       <a routerLink="/dashboard" routerLinkActive="bg-white/20 shadow-lg" [routerLinkActiveOptions]="{exact: true}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
