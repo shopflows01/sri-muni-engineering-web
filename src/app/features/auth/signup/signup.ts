@@ -7,7 +7,8 @@ import { AuthService } from '../../../core/services/auth.service';
   selector: 'app-signup',
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './signup.html',
-  styleUrl: './signup.css'
+  styleUrl: './signup.css',
+  host: { class: 'w-full max-w-[600px]' }
 })
 export class Signup {
   private fb = inject(FormBuilder);
