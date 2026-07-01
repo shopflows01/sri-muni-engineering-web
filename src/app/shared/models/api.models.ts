@@ -33,15 +33,27 @@ export interface Invoice {
   productId: string;
   partNo?: string;
   partName?: string;
+  hsnSac?: string;
   quantity: number;
   rate: number;
-  taxableAmount: number;
-  cgstAmount: number;
-  sgstAmount: number;
+  taxableValue: number;
+  igstRate: number;
   igstAmount: number;
+  cgstRate: number;
+  cgstAmount: number;
+  sgstRate: number;
+  sgstAmount: number;
   totalAmount: number;
+  amountInWords?: string;
+  deliveryNoteNo?: string;
+  referenceNo?: string;
+  buyersOrderNo?: string;
+  dispatchDocNo?: string;
+  destination?: string;
+  termsOfDelivery?: string;
   asnNo?: string;
   ewbNo?: string;
+  downloadUrl?: string;
   createdAt?: string;
 }
 

@@ -42,6 +42,10 @@ export class InvoiceService {
     return this.http.post<Invoice>(this.apiUrl, data);
   }
 
+  update(id: string, data: Partial<Invoice>): Observable<Invoice> {
+    return this.http.put<Invoice>(`${this.apiUrl}/${id}`, data);
+  }
+
   getPdf(id: string): Observable<{ downloadUrl: string }> {
     return this.http.get<{ downloadUrl: string }>(`${this.apiUrl}/${id}/pdf`);
   }

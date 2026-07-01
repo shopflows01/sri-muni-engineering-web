@@ -1,7 +1,7 @@
 import { Component, computed, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
-import { DashboardService, DashboardSummary } from '../../core/services/dashboard.service';
+import { DashboardService, DashboardMetrics } from '../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -33,7 +33,7 @@ export class Dashboard implements OnInit, OnDestroy {
     return this.datePipe.transform(this.now(), 'EEEE, dd MMMM yyyy | hh:mm a');
   });
 
-  summary = signal<DashboardSummary | null>(null);
+  metrics = signal<DashboardMetrics | null>(null);
 
   private intervalId: any;
 
@@ -44,10 +44,9 @@ export class Dashboard implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const today = new Date();
-    this.dashboardService.getSummary(today.getMonth() + 1, today.getFullYear()).subscribe({
-      next: (data) => this.summary.set(data),
-      error: () => this.summary.set(null)
+    this.dashboardService.getMetrics().subscribe({
+      next: (data) => this.metrics.set(data),
+      error: () => this.metrics.set(null)
     });
   }
 

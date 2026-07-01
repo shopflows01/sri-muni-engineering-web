@@ -13,7 +13,7 @@
       </div>
       <div>
         <p class="text-sm text-gray-500 font-medium">Monthly Revenue</p>
-        <p class="text-2xl font-bold text-brand-text">₹{{ summary()?.monthlyRevenue ?? 0 | number:'1.2-2' }}</p>
+        <p class="text-2xl font-bold text-brand-text">₹{{ metrics()?.monthlyRevenueTotal ?? 0 | number:'1.2-2' }}</p>
       </div>
     </div>
 
@@ -22,8 +22,8 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
       </div>
       <div>
-        <p class="text-sm text-gray-500 font-medium">Invoices</p>
-        <p class="text-2xl font-bold text-brand-text">{{ summary()?.monthlyInvoices ?? 0 }}</p>
+        <p class="text-sm text-gray-500 font-medium">Pending Invoices</p>
+        <p class="text-2xl font-bold text-brand-text">{{ metrics()?.pendingInvoicesCount ?? 0 }}</p>
       </div>
     </div>
 
@@ -32,8 +32,8 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
       </div>
       <div>
-        <p class="text-sm text-gray-500 font-medium">Inward Qty</p>
-        <p class="text-2xl font-bold text-brand-text">{{ summary()?.monthlyInwardQty ?? 0 | number }}</p>
+        <p class="text-sm text-gray-500 font-medium">Monthly Inward</p>
+        <p class="text-2xl font-bold text-brand-text">{{ metrics()?.monthlyInwardQty ?? 0 | number }}</p>
       </div>
     </div>
 
@@ -42,8 +42,8 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
       </div>
       <div>
-        <p class="text-sm text-gray-500 font-medium">Outward Qty</p>
-        <p class="text-2xl font-bold text-brand-text">{{ summary()?.monthlyOutwardQty ?? 0 | number }}</p>
+        <p class="text-sm text-gray-500 font-medium">Monthly Outward</p>
+        <p class="text-2xl font-bold text-brand-text">{{ metrics()?.monthlyOutwardQty ?? 0 | number }}</p>
       </div>
     </div>
 
@@ -52,8 +52,8 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
       </div>
       <div>
-        <p class="text-sm text-gray-500 font-medium">Rejected Qty</p>
-        <p class="text-2xl font-bold text-brand-danger">{{ summary()?.monthlyRejectedQty ?? 0 | number }}</p>
+        <p class="text-sm text-gray-500 font-medium">Monthly Rejected</p>
+        <p class="text-2xl font-bold text-brand-danger">{{ metrics()?.monthlyRejectedQty ?? 0 | number }}</p>
       </div>
     </div>
 
@@ -62,31 +62,31 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
       </div>
       <div>
-        <p class="text-sm text-gray-500 font-medium">In-Progress</p>
-        <p class="text-2xl font-bold text-brand-text">{{ summary()?.inProgressLedgers ?? 0 }}</p>
+        <p class="text-sm text-gray-500 font-medium">In-Progress Ledgers</p>
+        <p class="text-2xl font-bold text-brand-text">{{ metrics()?.inProgressLedgerCount ?? 0 }}</p>
       </div>
     </div>
   </div>
 
   <!-- Top Customers -->
-  @if (summary()?.topCustomers?.length) {
+  @if (metrics()?.topCustomersByVolume?.length) {
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-      <h2 class="text-lg font-semibold text-brand-text mb-4">Top Customers</h2>
+      <h2 class="text-lg font-semibold text-brand-text mb-4">Top Customers by Volume</h2>
       <div class="overflow-x-auto">
         <table class="w-full text-sm">
           <thead>
             <tr class="border-b border-gray-200">
               <th class="text-left py-2 text-gray-500 font-medium">Customer</th>
-              <th class="text-right py-2 text-gray-500 font-medium">Revenue</th>
+              <th class="text-right py-2 text-gray-500 font-medium">Inward Qty</th>
               <th class="text-right py-2 text-gray-500 font-medium">Invoices</th>
             </tr>
           </thead>
           <tbody>
-            @for (cust of summary()!.topCustomers; track cust.customerName) {
+            @for (cust of metrics()!.topCustomersByVolume; track cust.customerId) {
               <tr class="border-b border-gray-100">
                 <td class="py-2 text-brand-text font-medium">{{ cust.customerName }}</td>
-                <td class="py-2 text-right text-brand-text">₹{{ cust.revenue | number:'1.2-2' }}</td>
-                <td class="py-2 text-right text-gray-600">{{ cust.invoiceCount }}</td>
+                <td class="py-2 text-right text-brand-text">{{ cust.totalInwardQty | number }}</td>
+                <td class="py-2 text-right text-gray-600">{{ cust.totalInvoices }}</td>
               </tr>
             }
           </tbody>

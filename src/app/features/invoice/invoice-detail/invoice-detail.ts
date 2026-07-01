@@ -1,12 +1,13 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { DecimalPipe, DatePipe } from '@angular/common';
 import { InvoiceService } from '../../../core/services/invoice.service';
 import { Invoice } from '../../../shared/models/api.models';
 
 @Component({
   selector: 'app-invoice-detail',
-  imports: [DecimalPipe, DatePipe],
+  imports: [DecimalPipe, DatePipe, FormsModule],
   templateUrl: './invoice-detail.html',
   styleUrl: './invoice-detail.css',
 })
@@ -17,10 +18,15 @@ export class InvoiceDetail implements OnInit {
 
   invoice = signal<Invoice | null>(null);
   isLoading = signal(true);
+  isUpdating = signal(false);
+  successMessage = signal<string | null>(null);
+
+  // Editable fields
+  asnNo = signal('');
+  ewbNo = signal('');
 
   isInvoiceComplete = computed(() => {
-    const inv = this.invoice();
-    return !!inv?.asnNo && !!inv?.ewbNo;
+    return !!this.asnNo() && !!this.ewbNo();
   });
 
   ngOnInit() {
@@ -29,6 +35,8 @@ export class InvoiceDetail implements OnInit {
       this.invoiceService.getById(id).subscribe({
         next: (inv) => {
           this.invoice.set(inv);
+          this.asnNo.set(inv.asnNo || '');
+          this.ewbNo.set(inv.ewbNo || '');
           this.isLoading.set(false);
         },
         error: () => {
@@ -37,6 +45,24 @@ export class InvoiceDetail implements OnInit {
         }
       });
     }
+  }
+
+  updateInvoice() {
+    const inv = this.invoice();
+    if (!inv) return;
+    this.isUpdating.set(true);
+    this.invoiceService.update(inv.id, {
+      ...inv,
+      asnNo: this.asnNo(),
+      ewbNo: this.ewbNo()
+    }).subscribe({
+      next: (updated) => {
+        this.invoice.set(updated);
+        this.isUpdating.set(false);
+        this.showSuccess('Invoice updated successfully.');
+      },
+      error: () => this.isUpdating.set(false)
+    });
   }
 
   downloadPdf() {
@@ -57,5 +83,10 @@ export class InvoiceDetail implements OnInit {
 
   goBack() {
     this.router.navigate(['/invoices']);
+  }
+
+  private showSuccess(msg: string) {
+    this.successMessage.set(msg);
+    setTimeout(() => this.successMessage.set(null), 3000);
   }
 }

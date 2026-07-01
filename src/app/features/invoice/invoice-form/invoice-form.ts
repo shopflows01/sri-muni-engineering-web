@@ -36,6 +36,14 @@ export class InvoiceForm implements OnInit {
     quantity: [0, [Validators.required, Validators.min(1)]],
     rate: [0, [Validators.required, Validators.min(0.01)]],
     igstRate: [18, [Validators.required, Validators.min(0)]],
+    cgstRate: [0, [Validators.min(0)]],
+    sgstRate: [0, [Validators.min(0)]],
+    deliveryNoteNo: [''],
+    referenceNo: [''],
+    buyersOrderNo: [''],
+    dispatchDocNo: [''],
+    destination: [''],
+    termsOfDelivery: [''],
     asnNo: [''],
     ewbNo: ['']
   });
@@ -78,8 +86,16 @@ export class InvoiceForm implements OnInit {
         quantity: val.quantity,
         rate: val.rate,
         igstRate: val.igstRate,
-        asnNo: val.asnNo || undefined,
-        ewbNo: val.ewbNo || undefined
+        cgstRate: val.cgstRate,
+        sgstRate: val.sgstRate,
+        deliveryNoteNo: val.deliveryNoteNo || '',
+        referenceNo: val.referenceNo || '',
+        buyersOrderNo: val.buyersOrderNo || '',
+        dispatchDocNo: val.dispatchDocNo || '',
+        destination: val.destination || '',
+        termsOfDelivery: val.termsOfDelivery || '',
+        asnNo: val.asnNo || '',
+        ewbNo: val.ewbNo || ''
       };
       this.invoiceService.create(payload as any).subscribe({
         next: () => {
