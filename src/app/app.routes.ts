@@ -22,6 +22,11 @@ export const routes: Routes = [
       { path: 'products/new', loadComponent: () => import('./features/product/product-form/product-form').then(m => m.ProductForm) },
       { path: 'products/:id', loadComponent: () => import('./features/product/product-form/product-form').then(m => m.ProductForm) },
       { path: 'stock', loadComponent: () => import('./features/stock/stock-ledger/stock-ledger').then(m => m.StockLedger) },
+      { path: 'quotation', loadComponent: () => import('./features/quotation/quotation-view/quotation-view').then(m => m.QuotationView) },
+      { path: 'invoices', loadComponent: () => import('./features/invoice/invoice-list/invoice-list').then(m => m.InvoiceList) },
+      { path: 'invoices/new', loadComponent: () => import('./features/invoice/invoice-form/invoice-form').then(m => m.InvoiceForm) },
+      { path: 'invoices/:id', loadComponent: () => import('./features/invoice/invoice-detail/invoice-detail').then(m => m.InvoiceDetail) },
+      { path: 'ewaybill', loadComponent: () => import('./features/ewaybill/eway-router/eway-router').then(m => m.EwayRouter) },
     ]
   },
   {

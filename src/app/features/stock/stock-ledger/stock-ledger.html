@@ -1,26 +1,202 @@
 <div class="space-y-6">
-  <div class="pb-4 border-b border-gray-200">
-    <h1 class="text-2xl font-bold text-brand">Stock Ledger</h1>
-    <p class="text-gray-500 text-sm mt-1">Manage inward and outward stock</p>
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200">
+    <div>
+      <h1 class="text-2xl font-bold text-brand">Stock Ledger</h1>
+      <p class="text-gray-500 text-sm mt-1">Manage inward and outward stock</p>
+    </div>
+    <button (click)="switchTab('inward')" class="bg-brand text-white px-4 py-2.5 rounded-lg font-medium hover:bg-brand-light transition-colors shadow-sm">
+      + New Inward
+    </button>
   </div>
 
-  <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-    <div class="flex gap-4 border-b border-gray-200 mb-6">
-      <button class="px-4 py-2 font-medium text-brand border-b-2 border-brand">Inward</button>
-      <button class="px-4 py-2 font-medium text-gray-500 hover:text-gray-700">Outward</button>
+  <!-- Success Toast -->
+  @if (successMessage()) {
+    <div class="p-3 bg-green-50 border border-green-200 text-brand-success text-sm rounded-lg font-medium">
+      {{ successMessage() }}
     </div>
+  }
 
-    <!-- Basic inward form placeholder for brevity -->
-    <div class="space-y-4 max-w-md">
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Product ID</label>
-        <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Inward Qty</label>
-        <input type="number" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-      </div>
-      <button class="bg-brand text-white px-4 py-2 rounded-lg">Save Inward</button>
-    </div>
+  <!-- Tab Navigation -->
+  <div class="flex gap-1 bg-gray-100 p-1 rounded-lg w-fit">
+    <button (click)="switchTab('list')" [class]="activeTab() === 'list' ? 'bg-white shadow-sm text-brand font-semibold' : 'text-gray-600 hover:text-gray-800'" class="px-4 py-2 rounded-md text-sm transition-all">
+      Ledger
+    </button>
+    <button (click)="switchTab('inward')" [class]="activeTab() === 'inward' ? 'bg-white shadow-sm text-brand font-semibold' : 'text-gray-600 hover:text-gray-800'" class="px-4 py-2 rounded-md text-sm transition-all">
+      New Inward
+    </button>
   </div>
+
+  <!-- List View -->
+  @if (activeTab() === 'list') {
+    @if (isLoading()) {
+      <div class="flex justify-center py-12">
+        <div class="w-8 h-8 border-3 border-brand-muted border-t-brand rounded-full animate-spin"></div>
+      </div>
+    } @else if (ledgerItems().length === 0) {
+      <app-empty-state title="No stock entries" message="Add your first inward entry to get started." actionLabel="Add Inward" (action)="switchTab('inward')" />
+    } @else {
+      <!-- Desktop Table -->
+      <div class="hidden md:block bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50 border-b border-gray-200">
+            <tr>
+              <th class="text-left px-4 py-3 text-gray-500 font-medium">DC No</th>
+              <th class="text-left px-4 py-3 text-gray-500 font-medium">Customer</th>
+              <th class="text-left px-4 py-3 text-gray-500 font-medium">Part No</th>
+              <th class="text-right px-4 py-3 text-gray-500 font-medium">Inward</th>
+              <th class="text-right px-4 py-3 text-gray-500 font-medium">Outward</th>
+              <th class="text-right px-4 py-3 text-gray-500 font-medium">Rejected</th>
+              <th class="text-center px-4 py-3 text-gray-500 font-medium">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of ledgerItems(); track item.id) {
+              <tr class="border-b border-gray-100 hover:bg-gray-50/50">
+                <td class="px-4 py-3 font-medium text-brand-text">{{ item.dcNo }}</td>
+                <td class="px-4 py-3 text-gray-700">{{ item.customerName }}</td>
+                <td class="px-4 py-3 text-gray-700">{{ item.partNo }}</td>
+                <td class="px-4 py-3 text-right text-brand font-medium">{{ item.inwardQty }}</td>
+                <td class="px-4 py-3 text-right text-brand-success font-medium">{{ item.outwardQty }}</td>
+                <td class="px-4 py-3 text-right text-brand-danger font-medium">{{ item.rejectedQty }}</td>
+                <td class="px-4 py-3 text-center">
+                  <button (click)="openOutward(item)" class="text-brand hover:text-brand-light text-xs font-medium px-2 py-1 rounded hover:bg-brand-muted transition-colors">
+                    Update
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Mobile Cards -->
+      <div class="md:hidden space-y-3">
+        @for (item of ledgerItems(); track item.id) {
+          <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                <p class="font-semibold text-brand-text">DC: {{ item.dcNo }}</p>
+                <p class="text-xs text-gray-500">{{ item.customerName }} · {{ item.partNo }}</p>
+              </div>
+              <button (click)="openOutward(item)" class="text-brand text-xs font-medium px-2 py-1 rounded bg-brand-muted">
+                Update
+              </button>
+            </div>
+            <div class="grid grid-cols-3 gap-2 mt-3 text-center">
+              <div class="bg-blue-50 rounded-lg p-2">
+                <p class="text-xs text-gray-500">Inward</p>
+                <p class="font-bold text-brand">{{ item.inwardQty }}</p>
+              </div>
+              <div class="bg-green-50 rounded-lg p-2">
+                <p class="text-xs text-gray-500">Outward</p>
+                <p class="font-bold text-brand-success">{{ item.outwardQty }}</p>
+              </div>
+              <div class="bg-red-50 rounded-lg p-2">
+                <p class="text-xs text-gray-500">Rejected</p>
+                <p class="font-bold text-brand-danger">{{ item.rejectedQty }}</p>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+
+  <!-- Inward Form -->
+  @if (activeTab() === 'inward') {
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 max-w-lg">
+      <h2 class="text-lg font-semibold text-brand-text mb-4">New Inward Entry</h2>
+      <form [formGroup]="inwardForm" (ngSubmit)="submitInward()" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">DC Number</label>
+          <input type="text" formControlName="dcNo" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none" placeholder="e.g. 165">
+          @if (inwardForm.get('dcNo')?.touched && inwardForm.get('dcNo')?.invalid) {
+            <p class="text-brand-danger text-xs mt-1">Please enter the DC number.</p>
+          }
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">DC Date</label>
+          <input type="date" formControlName="dcDate" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none">
+          @if (inwardForm.get('dcDate')?.touched && inwardForm.get('dcDate')?.invalid) {
+            <p class="text-brand-danger text-xs mt-1">Please select the DC date.</p>
+          }
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Customer</label>
+          <select formControlName="customerId" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none bg-white">
+            <option value="">Select a customer</option>
+            @for (cust of customers(); track cust.id) {
+              <option [value]="cust.id">{{ cust.name }}</option>
+            }
+          </select>
+          @if (inwardForm.get('customerId')?.touched && inwardForm.get('customerId')?.invalid) {
+            <p class="text-brand-danger text-xs mt-1">Please select a customer.</p>
+          }
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Product ID</label>
+          <input type="text" formControlName="productId" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none" placeholder="Enter product ID">
+          @if (inwardForm.get('productId')?.touched && inwardForm.get('productId')?.invalid) {
+            <p class="text-brand-danger text-xs mt-1">Please enter the product.</p>
+          }
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Inward Quantity</label>
+          <input type="number" formControlName="inwardQty" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none" placeholder="e.g. 7500">
+          @if (inwardForm.get('inwardQty')?.touched && inwardForm.get('inwardQty')?.invalid) {
+            <p class="text-brand-danger text-xs mt-1">Please enter a valid quantity (at least 1).</p>
+          }
+        </div>
+
+        <div class="flex gap-3 pt-2">
+          <button type="submit" [disabled]="isSubmitting()" class="bg-brand text-white px-6 py-2.5 rounded-lg font-medium hover:bg-brand-light transition-colors disabled:opacity-70">
+            @if (isSubmitting()) {
+              <span class="flex items-center gap-2"><span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span> Saving...</span>
+            } @else {
+              Save Inward
+            }
+          </button>
+          <button type="button" (click)="switchTab('list')" class="px-6 py-2.5 rounded-lg font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+  <!-- Outward/Rejected Edit Modal -->
+  @if (editingItem()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4" (click)="cancelEdit()">
+      <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm" (click)="$event.stopPropagation()">
+        <h3 class="text-lg font-semibold text-brand-text mb-1">Update Stock</h3>
+        <p class="text-sm text-gray-500 mb-4">DC: {{ editingItem()!.dcNo }} · {{ editingItem()!.partNo }}</p>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Outward Quantity</label>
+            <input type="number" [value]="outwardQty()" (input)="outwardQty.set(+$any($event.target).value)" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none">
+            <button (click)="saveOutward()" class="mt-2 bg-brand-success text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity w-full">
+              Save Outward
+            </button>
+          </div>
+
+          <div class="border-t border-gray-200 pt-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Rejected Quantity</label>
+            <input type="number" [value]="rejectedQty()" (input)="rejectedQty.set(+$any($event.target).value)" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-danger focus:border-brand-danger outline-none">
+            <button (click)="saveRejected()" class="mt-2 bg-brand-danger text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity w-full">
+              Save Rejected
+            </button>
+          </div>
+        </div>
+
+        <button (click)="cancelEdit()" class="mt-4 w-full px-4 py-2 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors text-sm">
+          Close
+        </button>
+      </div>
+    </div>
+  }
 </div>

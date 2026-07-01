@@ -67,14 +67,16 @@ export interface Quotation {
 
 export interface StockLedger {
   id: string;
-  date: string;
   dcNo: string;
+  dcDate: string;
   customerId: string;
   customerName?: string;
   productId: string;
   partNo?: string;
+  partName?: string;
   inwardQty: number;
   outwardQty: number;
   rejectedQty: number;
   status: number;
+  createdAt?: string;
 }
