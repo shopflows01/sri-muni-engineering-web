@@ -78,7 +78,7 @@ export class InvoiceDetail implements OnInit {
   generateEwayBill() {
     const inv = this.invoice();
     if (!inv) return;
-    this.router.navigate(['/ewaybill'], { queryParams: { invoiceId: inv.id } });
+    this.router.navigate(['/ewaybill'], { queryParams: { invoiceIds: inv.id } });
   }
 
   goBack() {

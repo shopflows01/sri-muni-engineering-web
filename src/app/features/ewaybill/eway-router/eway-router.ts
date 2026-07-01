@@ -9,6 +9,17 @@ import { Invoice, Customer, Product } from '../../../shared/models/api.models';
 import { PaginatedResponse } from '../../../core/services/invoice.service';
 import { forkJoin } from 'rxjs';
 
+const COMPANY_PROFILE = {
+  name: 'SRI MUNI ENGINEERING',
+  address1: 'No. 113, Rajeshwari Layout',
+  address2: 'Begapalli Post, Krishnagiri',
+  city: 'Hosur',
+  pincode: 635126,
+  state: 'Tamil Nadu',
+  stateCode: 33,
+  gstin: '33ACJFS0007L2Z9'
+};
+
 export interface BillEntry {
   expanded: boolean;
   userGstin: string;
@@ -77,29 +88,36 @@ export class EwayRouter implements OnInit {
   private customerService = inject(CustomerService);
   private productService = inject(ProductService);
 
+  allInvoices = signal<Invoice[]>([]);
   customers = signal<Map<string, Customer>>(new Map());
   products = signal<Map<string, Product>>(new Map());
   isLoading = signal(false);
   showJsonPreview = signal(false);
   generatedJson = signal('');
+  showInvoiceDropdown = signal(false);
 
+  selectedInvoiceIds = signal<Set<string>>(new Set());
   billEntries = signal<BillEntry[]>([]);
 
   ngOnInit() {
     this.loadCustomers();
     this.loadProducts();
+    this.loadAllInvoices();
 
     const invoiceIdsParam = this.route.snapshot.queryParamMap.get('invoiceIds');
     if (invoiceIdsParam) {
       const ids = invoiceIdsParam.split(',').filter(id => id.trim());
       if (ids.length > 0) {
+        this.selectedInvoiceIds.set(new Set(ids));
         this.loadMultipleInvoices(ids);
       }
     }
+  }
 
-    if (!invoiceIdsParam) {
-      this.billEntries.set([this.createEmptyEntry()]);
-    }
+  loadAllInvoices() {
+    this.invoiceService.getAll({ page: 1, pageSize: 100 }).subscribe({
+      next: (res) => this.allInvoices.set(res.items)
+    });
   }
 
   loadCustomers() {
@@ -120,6 +138,34 @@ export class EwayRouter implements OnInit {
         this.products.set(map);
       }
     });
+  }
+
+  toggleInvoiceDropdown() {
+    this.showInvoiceDropdown.update(v => !v);
+  }
+
+  isInvoiceSelected(id: string): boolean {
+    return this.selectedInvoiceIds().has(id);
+  }
+
+  toggleInvoiceSelection(id: string) {
+    const current = new Set(this.selectedInvoiceIds());
+    if (current.has(id)) {
+      current.delete(id);
+    } else {
+      current.add(id);
+    }
+    this.selectedInvoiceIds.set(current);
+  }
+
+  applyInvoiceSelection() {
+    this.showInvoiceDropdown.set(false);
+    const ids = Array.from(this.selectedInvoiceIds());
+    if (ids.length > 0) {
+      this.loadMultipleInvoices(ids);
+    } else {
+      this.billEntries.set([]);
+    }
   }
 
   private loadMultipleInvoices(ids: string[]) {
@@ -178,7 +224,7 @@ export class EwayRouter implements OnInit {
   createEmptyEntry(): BillEntry {
     return {
       expanded: false,
-      userGstin: '',
+      userGstin: COMPANY_PROFILE.gstin,
       supplyType: 'O',
       subSupplyType: 1,
       subSupplyDesc: '',
@@ -186,14 +232,14 @@ export class EwayRouter implements OnInit {
       docNo: '',
       docDate: '',
       transType: 1,
-      fromGstin: '',
-      fromTrdName: 'SRI MUNI ENGINEERING',
-      fromAddr1: '',
-      fromAddr2: '',
-      fromPlace: '',
-      fromPincode: 0,
-      fromStateCode: 0,
-      actualFromStateCode: 0,
+      fromGstin: COMPANY_PROFILE.gstin,
+      fromTrdName: COMPANY_PROFILE.name,
+      fromAddr1: COMPANY_PROFILE.address1,
+      fromAddr2: COMPANY_PROFILE.address2,
+      fromPlace: COMPANY_PROFILE.city,
+      fromPincode: COMPANY_PROFILE.pincode,
+      fromStateCode: COMPANY_PROFILE.stateCode,
+      actualFromStateCode: COMPANY_PROFILE.stateCode,
       toGstin: '',
       toTrdName: '',
       toAddr1: '',
@@ -233,12 +279,19 @@ export class EwayRouter implements OnInit {
     };
   }
 
-  addEntry() {
-    this.billEntries.update(entries => [...entries, this.createEmptyEntry()]);
-  }
-
   removeEntry(index: number) {
-    this.billEntries.update(entries => entries.filter((_, i) => i !== index));
+    const entries = this.billEntries();
+    const removed = entries[index];
+    this.billEntries.update(e => e.filter((_, i) => i !== index));
+    // Also remove from selected IDs if it was from an invoice
+    if (removed?.docNo) {
+      const inv = this.allInvoices().find(i => i.invoiceNo === removed.docNo);
+      if (inv) {
+        const ids = new Set(this.selectedInvoiceIds());
+        ids.delete(inv.id);
+        this.selectedInvoiceIds.set(ids);
+      }
+    }
   }
 
   toggleEntry(index: number) {

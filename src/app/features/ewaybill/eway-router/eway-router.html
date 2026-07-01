@@ -1,12 +1,42 @@
 <div class="space-y-6">
-  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200">
-    <div>
-      <h1 class="text-2xl font-bold text-brand">E-Way Bill Generator</h1>
-      <p class="text-gray-500 text-sm mt-1">Generate E-Way Bill JSON for the GST portal ({{ billEntries().length }} invoice{{ billEntries().length > 1 ? 's' : '' }})</p>
-    </div>
-    <button (click)="addEntry()" class="bg-brand text-white px-4 py-2.5 rounded-lg font-medium hover:bg-brand-light transition-colors text-sm">
-      + Add Invoice
+  <div class="pb-4 border-b border-gray-200">
+    <h1 class="text-2xl font-bold text-brand">E-Way Bill Generator</h1>
+    <p class="text-gray-500 text-sm mt-1">Generate E-Way Bill JSON for the GST portal ({{ billEntries().length }} invoice{{ billEntries().length > 1 ? 's' : '' }})</p>
+  </div>
+
+  <!-- Multi-select Invoice Dropdown -->
+  <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 relative">
+    <label class="block text-sm font-medium text-gray-700 mb-2">Select Invoices</label>
+    <button (click)="toggleInvoiceDropdown()" class="w-full flex items-center justify-between px-4 py-2.5 border border-gray-300 rounded-lg bg-white text-left text-sm focus:ring-2 focus:ring-brand outline-none">
+      <span class="text-gray-700">
+        @if (selectedInvoiceIds().size === 0) {
+          Select invoices to generate E-Way Bills...
+        } @else {
+          {{ selectedInvoiceIds().size }} invoice{{ selectedInvoiceIds().size > 1 ? 's' : '' }} selected
+        }
+      </span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" [class]="showInvoiceDropdown() ? 'rotate-180 transition-transform' : 'transition-transform'"><path d="m6 9 6 6 6-6"/></svg>
     </button>
+
+    @if (showInvoiceDropdown()) {
+      <div class="absolute left-4 right-4 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-20 max-h-60 overflow-y-auto">
+        @for (inv of allInvoices(); track inv.id) {
+          <label class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0">
+            <input type="checkbox" [checked]="isInvoiceSelected(inv.id)" (change)="toggleInvoiceSelection(inv.id)" class="w-4 h-4 rounded border-gray-300 text-brand focus:ring-brand">
+            <div class="flex-1 min-w-0">
+              <span class="text-sm font-medium text-brand-text">#{{ inv.invoiceNo }}</span>
+              <span class="text-xs text-gray-500 ml-2">{{ inv.customerName }}</span>
+            </div>
+            <span class="text-xs font-medium text-brand">₹{{ inv.totalAmount | number:'1.2-2' }}</span>
+          </label>
+        }
+        <div class="sticky bottom-0 bg-white border-t border-gray-200 p-2">
+          <button (click)="applyInvoiceSelection()" class="w-full bg-brand text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand-light transition-colors">
+            Load Selected ({{ selectedInvoiceIds().size }})
+          </button>
+        </div>
+      </div>
+    }
   </div>
 
   @if (isLoading()) {
