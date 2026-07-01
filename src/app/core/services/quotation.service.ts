@@ -41,4 +41,8 @@ export class QuotationService {
     if (regenerate) params = params.set('regenerate', 'true');
     return this.http.get<{ downloadUrl: string }>(`${this.apiUrl}/${id}/pdf`, { params });
   }
+
+  getPreviewUrl(id: string): string {
+    return `${this.apiUrl}/${id}/pdf/preview`;
+  }
 }

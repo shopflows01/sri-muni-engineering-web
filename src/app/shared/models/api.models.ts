@@ -89,6 +89,7 @@ export interface StockLedger {
   inwardQty: number;
   outwardQty: number;
   rejectedQty: number;
+  pendingQty: number;
   status: number;
   createdAt?: string;
 }

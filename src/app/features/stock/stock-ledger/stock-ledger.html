@@ -4,9 +4,14 @@
       <h1 class="text-2xl font-bold text-brand">Stock Ledger</h1>
       <p class="text-gray-500 text-sm mt-1">Manage inward and outward stock</p>
     </div>
-    <button (click)="switchTab('inward')" class="bg-brand text-white px-4 py-2.5 rounded-lg font-medium hover:bg-brand-light transition-colors shadow-sm">
-      + New Inward
-    </button>
+    <div class="flex gap-2">
+      <button (click)="openExportDialog()" class="border border-gray-300 text-gray-700 px-3 py-2.5 rounded-lg font-medium hover:bg-gray-50 transition-colors shadow-sm" title="Export Excel">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M10 12l-2 4h4l-2 4"/></svg>
+      </button>
+      <button (click)="switchTab('inward')" class="bg-brand text-white px-4 py-2.5 rounded-lg font-medium hover:bg-brand-light transition-colors shadow-sm">
+        + New Inward
+      </button>
+    </div>
   </div>
 
   <!-- Success Toast -->
@@ -46,6 +51,7 @@
               <th class="text-right px-4 py-3 text-gray-500 font-medium">Inward</th>
               <th class="text-right px-4 py-3 text-gray-500 font-medium">Outward</th>
               <th class="text-right px-4 py-3 text-gray-500 font-medium">Rejected</th>
+              <th class="text-right px-4 py-3 text-gray-500 font-medium">Pending</th>
               <th class="text-center px-4 py-3 text-gray-500 font-medium">Actions</th>
             </tr>
           </thead>
@@ -58,6 +64,7 @@
                 <td class="px-4 py-3 text-right text-brand font-medium">{{ item.inwardQty }}</td>
                 <td class="px-4 py-3 text-right text-brand-success font-medium">{{ item.outwardQty }}</td>
                 <td class="px-4 py-3 text-right text-brand-danger font-medium">{{ item.rejectedQty }}</td>
+                <td class="px-4 py-3 text-right text-amber-600 font-medium">{{ item.pendingQty }}</td>
                 <td class="px-4 py-3 text-center">
                   <button (click)="openOutward(item)" class="text-brand hover:text-brand-light text-xs font-medium px-2 py-1 rounded hover:bg-brand-muted transition-colors">
                     Update
@@ -82,7 +89,7 @@
                 Update
               </button>
             </div>
-            <div class="grid grid-cols-3 gap-2 mt-3 text-center">
+            <div class="grid grid-cols-4 gap-2 mt-3 text-center">
               <div class="bg-blue-50 rounded-lg p-2">
                 <p class="text-xs text-gray-500">Inward</p>
                 <p class="font-bold text-brand">{{ item.inwardQty }}</p>
@@ -94,6 +101,10 @@
               <div class="bg-red-50 rounded-lg p-2">
                 <p class="text-xs text-gray-500">Rejected</p>
                 <p class="font-bold text-brand-danger">{{ item.rejectedQty }}</p>
+              </div>
+              <div class="bg-amber-50 rounded-lg p-2">
+                <p class="text-xs text-gray-500">Pending</p>
+                <p class="font-bold text-amber-600">{{ item.pendingQty }}</p>
               </div>
             </div>
           </div>
@@ -201,6 +212,40 @@
         <button (click)="cancelEdit()" class="mt-4 w-full px-4 py-2 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors text-sm">
           Close
         </button>
+      </div>
+    </div>
+  }
+
+  <!-- Export Excel Dialog -->
+  @if (showExportDialog()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4" (click)="closeExportDialog()">
+      <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm" (click)="$event.stopPropagation()">
+        <h3 class="text-lg font-semibold text-brand-text mb-1">Export Stock Report</h3>
+        <p class="text-sm text-gray-500 mb-4">Select date range for the Excel export</p>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">From Date</label>
+            <input type="date" [value]="exportFromDate()" (input)="exportFromDate.set($any($event.target).value)" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">To Date</label>
+            <input type="date" [value]="exportToDate()" (input)="exportToDate.set($any($event.target).value)" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none">
+          </div>
+        </div>
+
+        <div class="flex gap-3 mt-6">
+          <button (click)="submitExport()" [disabled]="isExporting() || !exportFromDate() || !exportToDate()" class="flex-1 bg-brand text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-brand-light transition-colors disabled:opacity-50">
+            @if (isExporting()) {
+              <span class="flex items-center justify-center gap-2"><span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span> Exporting...</span>
+            } @else {
+              Export
+            }
+          </button>
+          <button (click)="closeExportDialog()" class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors text-sm">
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
   }

@@ -43,6 +43,12 @@ export class StockLedger implements OnInit {
   isSubmitting = signal(false);
   successMessage = signal<string | null>(null);
 
+  // Export Excel
+  showExportDialog = signal(false);
+  exportFromDate = signal('');
+  exportToDate = signal('');
+  isExporting = signal(false);
+
   ngOnInit() {
     this.loadLedger();
     this.loadCustomers();
@@ -134,6 +140,34 @@ export class StockLedger implements OnInit {
 
   cancelEdit() {
     this.editingItem.set(null);
+  }
+
+  openExportDialog() {
+    this.showExportDialog.set(true);
+  }
+
+  closeExportDialog() {
+    this.showExportDialog.set(false);
+  }
+
+  submitExport() {
+    const from = this.exportFromDate();
+    const to = this.exportToDate();
+    if (!from || !to) return;
+    this.isExporting.set(true);
+    this.stockService.exportExcel(from, to).subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `stock-report-${from}-to-${to}.xlsx`;
+        a.click();
+        URL.revokeObjectURL(url);
+        this.isExporting.set(false);
+        this.showExportDialog.set(false);
+      },
+      error: () => this.isExporting.set(false)
+    });
   }
 
   private showSuccess(msg: string) {

@@ -4,24 +4,12 @@
       <h1 class="text-2xl font-bold text-brand">Quotation</h1>
       <p class="text-gray-500 text-sm mt-1">Preview and download the quotation PDF</p>
     </div>
-    <button (click)="download()" [disabled]="!pdfUrl()" class="bg-brand text-white px-6 py-2.5 rounded-lg font-medium hover:bg-brand-light transition-colors disabled:opacity-50 text-sm">
+    <button (click)="download()" class="bg-brand text-white px-6 py-2.5 rounded-lg font-medium hover:bg-brand-light transition-colors text-sm">
       Download PDF
     </button>
   </div>
 
-  @if (errorMessage()) {
-    <div class="p-3 bg-red-50 border border-red-100 text-brand-danger text-sm rounded-lg">
-      {{ errorMessage() }}
-    </div>
-  }
-
-  @if (isLoading()) {
-    <div class="flex justify-center py-12">
-      <div class="w-8 h-8 border-3 border-brand-muted border-t-brand rounded-full animate-spin"></div>
-    </div>
-  } @else if (safePdfUrl()) {
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-      <iframe [src]="safePdfUrl()!" class="w-full h-[80vh] border-0"></iframe>
-    </div>
-  }
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <iframe [src]="safePdfUrl()" class="w-full h-[80vh] border-0"></iframe>
+  </div>
 </div>

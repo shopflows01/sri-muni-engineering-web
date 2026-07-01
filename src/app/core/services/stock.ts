@@ -53,4 +53,11 @@ export class StockService {
   updateRejected(id: string, qty: number): Observable<any> {
     return this.http.put(`${this.apiUrl}/rejected/${id}`, { rejectedQty: qty });
   }
+
+  exportExcel(fromDate: string, toDate: string): Observable<Blob> {
+    const params = new HttpParams()
+      .set('fromDate', fromDate)
+      .set('toDate', toDate);
+    return this.http.get(`${this.apiUrl}/export-excel`, { params, responseType: 'blob' });
+  }
 }
