@@ -1,0 +1,40 @@
+<div class="space-y-6">
+  <!-- Greeting -->
+  <div class="pb-4 border-b border-gray-200">
+    <h1 class="text-3xl md:text-4xl font-bold text-brand">{{ greeting() }}, {{ userName() }}</h1>
+    <p class="text-gray-500 text-sm mt-2 font-medium">{{ currentDateTime() }}</p>
+  </div>
+
+  <!-- KPIs -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 transition-transform hover:scale-[1.02]">
+      <div class="w-12 h-12 rounded-full bg-brand-muted flex items-center justify-center text-brand">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+      </div>
+      <div>
+        <p class="text-sm text-gray-500 font-medium">Monthly Revenue</p>
+        <p class="text-2xl font-bold text-brand-text">₹0.00</p>
+      </div>
+    </div>
+    
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 transition-transform hover:scale-[1.02]">
+      <div class="w-12 h-12 rounded-full bg-brand-muted flex items-center justify-center text-brand">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      </div>
+      <div>
+        <p class="text-sm text-gray-500 font-medium">Invoices</p>
+        <p class="text-2xl font-bold text-brand-text">0</p>
+      </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 transition-transform hover:scale-[1.02]">
+      <div class="w-12 h-12 rounded-full bg-brand-muted flex items-center justify-center text-brand">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+      </div>
+      <div>
+        <p class="text-sm text-gray-500 font-medium">Inward Qty</p>
+        <p class="text-2xl font-bold text-brand-text">0</p>
+      </div>
+    </div>
+  </div>
+</div>
