@@ -15,6 +15,7 @@ export class MainLayout {
   userInitial = computed(() => this.userName().charAt(0).toUpperCase());
 
   mobileMenuOpen = signal(false);
+  sidebarExpanded = signal(false);
 
   toggleMenu() {
     this.mobileMenuOpen.update(v => !v);
@@ -22,6 +23,14 @@ export class MainLayout {
 
   closeMenu() {
     this.mobileMenuOpen.set(false);
+  }
+
+  expandSidebar() {
+    this.sidebarExpanded.set(true);
+  }
+
+  collapseSidebar() {
+    this.sidebarExpanded.set(false);
   }
 
   logout() {

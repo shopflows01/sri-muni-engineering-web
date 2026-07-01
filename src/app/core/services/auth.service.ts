@@ -14,11 +14,14 @@ export class AuthService {
   private readonly initialToken = sessionStorage.getItem('token');
   
   readonly token = signal<string | null>(this.initialToken);
-  readonly currentUser = signal<User | null>(null); // We would normally decode JWT here or fetch user profile on app load if token exists
+  readonly currentUser = signal<User | null>(this.restoreUser());
 
-  constructor() {
-    // If we have a token on startup, we could optionally parse the JWT to restore currentUser state
-    // For this mock, if we have a token, we assume logged in.
+  private restoreUser(): User | null {
+    const stored = sessionStorage.getItem('user');
+    if (stored) {
+      try { return JSON.parse(stored); } catch { return null; }
+    }
+    return null;
   }
 
   login(credentials: { username: string; password: string }): Observable<{ token: string; userId: string; username: string }> {
@@ -26,18 +29,11 @@ export class AuthService {
     const apiUrl = environment.apiUrl || '/api';
     return this.http.post<{ token: string; userId: string; username: string }>(`${apiUrl}/auth/login`, credentials).pipe(
       tap(response => {
-        // Store JWT in sessionStorage
         sessionStorage.setItem('token', response.token);
-        
-        // Update signals
+        const user = { userId: response.userId, username: response.username, token: response.token };
+        sessionStorage.setItem('user', JSON.stringify(user));
         this.token.set(response.token);
-        this.currentUser.set({
-          userId: response.userId,
-          username: response.username,
-          token: response.token
-        });
-        
-        // Navigate to dashboard on success
+        this.currentUser.set(user);
         this.router.navigate(['/dashboard']);
       }),
       catchError(error => {
@@ -51,8 +47,10 @@ export class AuthService {
     return this.http.post<{ token: string; userId: string; username: string }>(`${apiUrl}/auth/signup`, credentials).pipe(
       tap(response => {
         sessionStorage.setItem('token', response.token);
+        const user = { userId: response.userId, username: response.username, token: response.token };
+        sessionStorage.setItem('user', JSON.stringify(user));
         this.token.set(response.token);
-        this.currentUser.set({ userId: response.userId, username: response.username, token: response.token });
+        this.currentUser.set(user);
         this.router.navigate(['/dashboard']);
       }),
       catchError(error => throwError(() => error))
@@ -60,12 +58,10 @@ export class AuthService {
   }
 
   logout(): void {
-    // Clear storage and signals
     sessionStorage.removeItem('token');
+    sessionStorage.removeItem('user');
     this.token.set(null);
     this.currentUser.set(null);
-    
-    // Navigate to login
     this.router.navigate(['/login']);
   }
 }

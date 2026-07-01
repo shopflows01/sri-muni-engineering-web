@@ -45,4 +45,8 @@ export class QuotationService {
   getPreviewUrl(id: string): string {
     return `${this.apiUrl}/${id}/pdf/preview`;
   }
+
+  getPreviewBlob(id: string): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/${id}/pdf/preview`, { responseType: 'blob' });
+  }
 }
