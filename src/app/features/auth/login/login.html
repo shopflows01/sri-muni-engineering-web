@@ -1,24 +1,24 @@
-<div class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-[520px] border border-gray-100">
-  <div class="text-center mb-8">
-    <h1 class="text-2xl font-bold text-brand-text">Welcome Back</h1>
-    <p class="text-gray-500 text-sm mt-2">Sign in to your account</p>
+<div class="bg-white p-12 rounded-2xl shadow-xl w-full max-w-[600px] border border-gray-100">
+  <div class="text-center mb-10">
+    <h1 class="text-3xl font-bold text-brand-text">Welcome Back</h1>
+    <p class="text-gray-500 mt-2">Sign in to your account</p>
   </div>
 
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5">
-    <div class="relative border border-gray-300 rounded-xl focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/20 transition-all">
-      <input type="text" id="username" formControlName="username" placeholder=" " class="peer w-full px-4 pt-6 pb-2 rounded-xl outline-none text-sm bg-transparent">
-      <label for="username" class="absolute left-4 top-4 text-gray-400 text-sm transition-all duration-200 peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-focus:top-1.5 peer-focus:text-[11px] peer-focus:text-brand peer-[:not(:placeholder-shown)]:top-1.5 peer-[:not(:placeholder-shown)]:text-[11px] pointer-events-none">Username</label>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-7">
+    <div class="relative">
+      <input type="text" id="username" formControlName="username" placeholder=" " class="peer w-full px-4 py-4 border border-gray-300 rounded-xl outline-none text-base bg-white focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all">
+      <label for="username" class="absolute left-3 -top-2.5 px-1 bg-white text-xs text-gray-500 transition-all duration-200 peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:left-3 peer-focus:text-xs peer-focus:text-brand peer-focus:bg-white pointer-events-none">Username</label>
     </div>
     @if (loginForm.get('username')?.touched && loginForm.get('username')?.invalid) {
-      <p class="text-brand-danger text-xs -mt-3">Please enter your username.</p>
+      <p class="text-brand-danger text-xs -mt-5">Please enter your username.</p>
     }
 
-    <div class="relative border border-gray-300 rounded-xl focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/20 transition-all">
-      <input type="password" id="password" formControlName="password" placeholder=" " class="peer w-full px-4 pt-6 pb-2 rounded-xl outline-none text-sm bg-transparent">
-      <label for="password" class="absolute left-4 top-4 text-gray-400 text-sm transition-all duration-200 peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-focus:top-1.5 peer-focus:text-[11px] peer-focus:text-brand peer-[:not(:placeholder-shown)]:top-1.5 peer-[:not(:placeholder-shown)]:text-[11px] pointer-events-none">Password</label>
+    <div class="relative">
+      <input type="password" id="password" formControlName="password" placeholder=" " class="peer w-full px-4 py-4 border border-gray-300 rounded-xl outline-none text-base bg-white focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all">
+      <label for="password" class="absolute left-3 -top-2.5 px-1 bg-white text-xs text-gray-500 transition-all duration-200 peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:left-3 peer-focus:text-xs peer-focus:text-brand peer-focus:bg-white pointer-events-none">Password</label>
     </div>
     @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
-      <p class="text-brand-danger text-xs -mt-3">Please enter your password.</p>
+      <p class="text-brand-danger text-xs -mt-5">Please enter your password.</p>
     }
 
     @if (errorMessage()) {
@@ -27,7 +27,7 @@
       </div>
     }
 
-    <button type="submit" [disabled]="loginForm.invalid || isSubmitting()" class="w-full bg-brand hover:bg-brand-light text-white font-semibold py-3.5 rounded-xl transition-colors duration-200 shadow-lg shadow-brand/25 disabled:opacity-70 flex justify-center items-center text-base mt-2">
+    <button type="submit" [disabled]="loginForm.invalid || isSubmitting()" class="w-full bg-brand hover:bg-brand-light text-white font-semibold py-4 rounded-xl transition-colors duration-200 shadow-lg shadow-brand/25 disabled:opacity-70 flex justify-center items-center text-lg">
       @if (isSubmitting()) {
         <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
       } @else {
@@ -36,7 +36,7 @@
     </button>
 
     <div class="text-center pt-2">
-      <p class="text-sm text-gray-600">Don't have an account? <a routerLink="/signup" class="text-brand font-semibold hover:underline">Sign up</a></p>
+      <p class="text-gray-600">Don't have an account? <a routerLink="/signup" class="text-brand font-semibold hover:underline">Sign up</a></p>
     </div>
   </form>
 </div>
