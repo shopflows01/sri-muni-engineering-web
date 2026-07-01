@@ -1,19 +1,18 @@
-<div class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-xl border border-gray-100">
-  <div class="text-center mb-10">
-    <img src="assets/sme-logo.png" alt="SME Logo" class="h-16 w-16 mx-auto mb-4 object-contain">
-    <h2 class="text-3xl font-bold text-brand-text mb-2">Create an Account</h2>
+<div class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-[520px] border border-gray-100">
+  <div class="text-center mb-8">
+    <h2 class="text-2xl font-bold text-brand-text mb-2">Create an Account</h2>
     <p class="text-gray-500 text-sm">Sign up to get started</p>
   </div>
 
-  <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="space-y-6">
-    <div class="relative">
-      <input type="text" formControlName="username" placeholder=" " autocomplete="username" class="peer w-full px-4 pt-5 pb-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand focus:border-brand outline-none transition-all text-sm bg-gray-50 focus:bg-white">
-      <label class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-2.5 peer-focus:text-xs peer-focus:text-brand peer-[:not(:placeholder-shown)]:top-2.5 peer-[:not(:placeholder-shown)]:text-xs pointer-events-none">Username</label>
+  <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="space-y-5">
+    <div class="relative border border-gray-300 rounded-xl focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/20 transition-all">
+      <input type="text" formControlName="username" placeholder=" " autocomplete="username" class="peer w-full px-4 pt-6 pb-2 rounded-xl outline-none text-sm bg-transparent">
+      <label class="absolute left-4 top-4 text-gray-400 text-sm transition-all duration-200 peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-focus:top-1.5 peer-focus:text-[11px] peer-focus:text-brand peer-[:not(:placeholder-shown)]:top-1.5 peer-[:not(:placeholder-shown)]:text-[11px] pointer-events-none">Username</label>
     </div>
 
-    <div class="relative">
-      <input type="password" formControlName="password" placeholder=" " autocomplete="new-password" class="peer w-full px-4 pt-5 pb-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand focus:border-brand outline-none transition-all text-sm bg-gray-50 focus:bg-white">
-      <label class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-2.5 peer-focus:text-xs peer-focus:text-brand peer-[:not(:placeholder-shown)]:top-2.5 peer-[:not(:placeholder-shown)]:text-xs pointer-events-none">Password</label>
+    <div class="relative border border-gray-300 rounded-xl focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/20 transition-all">
+      <input type="password" formControlName="password" placeholder=" " autocomplete="new-password" class="peer w-full px-4 pt-6 pb-2 rounded-xl outline-none text-sm bg-transparent">
+      <label class="absolute left-4 top-4 text-gray-400 text-sm transition-all duration-200 peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-focus:top-1.5 peer-focus:text-[11px] peer-focus:text-brand peer-[:not(:placeholder-shown)]:top-1.5 peer-[:not(:placeholder-shown)]:text-[11px] pointer-events-none">Password</label>
     </div>
 
     @if (errorMessage()) {
@@ -23,7 +22,7 @@
       </div>
     }
 
-    <button type="submit" [disabled]="signupForm.invalid || isSubmitting()" class="w-full bg-brand hover:bg-brand-light text-white font-semibold py-3 rounded-xl transition-colors duration-200 shadow-lg shadow-brand/25 disabled:opacity-70 flex justify-center items-center text-base">
+    <button type="submit" [disabled]="signupForm.invalid || isSubmitting()" class="w-full bg-brand hover:bg-brand-light text-white font-semibold py-3.5 rounded-xl transition-colors duration-200 shadow-lg shadow-brand/25 disabled:opacity-70 flex justify-center items-center text-base mt-2">
       @if (isSubmitting()) {
         <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
       } @else {
@@ -31,7 +30,7 @@
       }
     </button>
 
-    <div class="mt-6 text-center">
+    <div class="text-center pt-2">
       <p class="text-sm text-gray-600">Already have an account? <a routerLink="/login" class="text-brand font-semibold hover:underline">Sign in</a></p>
     </div>
   </form>
