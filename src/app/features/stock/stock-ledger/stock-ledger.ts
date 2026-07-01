@@ -156,16 +156,10 @@ export class StockLedger implements OnInit {
     if (!from || !to) return;
     this.isExporting.set(true);
     this.stockService.exportExcel(from, to).subscribe({
-      next: (blob) => {
-        const file = new Blob([blob], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        const url = URL.createObjectURL(file);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `stock-report-${from}-to-${to}.xlsx`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+      next: (res) => {
+        if (res.downloadUrl) {
+          window.open(res.downloadUrl, '_blank');
+        }
         this.isExporting.set(false);
         this.showExportDialog.set(false);
       },

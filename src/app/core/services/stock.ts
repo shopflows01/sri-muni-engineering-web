@@ -54,15 +54,11 @@ export class StockService {
     return this.http.put(`${this.apiUrl}/rejected/${id}`, { rejectedQty: qty });
   }
 
-  exportExcel(fromDate: string, toDate: string): Observable<Blob> {
+  exportExcel(fromDate: string, toDate: string): Observable<{ downloadUrl: string }> {
     const params = new HttpParams()
       .set('fromDate', fromDate)
       .set('toDate', toDate)
       .set('period', 'monthly');
-    return this.http.get(`${this.apiUrl}/export-excel`, {
-      params,
-      responseType: 'blob',
-      headers: { 'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }
-    });
+    return this.http.get<{ downloadUrl: string }>(`${this.apiUrl}/export-excel`, { params });
   }
 }
