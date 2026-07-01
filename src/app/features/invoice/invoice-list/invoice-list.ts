@@ -1,5 +1,5 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { InvoiceService } from '../../../core/services/invoice.service';
 import { Invoice } from '../../../shared/models/api.models';
@@ -13,6 +13,7 @@ import { EmptyState } from '../../../shared/components/empty-state/empty-state';
 })
 export class InvoiceList implements OnInit {
   private invoiceService = inject(InvoiceService);
+  private router = inject(Router);
 
   invoices = signal<Invoice[]>([]);
   isLoading = signal(false);
@@ -52,6 +53,11 @@ export class InvoiceList implements OnInit {
 
   get hasSelection(): boolean {
     return this.selectedIds().size > 0;
+  }
+
+  generateEwayBill() {
+    const ids = Array.from(this.selectedIds());
+    this.router.navigate(['/ewaybill'], { queryParams: { invoiceIds: ids.join(',') } });
   }
 
   downloadPdf(invoice: Invoice) {

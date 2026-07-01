@@ -1,5 +1,5 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, inject, signal, OnInit, computed } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { QuotationService } from '../../../core/services/quotation.service';
 
 @Component({
@@ -10,67 +10,46 @@ import { QuotationService } from '../../../core/services/quotation.service';
 })
 export class QuotationView implements OnInit {
   private quotationService = inject(QuotationService);
-  private route = inject(ActivatedRoute);
+  private sanitizer = inject(DomSanitizer);
+
+  private readonly QUOTATION_ID = '838d8588-0aa8-4d2c-881e-5b3de2526da2';
 
   isLoading = signal(false);
   pdfUrl = signal<string | null>(null);
   errorMessage = signal<string | null>(null);
-  quotationId = signal<string | null>(null);
+
+  safePdfUrl = computed<SafeResourceUrl | null>(() => {
+    const url = this.pdfUrl();
+    return url ? this.sanitizer.bypassSecurityTrustResourceUrl(url) : null;
+  });
 
   ngOnInit() {
-    // Check if a specific quotation id is passed via query param
-    const id = this.route.snapshot.queryParamMap.get('id');
-    if (id) {
-      this.quotationId.set(id);
-    }
+    this.loadPreview();
   }
 
-  preview() {
-    const id = this.quotationId();
-    if (!id) {
-      this.errorMessage.set('Please provide a quotation ID via the URL (e.g. ?id=...)');
-      return;
-    }
+  loadPreview() {
     this.isLoading.set(true);
     this.errorMessage.set(null);
-    this.quotationService.getPdf(id, true).subscribe({
+    this.quotationService.getPdf(this.QUOTATION_ID, true).subscribe({
       next: (res) => {
         this.pdfUrl.set(res.downloadUrl);
         this.isLoading.set(false);
-        if (res.downloadUrl) {
-          window.open(res.downloadUrl, '_blank');
-        }
       },
       error: (err) => {
         this.isLoading.set(false);
-        this.errorMessage.set(err?.error?.message || 'Failed to generate quotation PDF.');
+        this.errorMessage.set(err?.error?.message || 'Failed to load quotation PDF.');
       }
     });
   }
 
   download() {
-    const id = this.quotationId();
-    if (!id) {
-      this.errorMessage.set('Please provide a quotation ID via the URL (e.g. ?id=...)');
-      return;
+    const url = this.pdfUrl();
+    if (url) {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `quotation.pdf`;
+      a.target = '_blank';
+      a.click();
     }
-    this.isLoading.set(true);
-    this.errorMessage.set(null);
-    this.quotationService.getPdf(id, true).subscribe({
-      next: (res) => {
-        this.isLoading.set(false);
-        if (res.downloadUrl) {
-          const a = document.createElement('a');
-          a.href = res.downloadUrl;
-          a.download = `quotation-${id}.pdf`;
-          a.target = '_blank';
-          a.click();
-        }
-      },
-      error: (err) => {
-        this.isLoading.set(false);
-        this.errorMessage.set(err?.error?.message || 'Failed to download quotation PDF.');
-      }
-    });
   }
 }

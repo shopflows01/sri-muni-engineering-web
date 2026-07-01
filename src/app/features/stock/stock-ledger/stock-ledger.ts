@@ -2,6 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { StockService, PaginatedResponse } from '../../../core/services/stock';
 import { CustomerService } from '../../../core/services/customer';
+import { ProductService } from '../../../core/services/product';
 import { StockLedger as StockLedgerModel, Customer, Product } from '../../../shared/models/api.models';
 import { EmptyState } from '../../../shared/components/empty-state/empty-state';
 
@@ -14,6 +15,7 @@ import { EmptyState } from '../../../shared/components/empty-state/empty-state';
 export class StockLedger implements OnInit {
   private stockService = inject(StockService);
   private customerService = inject(CustomerService);
+  private productService = inject(ProductService);
   private fb = inject(FormBuilder);
 
   activeTab = signal<'list' | 'inward'>('list');
@@ -44,6 +46,7 @@ export class StockLedger implements OnInit {
   ngOnInit() {
     this.loadLedger();
     this.loadCustomers();
+    this.loadProducts();
   }
 
   loadLedger() {
@@ -61,6 +64,12 @@ export class StockLedger implements OnInit {
   loadCustomers() {
     this.customerService.getCustomers('', 1, 100).subscribe({
       next: (res) => this.customers.set(res.items)
+    });
+  }
+
+  loadProducts() {
+    this.productService.getProducts('', 1, 100).subscribe({
+      next: (res) => this.products.set(res.items)
     });
   }
 

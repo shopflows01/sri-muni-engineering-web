@@ -3,7 +3,6 @@ import { authGuard } from './core/guards/auth.guard';
 import { AuthLayout } from './layouts/auth-layout/auth-layout';
 import { MainLayout } from './layouts/main-layout/main-layout';
 import { Login } from './features/auth/login/login';
-import { Dashboard } from './features/dashboard/dashboard';
 import { CustomerList } from './features/customer/customer-list/customer-list';
 import { CustomerForm } from './features/customer/customer-form/customer-form';
 
@@ -14,7 +13,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: Dashboard },
+      { path: 'dashboard', loadComponent: () => import('./features/dashboard/dashboard').then(m => m.Dashboard) },
       { path: 'customers', component: CustomerList },
       { path: 'customers/new', component: CustomerForm },
       { path: 'customers/:id', component: CustomerForm },

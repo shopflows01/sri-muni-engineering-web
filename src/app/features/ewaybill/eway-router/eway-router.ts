@@ -7,6 +7,63 @@ import { CustomerService } from '../../../core/services/customer';
 import { ProductService } from '../../../core/services/product';
 import { Invoice, Customer, Product } from '../../../shared/models/api.models';
 import { PaginatedResponse } from '../../../core/services/invoice.service';
+import { forkJoin } from 'rxjs';
+
+export interface BillEntry {
+  expanded: boolean;
+  userGstin: string;
+  supplyType: string;
+  subSupplyType: number;
+  subSupplyDesc: string;
+  docType: string;
+  docNo: string;
+  docDate: string;
+  transType: number;
+  fromGstin: string;
+  fromTrdName: string;
+  fromAddr1: string;
+  fromAddr2: string;
+  fromPlace: string;
+  fromPincode: number;
+  fromStateCode: number;
+  actualFromStateCode: number;
+  toGstin: string;
+  toTrdName: string;
+  toAddr1: string;
+  toAddr2: string;
+  toPlace: string;
+  toPincode: number;
+  toStateCode: number;
+  actualToStateCode: number;
+  totalValue: number;
+  cgstValue: number;
+  sgstValue: number;
+  igstValue: number;
+  cessValue: number;
+  totNonAdvolVal: number;
+  othValue: number;
+  totInvValue: number;
+  transMode: number;
+  transDistance: number;
+  transporterName: string;
+  transporterId: string;
+  transDocNo: string;
+  transDocDate: string;
+  vehicleNo: string;
+  vehicleType: string;
+  mainHsnCode: string;
+  itemProductName: string;
+  itemProductDesc: string;
+  itemHsnCode: string;
+  itemQuantity: number;
+  itemQtyUnit: string;
+  itemTaxableAmount: number;
+  itemSgstRate: number;
+  itemCgstRate: number;
+  itemIgstRate: number;
+  itemCessRate: number;
+  itemCessNonAdvol: number;
+}
 
 @Component({
   selector: 'app-eway-router',
@@ -20,94 +77,29 @@ export class EwayRouter implements OnInit {
   private customerService = inject(CustomerService);
   private productService = inject(ProductService);
 
-  invoices = signal<Invoice[]>([]);
   customers = signal<Map<string, Customer>>(new Map());
   products = signal<Map<string, Product>>(new Map());
   isLoading = signal(false);
   showJsonPreview = signal(false);
   generatedJson = signal('');
-  selectedInvoiceId = signal('');
 
-  // E-Way Bill form fields
-  userGstin = signal('');
-  supplyType = signal('O');
-  subSupplyType = signal(1);
-  subSupplyDesc = signal('');
-  docType = signal('INV');
-  docNo = signal('');
-  docDate = signal('');
-  transType = signal(1);
-
-  // From details
-  fromGstin = signal('');
-  fromTrdName = signal('SRI MUNI ENGINEERING');
-  fromAddr1 = signal('');
-  fromAddr2 = signal('');
-  fromPlace = signal('');
-  fromPincode = signal(0);
-  fromStateCode = signal(0);
-  actualFromStateCode = signal(0);
-
-  // To details
-  toGstin = signal('');
-  toTrdName = signal('');
-  toAddr1 = signal('');
-  toAddr2 = signal('');
-  toPlace = signal('');
-  toPincode = signal(0);
-  toStateCode = signal(0);
-  actualToStateCode = signal(0);
-
-  // Values
-  totalValue = signal(0);
-  cgstValue = signal(0);
-  sgstValue = signal(0);
-  igstValue = signal(0);
-  cessValue = signal(0);
-  totNonAdvolVal = signal(0);
-  othValue = signal(0);
-  totInvValue = signal(0);
-
-  // Transport
-  transMode = signal(1);
-  transDistance = signal(0);
-  transporterName = signal('');
-  transporterId = signal('');
-  transDocNo = signal('');
-  transDocDate = signal('');
-  vehicleNo = signal('');
-  vehicleType = signal('R');
-
-  // Item details
-  mainHsnCode = signal('');
-  itemProductName = signal('');
-  itemProductDesc = signal('');
-  itemHsnCode = signal('');
-  itemQuantity = signal(0);
-  itemQtyUnit = signal('NOS');
-  itemTaxableAmount = signal(0);
-  itemSgstRate = signal(0);
-  itemCgstRate = signal(0);
-  itemIgstRate = signal(0);
-  itemCessRate = signal(0);
-  itemCessNonAdvol = signal(0);
+  billEntries = signal<BillEntry[]>([]);
 
   ngOnInit() {
-    this.loadInvoices();
     this.loadCustomers();
     this.loadProducts();
 
-    const invoiceId = this.route.snapshot.queryParamMap.get('invoiceId');
-    if (invoiceId) {
-      this.selectedInvoiceId.set(invoiceId);
-      this.loadAndPopulateInvoice(invoiceId);
+    const invoiceIdsParam = this.route.snapshot.queryParamMap.get('invoiceIds');
+    if (invoiceIdsParam) {
+      const ids = invoiceIdsParam.split(',').filter(id => id.trim());
+      if (ids.length > 0) {
+        this.loadMultipleInvoices(ids);
+      }
     }
-  }
 
-  loadInvoices() {
-    this.invoiceService.getAll({ page: 1, pageSize: 100 }).subscribe({
-      next: (res) => this.invoices.set(res.items)
-    });
+    if (!invoiceIdsParam) {
+      this.billEntries.set([this.createEmptyEntry()]);
+    }
   }
 
   loadCustomers() {
@@ -130,124 +122,189 @@ export class EwayRouter implements OnInit {
     });
   }
 
-  onInvoiceSelected() {
-    const id = this.selectedInvoiceId();
-    if (id) {
-      this.loadAndPopulateInvoice(id);
-    }
-  }
-
-  private loadAndPopulateInvoice(id: string) {
+  private loadMultipleInvoices(ids: string[]) {
     this.isLoading.set(true);
-    this.invoiceService.getById(id).subscribe({
-      next: (inv) => {
-        this.populateFromInvoice(inv);
+    const requests = ids.map(id => this.invoiceService.getById(id));
+    forkJoin(requests).subscribe({
+      next: (invoices) => {
+        const entries = invoices.map(inv => this.populateEntry(inv));
+        this.billEntries.set(entries);
         this.isLoading.set(false);
       },
       error: () => this.isLoading.set(false)
     });
   }
 
-  private populateFromInvoice(inv: Invoice) {
+  private populateEntry(inv: Invoice): BillEntry {
     const customer = this.customers().get(inv.customerId);
     const product = this.products().get(inv.productId);
 
-    // Document details
-    this.docNo.set(inv.invoiceNo);
-    this.docDate.set(new Date(inv.date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }));
+    const entry = this.createEmptyEntry();
+    entry.expanded = true;
+    entry.docNo = inv.invoiceNo;
+    entry.docDate = new Date(inv.date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-    // To details from customer
     if (customer) {
-      this.toGstin.set(customer.gstin || '');
-      this.toTrdName.set(customer.name || '');
-      this.toAddr1.set(customer.shippingAddress || customer.billingAddress || '');
-      this.toPincode.set(customer.pincode ? parseInt(customer.pincode) : 0);
-      this.toStateCode.set(customer.stateCode ? parseInt(customer.stateCode) : 0);
-      this.actualToStateCode.set(customer.stateCode ? parseInt(customer.stateCode) : 0);
+      entry.toGstin = customer.gstin || '';
+      entry.toTrdName = customer.name || '';
+      entry.toAddr1 = customer.shippingAddress || customer.billingAddress || '';
+      entry.toPincode = customer.pincode ? parseInt(customer.pincode) : 0;
+      entry.toStateCode = customer.stateCode ? parseInt(customer.stateCode) : 0;
+      entry.actualToStateCode = customer.stateCode ? parseInt(customer.stateCode) : 0;
     } else {
-      this.toTrdName.set(inv.customerName || '');
+      entry.toTrdName = inv.customerName || '';
     }
 
-    // Values from invoice
-    this.totalValue.set(inv.taxableValue || 0);
-    this.cgstValue.set(inv.cgstAmount || 0);
-    this.sgstValue.set(inv.sgstAmount || 0);
-    this.igstValue.set(inv.igstAmount || 0);
-    this.totInvValue.set(inv.totalAmount || 0);
+    entry.totalValue = inv.taxableValue || 0;
+    entry.cgstValue = inv.cgstAmount || 0;
+    entry.sgstValue = inv.sgstAmount || 0;
+    entry.igstValue = inv.igstAmount || 0;
+    entry.totInvValue = inv.totalAmount || 0;
 
-    // Item details
-    this.itemProductName.set(inv.partName || product?.partName || '');
-    this.itemProductDesc.set(inv.partNo || product?.partNo || '');
-    this.itemHsnCode.set(inv.hsnSac || product?.hsnSac || '');
-    this.mainHsnCode.set(inv.hsnSac || product?.hsnSac || '');
-    this.itemQuantity.set(inv.quantity || 0);
-    this.itemQtyUnit.set(product?.unit || 'NOS');
-    this.itemTaxableAmount.set(inv.taxableValue || 0);
-    this.itemIgstRate.set(inv.igstRate || 0);
-    this.itemCgstRate.set(inv.cgstRate || 0);
-    this.itemSgstRate.set(inv.sgstRate || 0);
+    entry.itemProductName = inv.partName || product?.partName || '';
+    entry.itemProductDesc = inv.partNo || product?.partNo || '';
+    entry.itemHsnCode = inv.hsnSac || product?.hsnSac || '';
+    entry.mainHsnCode = inv.hsnSac || product?.hsnSac || '';
+    entry.itemQuantity = inv.quantity || 0;
+    entry.itemQtyUnit = product?.unit || 'NOS';
+    entry.itemTaxableAmount = inv.taxableValue || 0;
+    entry.itemIgstRate = inv.igstRate || 0;
+    entry.itemCgstRate = inv.cgstRate || 0;
+    entry.itemSgstRate = inv.sgstRate || 0;
+
+    return entry;
+  }
+
+  createEmptyEntry(): BillEntry {
+    return {
+      expanded: false,
+      userGstin: '',
+      supplyType: 'O',
+      subSupplyType: 1,
+      subSupplyDesc: '',
+      docType: 'INV',
+      docNo: '',
+      docDate: '',
+      transType: 1,
+      fromGstin: '',
+      fromTrdName: 'SRI MUNI ENGINEERING',
+      fromAddr1: '',
+      fromAddr2: '',
+      fromPlace: '',
+      fromPincode: 0,
+      fromStateCode: 0,
+      actualFromStateCode: 0,
+      toGstin: '',
+      toTrdName: '',
+      toAddr1: '',
+      toAddr2: '',
+      toPlace: '',
+      toPincode: 0,
+      toStateCode: 0,
+      actualToStateCode: 0,
+      totalValue: 0,
+      cgstValue: 0,
+      sgstValue: 0,
+      igstValue: 0,
+      cessValue: 0,
+      totNonAdvolVal: 0,
+      othValue: 0,
+      totInvValue: 0,
+      transMode: 1,
+      transDistance: 0,
+      transporterName: '',
+      transporterId: '',
+      transDocNo: '',
+      transDocDate: '',
+      vehicleNo: '',
+      vehicleType: 'R',
+      mainHsnCode: '',
+      itemProductName: '',
+      itemProductDesc: '',
+      itemHsnCode: '',
+      itemQuantity: 0,
+      itemQtyUnit: 'NOS',
+      itemTaxableAmount: 0,
+      itemSgstRate: 0,
+      itemCgstRate: 0,
+      itemIgstRate: 0,
+      itemCessRate: 0,
+      itemCessNonAdvol: 0
+    };
+  }
+
+  addEntry() {
+    this.billEntries.update(entries => [...entries, this.createEmptyEntry()]);
+  }
+
+  removeEntry(index: number) {
+    this.billEntries.update(entries => entries.filter((_, i) => i !== index));
+  }
+
+  toggleEntry(index: number) {
+    this.billEntries.update(entries => entries.map((e, i) => i === index ? { ...e, expanded: !e.expanded } : e));
   }
 
   generateJson(): string {
     const ewayBillJson = {
       version: '1.0.1118',
-      billLists: [{
-        userGstin: this.userGstin(),
-        supplyType: this.supplyType(),
-        subSupplyType: this.subSupplyType(),
-        subSupplyDesc: this.subSupplyDesc(),
-        docType: this.docType(),
-        docNo: this.docNo(),
-        docDate: this.docDate(),
-        transType: this.transType(),
-        fromGstin: this.fromGstin(),
-        fromTrdName: this.fromTrdName(),
-        fromAddr1: this.fromAddr1(),
-        fromAddr2: this.fromAddr2(),
-        fromPlace: this.fromPlace(),
-        fromPincode: this.fromPincode(),
-        fromStateCode: this.fromStateCode(),
-        actualFromStateCode: this.actualFromStateCode(),
-        toGstin: this.toGstin(),
-        toTrdName: this.toTrdName(),
-        toAddr1: this.toAddr1(),
-        toAddr2: this.toAddr2(),
-        toPlace: this.toPlace(),
-        toPincode: this.toPincode(),
-        toStateCode: this.toStateCode(),
-        actualToStateCode: this.actualToStateCode(),
-        totalValue: this.totalValue(),
-        cgstValue: this.cgstValue(),
-        sgstValue: this.sgstValue(),
-        igstValue: this.igstValue(),
-        cessValue: this.cessValue(),
-        TotNonAdvolVal: this.totNonAdvolVal(),
-        OthValue: this.othValue(),
-        totInvValue: this.totInvValue(),
-        transMode: this.transMode(),
-        transDistance: this.transDistance(),
-        transporterName: this.transporterName(),
-        transporterId: this.transporterId(),
-        transDocNo: this.transDocNo(),
-        transDocDate: this.transDocDate(),
-        vehicleNo: this.vehicleNo(),
-        vehicleType: this.vehicleType(),
-        mainHsnCode: this.mainHsnCode(),
+      billLists: this.billEntries().map(entry => ({
+        userGstin: entry.userGstin,
+        supplyType: entry.supplyType,
+        subSupplyType: entry.subSupplyType,
+        subSupplyDesc: entry.subSupplyDesc,
+        docType: entry.docType,
+        docNo: entry.docNo,
+        docDate: entry.docDate,
+        transType: entry.transType,
+        fromGstin: entry.fromGstin,
+        fromTrdName: entry.fromTrdName,
+        fromAddr1: entry.fromAddr1,
+        fromAddr2: entry.fromAddr2,
+        fromPlace: entry.fromPlace,
+        fromPincode: entry.fromPincode,
+        fromStateCode: entry.fromStateCode,
+        actualFromStateCode: entry.actualFromStateCode,
+        toGstin: entry.toGstin,
+        toTrdName: entry.toTrdName,
+        toAddr1: entry.toAddr1,
+        toAddr2: entry.toAddr2,
+        toPlace: entry.toPlace,
+        toPincode: entry.toPincode,
+        toStateCode: entry.toStateCode,
+        actualToStateCode: entry.actualToStateCode,
+        totalValue: entry.totalValue,
+        cgstValue: entry.cgstValue,
+        sgstValue: entry.sgstValue,
+        igstValue: entry.igstValue,
+        cessValue: entry.cessValue,
+        TotNonAdvolVal: entry.totNonAdvolVal,
+        OthValue: entry.othValue,
+        totInvValue: entry.totInvValue,
+        transMode: entry.transMode,
+        transDistance: entry.transDistance,
+        transporterName: entry.transporterName,
+        transporterId: entry.transporterId,
+        transDocNo: entry.transDocNo,
+        transDocDate: entry.transDocDate,
+        vehicleNo: entry.vehicleNo,
+        vehicleType: entry.vehicleType,
+        mainHsnCode: entry.mainHsnCode,
         itemList: [{
           itemNo: 1,
-          productName: this.itemProductName(),
-          productDesc: this.itemProductDesc(),
-          hsnCode: this.itemHsnCode(),
-          quantity: this.itemQuantity(),
-          qtyUnit: this.itemQtyUnit(),
-          taxableAmount: this.itemTaxableAmount(),
-          sgstRate: this.itemSgstRate(),
-          cgstRate: this.itemCgstRate(),
-          igstRate: this.itemIgstRate(),
-          cessRate: this.itemCessRate(),
-          cessNonAdvol: this.itemCessNonAdvol()
+          productName: entry.itemProductName,
+          productDesc: entry.itemProductDesc,
+          hsnCode: entry.itemHsnCode,
+          quantity: entry.itemQuantity,
+          qtyUnit: entry.itemQtyUnit,
+          taxableAmount: entry.itemTaxableAmount,
+          sgstRate: entry.itemSgstRate,
+          cgstRate: entry.itemCgstRate,
+          igstRate: entry.itemIgstRate,
+          cessRate: entry.itemCessRate,
+          cessNonAdvol: entry.itemCessNonAdvol
         }]
-      }]
+      }))
     };
     return JSON.stringify(ewayBillJson, null, 2);
   }
@@ -267,7 +324,7 @@ export class EwayRouter implements OnInit {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `eway-bill-${this.docNo() || 'draft'}.json`;
+    a.download = `eway-bill-${this.billEntries().length > 0 ? this.billEntries()[0].docNo || 'draft' : 'draft'}.json`;
     a.click();
     URL.revokeObjectURL(url);
   }

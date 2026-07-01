@@ -6,9 +6,9 @@
     </div>
     <div class="flex gap-2">
       @if (hasSelection) {
-        <a routerLink="/ewaybill" class="bg-brand-success text-white px-4 py-2.5 rounded-lg font-medium hover:opacity-90 transition-opacity shadow-sm text-sm">
+        <button (click)="generateEwayBill()" class="bg-brand-success text-white px-4 py-2.5 rounded-lg font-medium hover:opacity-90 transition-opacity shadow-sm text-sm">
           Generate E-Way Bill ({{ selectedIds().size }})
-        </a>
+        </button>
       }
       <a routerLink="/invoices/new" class="bg-brand text-white px-4 py-2.5 rounded-lg font-medium hover:bg-brand-light transition-colors shadow-sm">
         + New Invoice

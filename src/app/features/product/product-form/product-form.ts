@@ -2,6 +2,8 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../../core/services/product';
+import { CustomerService } from '../../../core/services/customer';
+import { Customer } from '../../../shared/models/api.models';
 
 @Component({
   selector: 'app-product-form',
@@ -12,12 +14,14 @@ import { ProductService } from '../../../core/services/product';
 export class ProductForm implements OnInit {
   private fb = inject(FormBuilder);
   private productService = inject(ProductService);
+  private customerService = inject(CustomerService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
   isEditMode = signal(false);
   isSaving = signal(false);
   productId: string | null = null;
+  customers = signal<Customer[]>([]);
 
   productForm = this.fb.group({
     customerId: ['', Validators.required],
@@ -28,11 +32,18 @@ export class ProductForm implements OnInit {
   });
 
   ngOnInit() {
+    this.loadCustomers();
     this.productId = this.route.snapshot.paramMap.get('id');
     if (this.productId && this.productId !== 'new') {
       this.isEditMode.set(true);
       this.productService.getProduct(this.productId).subscribe(p => this.productForm.patchValue(p as any));
     }
+  }
+
+  loadCustomers() {
+    this.customerService.getCustomers('', 1, 100).subscribe({
+      next: (res) => this.customers.set(res.items)
+    });
   }
 
   onSubmit() {
