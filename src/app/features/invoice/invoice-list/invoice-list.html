@@ -6,22 +6,26 @@
     </div>
     <div class="flex gap-2">
       @if (hasSelection) {
-        <button (click)="generateEwayBill()" class="bg-brand-success text-white px-4 py-2.5 rounded-lg font-medium hover:opacity-90 transition-opacity shadow-sm text-sm">
-          Generate E-Way Bill ({{ selectedIds().size }})
-        </button>
+      <button (click)="generateEwayBill()"
+        class="bg-brand-success text-white px-4 py-2.5 rounded-lg font-medium hover:opacity-90 transition-opacity shadow-sm text-sm">
+        Generate E-Way Bill ({{ selectedIds().size }})
+      </button>
       }
-      <a routerLink="/invoices/new" class="bg-brand text-white px-4 py-2.5 rounded-lg font-medium hover:bg-brand-light transition-colors shadow-sm">
+      <a routerLink="/invoices/new"
+        class="bg-brand text-white px-4 py-2.5 rounded-lg font-medium hover:bg-brand-light transition-colors shadow-sm">
         + New Invoice
       </a>
     </div>
   </div>
 
   @if (isLoading()) {
-    <div class="flex justify-center py-12">
-      <div class="w-8 h-8 border-3 border-brand-muted border-t-brand rounded-full animate-spin"></div>
-    </div>
+  <div class="flex justify-center py-12">
+    <div class="w-8 h-8 border-3 border-brand-muted border-t-brand rounded-full animate-spin"></div>
+  </div>
   } @else if (invoices().length === 0) {
-    <app-empty-state title="No invoices yet" message="Create your first invoice to get started." actionLabel="New Invoice" />
+  <app-empty-state title="No invoices yet" message="Create your first invoice to get started." actionLabel="New Invoice"
+    (action)="router.navigate(['/invoices/new'])">
+  </app-empty-state>
   } @else {
     <!-- Desktop Table -->
     <div class="hidden md:block bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -42,39 +46,47 @@
         </thead>
         <tbody>
           @for (inv of invoices(); track inv.id) {
-            <tr class="border-b border-gray-100 hover:bg-gray-50/50">
-              <td class="px-4 py-3">
-                <input type="checkbox" [checked]="isSelected(inv.id)" (change)="toggleSelect(inv.id)" class="w-4 h-4 rounded border-gray-300 text-brand focus:ring-brand">
-              </td>
-              <td class="px-4 py-3 font-medium text-brand-text">{{ inv.invoiceNo }}</td>
-              <td class="px-4 py-3 text-gray-600">{{ inv.date | date:'dd/MM/yyyy' }}</td>
-              <td class="px-4 py-3 text-gray-700">{{ inv.customerName }}</td>
-              <td class="px-4 py-3 text-right font-medium text-brand">₹{{ inv.totalAmount | number:'1.2-2' }}</td>
-              <td class="px-4 py-3 text-center">
-                @if (inv.asnNo) {
-                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-brand-success">{{ inv.asnNo }}</span>
-                } @else {
-                  <span class="text-gray-400 text-xs">—</span>
-                }
-              </td>
-              <td class="px-4 py-3 text-center">
-                @if (inv.ewbNo) {
-                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-brand">{{ inv.ewbNo }}</span>
-                } @else {
-                  <span class="text-gray-400 text-xs">—</span>
-                }
-              </td>
-              <td class="px-4 py-3 text-center">
-                <div class="flex items-center justify-center gap-1">
-                  <a [routerLink]="['/invoices', inv.id]" class="text-brand hover:text-brand-light text-xs font-medium px-2 py-1 rounded hover:bg-brand-muted transition-colors">
-                    View
-                  </a>
-                  <button (click)="downloadPdf(inv)" class="text-brand-success hover:opacity-80 text-xs font-medium px-2 py-1 rounded hover:bg-green-50 transition-colors">
-                    PDF
-                  </button>
-                </div>
-              </td>
-            </tr>
+          <tr class="border-b border-gray-100 hover:bg-gray-50/50">
+            <td class="px-4 py-3">
+              <input type="checkbox" [checked]="isSelected(inv.id)" (change)="toggleSelect(inv.id)"
+                class="w-4 h-4 rounded border-gray-300 text-brand focus:ring-brand">
+            </td>
+            <td class="px-4 py-3 font-medium text-brand-text">{{ inv.invoiceNo }}</td>
+            <td class="px-4 py-3 text-gray-600">{{ inv.date | date:'dd/MM/yyyy' }}</td>
+            <td class="px-4 py-3 text-gray-700">{{ inv.customerName }}</td>
+            <td class="px-4 py-3 text-right font-medium text-brand">₹{{ inv.grandTotal || inv.totalAmount |
+              number:'1.2-2' }}</td>
+            <td class="px-4 py-3 text-center">
+              @if (inv.asnNo) {
+              <span
+                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-brand-success">{{
+                inv.asnNo }}</span>
+              } @else {
+              <span class="text-gray-400 text-xs">—</span>
+              }
+            </td>
+            <td class="px-4 py-3 text-center">
+              @if (inv.ewbNo) {
+              <span
+                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-brand">{{
+                inv.ewbNo }}</span>
+              } @else {
+              <span class="text-gray-400 text-xs">—</span>
+              }
+            </td>
+            <td class="px-4 py-3 text-center">
+              <div class="flex items-center justify-center gap-1">
+                <a [routerLink]="['/invoices', inv.id]"
+                  class="text-brand hover:text-brand-light text-xs font-medium px-2 py-1 rounded hover:bg-brand-muted transition-colors">
+                  View
+                </a>
+                <button (click)="downloadPdf(inv)"
+                  class="text-brand-success hover:opacity-80 text-xs font-medium px-2 py-1 rounded hover:bg-green-50 transition-colors">
+                  PDF
+                </button>
+              </div>
+            </td>
+          </tr>
           }
         </tbody>
       </table>
@@ -83,26 +95,30 @@
     <!-- Mobile Cards -->
     <div class="md:hidden space-y-3">
       @for (inv of invoices(); track inv.id) {
-        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-          <div class="flex items-start gap-3">
-            <input type="checkbox" [checked]="isSelected(inv.id)" (change)="toggleSelect(inv.id)" class="w-4 h-4 rounded border-gray-300 text-brand focus:ring-brand mt-1">
-            <div class="flex-1">
-              <div class="flex justify-between items-start">
-                <div>
-                  <p class="font-semibold text-brand-text">{{ inv.invoiceNo }}</p>
-                  <p class="text-xs text-gray-500">{{ inv.customerName }}</p>
-                </div>
-                <span class="text-sm font-bold text-brand">₹{{ inv.totalAmount | number:'1.2-2' }}</span>
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+        <div class="flex items-start gap-3">
+          <input type="checkbox" [checked]="isSelected(inv.id)" (change)="toggleSelect(inv.id)"
+            class="w-4 h-4 rounded border-gray-300 text-brand focus:ring-brand mt-1">
+          <div class="flex-1">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="font-semibold text-brand-text">{{ inv.invoiceNo }}</p>
+                <p class="text-xs text-gray-500">{{ inv.customerName }}</p>
               </div>
-              <p class="text-xs text-gray-400 mt-1">{{ inv.date | date:'dd MMM yyyy' }}</p>
-              <div class="flex gap-2 mt-3">
-                <a [routerLink]="['/invoices', inv.id]" class="flex-1 text-center bg-brand-muted text-brand text-xs font-medium py-2 rounded-lg">View</a>
-                <button (click)="downloadPdf(inv)" class="flex-1 text-center bg-green-50 text-brand-success text-xs font-medium py-2 rounded-lg">PDF</button>
-              </div>
+              <span class="text-sm font-bold text-brand">₹{{ inv.grandTotal || inv.totalAmount | number:'1.2-2'
+                }}</span>
+            </div>
+            <p class="text-xs text-gray-400 mt-1">{{ inv.date | date:'dd MMM yyyy' }}</p>
+            <div class="flex gap-2 mt-3">
+              <a [routerLink]="['/invoices', inv.id]"
+                class="flex-1 text-center bg-brand-muted text-brand text-xs font-medium py-2 rounded-lg">View</a>
+              <button (click)="downloadPdf(inv)"
+                class="flex-1 text-center bg-green-50 text-brand-success text-xs font-medium py-2 rounded-lg">PDF</button>
             </div>
           </div>
         </div>
+      </div>
       }
     </div>
-  }
+    }
 </div>

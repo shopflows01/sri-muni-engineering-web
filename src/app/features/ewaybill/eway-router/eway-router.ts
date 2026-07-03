@@ -183,7 +183,8 @@ export class EwayRouter implements OnInit {
 
   private populateEntry(inv: Invoice): BillEntry {
     const customer = this.customers().get(inv.customerId);
-    const product = this.products().get(inv.productId);
+    const firstItem = inv.items && inv.items.length > 0 ? inv.items[0] : null;
+    const isInterState = customer ? customer.stateCode !== '33' : false;
 
     const entry = this.createEmptyEntry();
     entry.expanded = true;
@@ -201,22 +202,24 @@ export class EwayRouter implements OnInit {
       entry.toTrdName = inv.customerName || '';
     }
 
-    entry.totalValue = inv.taxableValue || 0;
-    entry.cgstValue = inv.cgstAmount || 0;
-    entry.sgstValue = inv.sgstAmount || 0;
-    entry.igstValue = inv.igstAmount || 0;
-    entry.totInvValue = inv.totalAmount || 0;
+    entry.totalValue = inv.subTotal || 0;
+    entry.cgstValue = isInterState ? 0 : (inv.gstAmount || 0) / 2;
+    entry.sgstValue = isInterState ? 0 : (inv.gstAmount || 0) / 2;
+    entry.igstValue = isInterState ? (inv.gstAmount || 0) : 0;
+    entry.totInvValue = inv.grandTotal || inv.totalAmount || 0;
 
-    entry.itemProductName = inv.partName || product?.partName || '';
-    entry.itemProductDesc = inv.partNo || product?.partNo || '';
-    entry.itemHsnCode = inv.hsnSac || product?.hsnSac || '';
-    entry.mainHsnCode = inv.hsnSac || product?.hsnSac || '';
-    entry.itemQuantity = inv.quantity || 0;
-    entry.itemQtyUnit = product?.unit || 'NOS';
-    entry.itemTaxableAmount = inv.taxableValue || 0;
-    entry.itemIgstRate = inv.igstRate || 0;
-    entry.itemCgstRate = inv.cgstRate || 0;
-    entry.itemSgstRate = inv.sgstRate || 0;
+    entry.itemProductName = firstItem?.productName || '';
+    entry.itemProductDesc = firstItem?.productPartNo || '';
+    entry.itemHsnCode = '';
+    entry.mainHsnCode = '';
+    entry.itemQuantity = firstItem?.quantity || 0;
+    entry.itemQtyUnit = 'NOS';
+    entry.itemTaxableAmount = firstItem?.amount || 0;
+    
+    const gstPct = firstItem?.gstPercent || 0;
+    entry.itemIgstRate = isInterState ? gstPct : 0;
+    entry.itemCgstRate = isInterState ? 0 : gstPct / 2;
+    entry.itemSgstRate = isInterState ? 0 : gstPct / 2;
 
     return entry;
   }

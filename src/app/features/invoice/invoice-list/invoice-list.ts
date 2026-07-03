@@ -13,7 +13,7 @@ import { EmptyState } from '../../../shared/components/empty-state/empty-state';
 })
 export class InvoiceList implements OnInit {
   private invoiceService = inject(InvoiceService);
-  private router = inject(Router);
+  router = inject(Router);
 
   invoices = signal<Invoice[]>([]);
   isLoading = signal(false);
@@ -61,9 +61,10 @@ export class InvoiceList implements OnInit {
   }
 
   downloadPdf(invoice: Invoice) {
-    this.invoiceService.getPdf(invoice.id).subscribe({
-      next: (res) => {
-        if (res.downloadUrl) window.open(res.downloadUrl, '_blank');
+    this.invoiceService.getPdfPreview(invoice.id, { originalForRecipient: true }).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
       }
     });
   }

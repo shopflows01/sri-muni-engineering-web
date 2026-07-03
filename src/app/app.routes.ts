@@ -19,6 +19,7 @@ export const routes: Routes = [
       { path: 'customers/:id', component: CustomerForm },
       { path: 'products', loadComponent: () => import('./features/product/product-list/product-list').then(m => m.ProductList) },
       { path: 'products/new', loadComponent: () => import('./features/product/product-form/product-form').then(m => m.ProductForm) },
+      { path: 'products/:id/analysis', loadComponent: () => import('./features/product/product-analysis/product-analysis').then(m => m.ProductAnalysis) },
       { path: 'products/:id', loadComponent: () => import('./features/product/product-form/product-form').then(m => m.ProductForm) },
       { path: 'stock', loadComponent: () => import('./features/stock/stock-ledger/stock-ledger').then(m => m.StockLedger) },
       { path: 'quotation', loadComponent: () => import('./features/quotation/quotation-view/quotation-view').then(m => m.QuotationView) },

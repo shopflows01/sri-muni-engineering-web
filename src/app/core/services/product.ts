@@ -32,4 +32,8 @@ export class ProductService {
   updateProduct(id: string, product: Partial<Product>): Observable<Product> {
     return this.http.put<Product>(`${this.apiUrl}/${id}`, product);
   }
+
+  getProductAnalysis(id: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}/analysis`);
+  }
 }

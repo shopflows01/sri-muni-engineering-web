@@ -49,4 +49,19 @@ export class InvoiceService {
   getPdf(id: string): Observable<{ downloadUrl: string }> {
     return this.http.get<{ downloadUrl: string }>(`${this.apiUrl}/${id}/pdf`);
   }
+
+  getNextInvoiceNumber(date?: string): Observable<{ invoiceNo: string; invoiceSequence: number; financialYear: string }> {
+    let params = new HttpParams();
+    if (date) params = params.set('date', date);
+    return this.http.get<{ invoiceNo: string; invoiceSequence: number; financialYear: string }>(`${this.apiUrl}/next-number`, { params });
+  }
+
+  getPdfPreview(id: string, options?: { originalForRecipient?: boolean; duplicateForTransporter?: boolean; triplicateForSupplier?: boolean }): Observable<Blob> {
+    let params = new HttpParams();
+    if (options?.originalForRecipient) params = params.set('originalForRecipient', 'true');
+    if (options?.duplicateForTransporter) params = params.set('duplicateForTransporter', 'true');
+    if (options?.triplicateForSupplier) params = params.set('triplicateForSupplier', 'true');
+    
+    return this.http.get(`${this.apiUrl}/${id}/pdf/preview`, { params, responseType: 'blob' });
+  }
 }

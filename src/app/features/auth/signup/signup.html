@@ -10,6 +10,23 @@
       <label class="absolute left-3 -top-2.5 px-1 bg-white text-xs text-gray-500 transition-all duration-200 peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:left-3 peer-focus:text-xs peer-focus:text-brand peer-focus:bg-white pointer-events-none">Username</label>
     </div>
 
+
+    <div class="relative">
+      <input type="email" formControlName="email" placeholder=" " autocomplete="email" class="peer w-full px-4 py-4 border border-gray-300 rounded-xl outline-none text-base bg-white focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all">
+      <label class="absolute left-3 -top-2.5 px-1 bg-white text-xs text-gray-500 transition-all duration-200 peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:left-3 peer-focus:text-xs peer-focus:text-brand peer-focus:bg-white pointer-events-none">Email</label>
+    </div>
+
+    <div class="relative">
+      <select formControlName="role" class="peer w-full px-4 py-4 border border-gray-300 rounded-xl outline-none text-base bg-white focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all appearance-none cursor-pointer">
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+      </select>
+      <label class="absolute left-3 -top-2.5 px-1 bg-white text-xs text-gray-500 transition-all duration-200 peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:left-3 peer-focus:text-xs peer-focus:text-brand peer-focus:bg-white pointer-events-none z-10">Role</label>
+      <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+    </div>
+
     <div class="relative">
       <input type="password" formControlName="password" placeholder=" " autocomplete="new-password" class="peer w-full px-4 py-4 border border-gray-300 rounded-xl outline-none text-base bg-white focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all">
       <label class="absolute left-3 -top-2.5 px-1 bg-white text-xs text-gray-500 transition-all duration-200 peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:left-3 peer-focus:text-xs peer-focus:text-brand peer-focus:bg-white pointer-events-none">Password</label>

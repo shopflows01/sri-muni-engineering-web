@@ -42,7 +42,7 @@ export class AuthService {
     );
   }
 
-  signup(credentials: { username: string; password: string }): Observable<{ token: string; userId: string; username: string }> {
+  signup(credentials: { username: string; email: string; role: string; password: string }): Observable<{ token: string; userId: string; username: string }> {
     const apiUrl = environment.apiUrl || '/api';
     return this.http.post<{ token: string; userId: string; username: string }>(`${apiUrl}/auth/signup`, credentials).pipe(
       tap(response => {

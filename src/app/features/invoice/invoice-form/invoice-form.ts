@@ -1,19 +1,21 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
+import { FormBuilder, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { InvoiceService } from '../../../core/services/invoice.service';
 import { CustomerService } from '../../../core/services/customer';
 import { ProductService } from '../../../core/services/product';
 import { StockService } from '../../../core/services/stock';
 import { Customer, Product, StockLedger } from '../../../shared/models/api.models';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-invoice-form',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, DecimalPipe],
   templateUrl: './invoice-form.html',
   styleUrl: './invoice-form.css',
 })
-export class InvoiceForm implements OnInit {
+export class InvoiceForm implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private invoiceService = inject(InvoiceService);
@@ -27,17 +29,15 @@ export class InvoiceForm implements OnInit {
   isSubmitting = signal(false);
   errorMessage = signal<string | null>(null);
 
+  // Default home state code (e.g. Tamil Nadu)
+  readonly HOME_STATE_CODE = '33';
+
   invoiceForm = this.fb.group({
-    invoiceNo: ['', Validators.required],
-    date: ['', Validators.required],
-    dcLedgerId: ['', Validators.required],
+    invoiceNo: [{ value: '', disabled: true }, Validators.required],
+    date: [new Date().toISOString().substring(0, 10), Validators.required],
     customerId: ['', Validators.required],
-    productId: ['', Validators.required],
-    quantity: [0, [Validators.required, Validators.min(1)]],
-    rate: [0, [Validators.required, Validators.min(0.01)]],
-    igstRate: [18, [Validators.required, Validators.min(0)]],
-    cgstRate: [0, [Validators.min(0)]],
-    sgstRate: [0, [Validators.min(0)]],
+    remarks: [''],
+    dcLedgerId: [''],
     deliveryNoteNo: [''],
     referenceNo: [''],
     buyersOrderNo: [''],
@@ -45,13 +45,60 @@ export class InvoiceForm implements OnInit {
     destination: [''],
     termsOfDelivery: [''],
     asnNo: [''],
-    ewbNo: ['']
+    ewbNo: [''],
+    items: this.fb.array([])
   });
+
+  private subs = new Subscription();
 
   ngOnInit() {
     this.loadCustomers();
     this.loadProducts();
     this.loadStockItems();
+    this.fetchNextInvoiceNumber();
+
+    // Start with one item
+    if (this.items.length === 0) {
+      this.addItem();
+    }
+  }
+
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+  }
+
+  get items() {
+    return this.invoiceForm.get('items') as FormArray;
+  }
+
+  createItem() {
+    return this.fb.group({
+      productId: ['', Validators.required],
+      description: [''],
+      quantity: [0, [Validators.required, Validators.min(1)]],
+      rate: [0, [Validators.required, Validators.min(0.01)]],
+      discount: [0, [Validators.min(0)]],
+      gstPercent: [18, [Validators.required, Validators.min(0)]]
+    });
+  }
+
+  addItem() {
+    this.items.push(this.createItem());
+  }
+
+  removeItem(index: number) {
+    if (this.items.length > 1) {
+      this.items.removeAt(index);
+    }
+  }
+
+  fetchNextInvoiceNumber() {
+    this.invoiceService.getNextInvoiceNumber().subscribe({
+      next: (res) => {
+        this.invoiceForm.patchValue({ invoiceNo: res.invoiceNo });
+      },
+      error: (err) => console.error('Error fetching next invoice number:', err)
+    });
   }
 
   loadCustomers() {
@@ -72,22 +119,49 @@ export class InvoiceForm implements OnInit {
     });
   }
 
+  // Auto tax calculations based on customer state code
+  isInterState(): boolean {
+    const customerId = this.invoiceForm.get('customerId')?.value;
+    if (!customerId) return false;
+    const cust = this.customers().find(c => c.id === customerId);
+    if (!cust) return false;
+    return cust.stateCode !== this.HOME_STATE_CODE;
+  }
+
+  getItemAmount(index: number): number {
+    const item = this.items.at(index).value;
+    return (item.quantity || 0) * (item.rate || 0) - (item.discount || 0);
+  }
+
+  getItemTaxAmount(index: number): number {
+    const amount = this.getItemAmount(index);
+    const gstPercent = this.items.at(index).value.gstPercent || 0;
+    return amount * (gstPercent / 100);
+  }
+
+  getSubTotal(): number {
+    return this.items.controls.reduce((sum, _, i) => sum + this.getItemAmount(i), 0);
+  }
+
+  getTotalTax(): number {
+    return this.items.controls.reduce((sum, _, i) => sum + this.getItemTaxAmount(i), 0);
+  }
+
+  getGrandTotal(): number {
+    return this.getSubTotal() + this.getTotalTax();
+  }
+
   submit() {
     if (this.invoiceForm.valid) {
       this.isSubmitting.set(true);
       this.errorMessage.set(null);
       const val = this.invoiceForm.getRawValue();
+      
       const payload = {
-        invoiceNo: val.invoiceNo,
-        date: new Date(val.date!).toISOString(),
-        dcLedgerId: val.dcLedgerId,
         customerId: val.customerId,
-        productId: val.productId,
-        quantity: val.quantity,
-        rate: val.rate,
-        igstRate: val.igstRate,
-        cgstRate: val.cgstRate,
-        sgstRate: val.sgstRate,
+        invoiceDate: new Date(val.date!).toISOString(),
+        remarks: val.remarks || '',
+        dcLedgerId: val.dcLedgerId,
         deliveryNoteNo: val.deliveryNoteNo || '',
         referenceNo: val.referenceNo || '',
         buyersOrderNo: val.buyersOrderNo || '',
@@ -95,8 +169,17 @@ export class InvoiceForm implements OnInit {
         destination: val.destination || '',
         termsOfDelivery: val.termsOfDelivery || '',
         asnNo: val.asnNo || '',
-        ewbNo: val.ewbNo || ''
+        ewbNo: val.ewbNo || '',
+        items: val.items?.map((item: any) => ({
+          productId: item.productId,
+          description: item.description || '',
+          quantity: Number(item.quantity),
+          rate: Number(item.rate),
+          discount: Number(item.discount),
+          gstPercent: Number(item.gstPercent)
+        }))
       };
+
       this.invoiceService.create(payload as any).subscribe({
         next: () => {
           this.isSubmitting.set(false);

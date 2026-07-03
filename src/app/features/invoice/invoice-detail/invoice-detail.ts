@@ -25,9 +25,10 @@ export class InvoiceDetail implements OnInit {
   asnNo = signal('');
   ewbNo = signal('');
 
-  isInvoiceComplete = computed(() => {
-    return !!this.asnNo() && !!this.ewbNo();
-  });
+  // Print checkboxes
+  printOriginal = signal(false);
+  printDuplicate = signal(false);
+  printTriplicate = signal(false);
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -51,6 +52,8 @@ export class InvoiceDetail implements OnInit {
     const inv = this.invoice();
     if (!inv) return;
     this.isUpdating.set(true);
+    
+    // Convert backend specific payload model to what update expects
     this.invoiceService.update(inv.id, {
       ...inv,
       asnNo: this.asnNo(),
@@ -65,12 +68,18 @@ export class InvoiceDetail implements OnInit {
     });
   }
 
-  downloadPdf() {
+  generatePdf() {
     const inv = this.invoice();
     if (!inv) return;
-    this.invoiceService.getPdf(inv.id).subscribe({
-      next: (res) => {
-        if (res.downloadUrl) window.open(res.downloadUrl, '_blank');
+    
+    this.invoiceService.getPdfPreview(inv.id, {
+      originalForRecipient: this.printOriginal(),
+      duplicateForTransporter: this.printDuplicate(),
+      triplicateForSupplier: this.printTriplicate()
+    }).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
       }
     });
   }

@@ -23,28 +23,38 @@ export interface Product {
   createdAt?: string;
 }
 
+export interface InvoiceItem {
+  id?: string;
+  productId: string;
+  productName?: string;
+  productPartNo?: string;
+  description?: string;
+  quantity: number;
+  rate: number;
+  discount: number;
+  gstPercent: number;
+  gstAmount?: number;
+  amount?: number;
+}
+
+
 export interface Invoice {
   id: string;
   invoiceNo: string;
+  invoiceSequence?: number;
+  financialYear?: string;
   date: string;
-  dcLedgerId: string;
+  invoiceDate?: string;
+  dcLedgerId?: string;
   customerId: string;
   customerName?: string;
-  productId: string;
-  partNo?: string;
-  partName?: string;
-  hsnSac?: string;
-  quantity: number;
-  rate: number;
-  taxableValue: number;
-  igstRate: number;
-  igstAmount: number;
-  cgstRate: number;
-  cgstAmount: number;
-  sgstRate: number;
-  sgstAmount: number;
-  totalAmount: number;
+  subTotal?: number;
+  gstAmount?: number;
+  grandTotal?: number;
+  totalAmount?: number; // fallback
   amountInWords?: string;
+  remarks?: string;
+  items: InvoiceItem[];
   deliveryNoteNo?: string;
   referenceNo?: string;
   buyersOrderNo?: string;
@@ -92,4 +102,38 @@ export interface StockLedger {
   pendingQty: number;
   status: number;
   createdAt?: string;
+}
+
+export interface ProductAnalysisResponse {
+  productInfo: {
+    id: string;
+    partNo: string;
+    partName: string;
+    currentStock: number;
+    unit: string;
+    sellingPrice: number;
+    hsnSac: string;
+  };
+  productionSummary: {
+    totalProductionQuantity: number;
+    totalRejectedQuantity: number;
+    productionDaysCount: number;
+    averageProductionPerDay: number;
+    lastProductionDate: string;
+  };
+  salesSummary: {
+    totalQuantitySold: number;
+    totalRevenueGenerated: number;
+    numberOfInvoices: number;
+    averageSellingPrice: number;
+    lastSoldDate: string;
+  };
+  stockSummary: {
+    currentStock: number;
+    totalInward: number;
+    totalOutward: number;
+  };
+  recentProductionHistory: any[];
+  recentInvoiceHistory: any[];
+  recentStockMovements: any[];
 }
