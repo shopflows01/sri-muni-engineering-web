@@ -10,14 +10,14 @@ import { PaginatedResponse } from '../../../core/services/invoice.service';
 import { forkJoin } from 'rxjs';
 
 const COMPANY_PROFILE = {
-  name: 'SRI MUNI ENGINEERING',
-  address1: 'No. 113, Rajeshwari Layout',
-  address2: 'Begapalli Post, Krishnagiri',
+  name: 'SRI VALLI INDUSTRIES',
+  address1: 'D.NO 7/59, Plot No 113',
+  address2: 'Rajeshwari Layout, Begepalli (post)',
   city: 'Hosur',
   pincode: 635126,
   state: 'Tamil Nadu',
   stateCode: 33,
-  gstin: '33ACJFS0007L2Z9'
+  gstin: '33AMDPV1577A1Z9'
 };
 
 export interface BillEntry {
