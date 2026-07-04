@@ -34,4 +34,8 @@ export class ProductAnalysis implements OnInit {
       });
     }
   }
+
+  getCustomerNames(info: any): string {
+    return info.customers?.map((c: any) => c.customerName).join(', ') || info.customerName || info.customerId || 'N/A';
+  }
 }

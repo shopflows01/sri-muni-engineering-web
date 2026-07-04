@@ -4,13 +4,21 @@
       <div class="w-8 h-8 border-3 border-brand-muted border-t-brand rounded-full animate-spin"></div>
     </div>
   } @else if (invoice()) {
-    <div class="pb-4 border-b border-gray-200">
-      <button (click)="goBack()" class="text-brand text-sm font-medium hover:underline mb-2 flex items-center gap-1">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-        Back to Invoices
-      </button>
-      <h1 class="text-2xl font-bold text-brand">Invoice {{ invoice()!.invoiceNo }}</h1>
-      <p class="text-gray-500 text-sm mt-1">{{ invoice()!.date | date:'dd MMMM yyyy' }}</p>
+    <div class="pb-4 border-b border-gray-200 flex items-center justify-between">
+      <div>
+        <button (click)="goBack()" class="text-brand text-sm font-medium hover:underline mb-2 flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          Back to Invoices
+        </button>
+        <h1 class="text-2xl font-bold text-brand">Invoice {{ invoice()!.invoiceNo }}</h1>
+        <p class="text-gray-500 text-sm mt-1">{{ invoice()!.date | date:'dd MMMM yyyy' }}</p>
+      </div>
+      <div>
+        <a [routerLink]="['/invoices', invoice()!.id, 'edit']" class="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg font-medium hover:bg-blue-100 transition-colors text-sm flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit Invoice
+        </a>
+      </div>
     </div>
 
     @if (successMessage()) {
@@ -40,7 +48,6 @@
               <th class="px-4 py-3 font-semibold">Item</th>
               <th class="px-4 py-3 font-semibold">Qty</th>
               <th class="px-4 py-3 font-semibold">Rate</th>
-              <th class="px-4 py-3 font-semibold">Discount</th>
               <th class="px-4 py-3 font-semibold">Tax</th>
               <th class="px-4 py-3 font-semibold text-right">Amount</th>
             </tr>
@@ -51,7 +58,6 @@
                 <td class="px-4 py-3 font-medium text-gray-800">{{ item.productPartNo || item.productName }}</td>
                 <td class="px-4 py-3">{{ item.quantity | number }}</td>
                 <td class="px-4 py-3">₹{{ item.rate | number:'1.2-2' }}</td>
-                <td class="px-4 py-3">₹{{ item.discount | number:'1.2-2' }}</td>
                 <td class="px-4 py-3">{{ item.gstPercent }}% (₹{{ item.gstAmount | number:'1.2-2' }})</td>
                 <td class="px-4 py-3 text-right font-medium">₹{{ item.amount | number:'1.2-2' }}</td>
               </tr>

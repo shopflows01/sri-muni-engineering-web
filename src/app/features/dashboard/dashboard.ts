@@ -97,7 +97,14 @@ export class Dashboard implements OnInit, OnDestroy, AfterViewInit {
     chart.setOption({
       tooltip: { trigger: 'axis' },
       grid: { left: 40, right: 20, top: 30, bottom: 30 },
-      xAxis: { type: 'category', data: chartData.map(d => d.date.slice(5)), axisLabel: { fontSize: 10 } },
+      xAxis: { 
+        type: 'category', 
+        data: chartData.map(d => {
+          const parts = d.date.split('-');
+          return parts.length >= 3 ? `${parts[2]}-${parts[1]}` : d.date;
+        }), 
+        axisLabel: { fontSize: 10 } 
+      },
       yAxis: { type: 'value', axisLabel: { fontSize: 10 } },
       series: [{ data: chartData.map(d => d.quantity), type: 'line', smooth: true, lineStyle: { color }, itemStyle: { color }, areaStyle: { color: color + '20' } }]
     });

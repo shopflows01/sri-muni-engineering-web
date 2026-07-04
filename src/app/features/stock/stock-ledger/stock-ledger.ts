@@ -6,6 +6,8 @@ import { ProductService } from '../../../core/services/product';
 import { StockLedger as StockLedgerModel, Customer, Product } from '../../../shared/models/api.models';
 import { EmptyState } from '../../../shared/components/empty-state/empty-state';
 
+import { uppercaseStrings } from '../../../shared/utils/string-utils';
+
 @Component({
   selector: 'app-stock-ledger',
   imports: [ReactiveFormsModule, EmptyState],
@@ -88,13 +90,16 @@ export class StockLedger implements OnInit {
     if (this.inwardForm.valid) {
       this.isSubmitting.set(true);
       const val = this.inwardForm.getRawValue();
-      this.stockService.createInward({
+      let payload = {
         dcNo: val.dcNo!,
         dcDate: new Date(val.dcDate!).toISOString(),
         customerId: val.customerId!,
         productId: val.productId!,
         inwardQty: val.inwardQty!
-      }).subscribe({
+      };
+      payload = uppercaseStrings(payload);
+      
+      this.stockService.createInward(payload).subscribe({
         next: () => {
           this.isSubmitting.set(false);
           this.inwardForm.reset();

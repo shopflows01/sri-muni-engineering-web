@@ -1,53 +1,52 @@
 <div class="flex h-screen bg-gray-50 overflow-hidden text-gray-800">
   <!-- Desktop Sidebar -->
   <aside [class]="sidebarExpanded() ? 'w-60' : 'w-[72px]'" class="hidden md:flex flex-col bg-brand transition-all duration-300 ease-in-out overflow-hidden">
-    <div class="p-3 flex items-center gap-3 border-b border-white/10 min-h-[72px]">
-      <img src="assets/sme-logo.png" alt="SME Logo" class="h-16 w-16 object-contain flex-shrink-0">
-      @if (sidebarExpanded()) {
-        <span class="text-white font-bold text-sm whitespace-nowrap">Sri Muni Engineering</span>
-      }
-    </div>
+    <a routerLink="/dashboard" class="py-4 px-2 flex flex-col items-center justify-center gap-1 border-b border-white/10 transition-all duration-300 text-center hover:bg-white/5 cursor-pointer">
+      <img src="assets/sme-logo.png" alt="SME Logo" 
+           class="object-contain flex-shrink-0 transition-all duration-300"
+           [class]="sidebarExpanded() ? 'h-24 w-24' : 'h-14 w-14'">
+      <span class="text-white font-bold transition-all duration-300" 
+            [class]="sidebarExpanded() ? 'text-sm leading-tight mt-1' : 'text-[9px] leading-[1.1]'">
+        SRI MUNI<br>ENGINEERING
+      </span>
+    </a>
     <!-- Toggle Button -->
     <button (click)="toggleSidebar()" class="mx-2 mt-2 flex items-center justify-center p-2 rounded-lg text-white/70 hover:bg-white/15 hover:text-white transition-colors" title="Toggle Sidebar">
       @if (sidebarExpanded()) {
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m11 17-5-5 5-5"/><path d="m18 17-5-5 5-5"/></svg>
+        <span class="material-symbols-outlined text-[20px]">keyboard_double_arrow_left</span>
       } @else {
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 17 5-5-5-5"/><path d="m13 17 5-5-5-5"/></svg>
+        <span class="material-symbols-outlined text-[20px]">keyboard_double_arrow_right</span>
       }
     </button>
     <nav class="flex-1 p-2 space-y-1 overflow-y-auto">
-      <a routerLink="/dashboard" routerLinkActive="bg-white/20 shadow-lg" [routerLinkActiveOptions]="{exact: true}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <a routerLink="/dashboard" routerLinkActive="bg-white/20 shadow-lg" [routerLinkActiveOptions]="{exact: true}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium" [title]="sidebarExpanded() ? '' : 'Dashboard'">
+        <span class="material-symbols-outlined flex-shrink-0 text-[20px]">dashboard</span>
         @if (sidebarExpanded()) { <span class="whitespace-nowrap text-sm">Dashboard</span> }
       </a>
-      <a routerLink="/customers" routerLinkActive="bg-white/20 shadow-lg" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <a routerLink="/customers" routerLinkActive="bg-white/20 shadow-lg" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium" [title]="sidebarExpanded() ? '' : 'Customers'">
+        <span class="material-symbols-outlined flex-shrink-0 text-[20px]">group</span>
         @if (sidebarExpanded()) { <span class="whitespace-nowrap text-sm">Customers</span> }
       </a>
-      <a routerLink="/products" routerLinkActive="bg-white/20 shadow-lg" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+      <a routerLink="/products" routerLinkActive="bg-white/20 shadow-lg" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium" [title]="sidebarExpanded() ? '' : 'Products'">
+        <span class="material-symbols-outlined flex-shrink-0 text-[20px]">category</span>
         @if (sidebarExpanded()) { <span class="whitespace-nowrap text-sm">Products</span> }
       </a>
-      <a routerLink="/stock" routerLinkActive="bg-white/20 shadow-lg" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg>
+      <a routerLink="/stock" routerLinkActive="bg-white/20 shadow-lg" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium" [title]="sidebarExpanded() ? '' : 'Stock Ledger'">
+        <span class="material-symbols-outlined flex-shrink-0 text-[20px]">inventory</span>
         @if (sidebarExpanded()) { <span class="whitespace-nowrap text-sm">Stock Ledger</span> }
       </a>
-      <a routerLink="/invoices" routerLinkActive="bg-white/20 shadow-lg" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/></svg>
+      <a routerLink="/invoices" routerLinkActive="bg-white/20 shadow-lg" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium" [title]="sidebarExpanded() ? '' : 'Invoices'">
+        <span class="material-symbols-outlined flex-shrink-0 text-[20px]">receipt</span>
         @if (sidebarExpanded()) { <span class="whitespace-nowrap text-sm">Invoices</span> }
       </a>
-      <a routerLink="/quotation" routerLinkActive="bg-white/20 shadow-lg" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 12h4"/><path d="M10 16h4"/><path d="M10 8h1"/></svg>
-        @if (sidebarExpanded()) { <span class="whitespace-nowrap text-sm">Quotation</span> }
-      </a>
-      <a routerLink="/ewaybill" routerLinkActive="bg-white/20 shadow-lg" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      <a routerLink="/ewaybill" routerLinkActive="bg-white/20 shadow-lg" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium" [title]="sidebarExpanded() ? '' : 'E-Way Bill'">
+        <span class="material-symbols-outlined flex-shrink-0 text-[20px]">local_shipping</span>
         @if (sidebarExpanded()) { <span class="whitespace-nowrap text-sm">E-Way Bill</span> }
       </a>
     </nav>
     <div class="p-3 border-t border-white/10">
       <button (click)="logout()" class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-white/70 hover:bg-white/15 hover:text-white transition-all duration-200" title="Logout">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+        <span class="material-symbols-outlined flex-shrink-0 text-[20px]">logout</span>
         @if (sidebarExpanded()) { <span class="whitespace-nowrap text-sm">Logout</span> }
       </button>
     </div>
@@ -58,41 +57,37 @@
     <div class="md:hidden fixed inset-0 z-40 bg-black/30 backdrop-blur-sm" (click)="closeMenu()"></div>
     <aside class="md:hidden fixed top-0 left-0 bottom-0 z-50 w-72 bg-brand shadow-xl flex flex-col animate-slide-in">
       <div class="p-5 border-b border-white/10 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <img src="assets/sme-logo.png" alt="SME Logo" class="h-12 w-12 object-contain rounded-lg">
-          <span class="text-white font-bold text-sm">Sri Muni Engineering</span>
-        </div>
+        <a routerLink="/dashboard" (click)="closeMenu()" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+          <img src="assets/sme-logo.png" alt="SME Logo" class="h-20 w-20 object-contain rounded-lg">
+          <span class="text-white font-bold text-sm leading-tight">SRI MUNI<br>ENGINEERING</span>
+        </a>
         <button (click)="closeMenu()" class="text-white/60 hover:text-white p-1">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+          <span class="material-symbols-outlined text-[24px]">close</span>
         </button>
       </div>
       <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
         <a routerLink="/dashboard" routerLinkActive="bg-white/20" (click)="closeMenu()" class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span class="material-symbols-outlined text-[20px]">dashboard</span>
           Dashboard
         </a>
         <a routerLink="/customers" routerLinkActive="bg-white/20" (click)="closeMenu()" class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <span class="material-symbols-outlined text-[20px]">group</span>
           Customers
         </a>
         <a routerLink="/products" routerLinkActive="bg-white/20" (click)="closeMenu()" class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/></svg>
+          <span class="material-symbols-outlined text-[20px]">category</span>
           Products
         </a>
         <a routerLink="/stock" routerLinkActive="bg-white/20" (click)="closeMenu()" class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg>
+          <span class="material-symbols-outlined text-[20px]">inventory</span>
           Stock Ledger
         </a>
         <a routerLink="/invoices" routerLinkActive="bg-white/20" (click)="closeMenu()" class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span class="material-symbols-outlined text-[20px]">receipt</span>
           Invoices
         </a>
-        <a routerLink="/quotation" routerLinkActive="bg-white/20" (click)="closeMenu()" class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 12h4"/><path d="M10 16h4"/><path d="M10 8h1"/></svg>
-          Quotation
-        </a>
         <a routerLink="/ewaybill" routerLinkActive="bg-white/20" (click)="closeMenu()" class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          <span class="material-symbols-outlined text-[20px]">local_shipping</span>
           E-Way Bill
         </a>
       </nav>
@@ -102,7 +97,7 @@
           <span class="text-sm font-semibold text-white">{{ userName() }}</span>
         </div>
         <button (click)="logout()" class="text-white/60 hover:text-white p-2 rounded-md hover:bg-white/10" title="Logout">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+          <span class="material-symbols-outlined text-[20px]">logout</span>
         </button>
       </div>
     </aside>
@@ -112,16 +107,16 @@
   <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
     <!-- Mobile Header -->
     <header class="md:hidden flex items-center justify-between p-4 bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
-      <div class="flex items-center gap-2">
-        <img src="assets/sme-logo.png" alt="SME Logo" class="h-11 object-contain">
-        <span class="font-bold text-brand text-sm">SME</span>
-      </div>
+      <a routerLink="/dashboard" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+        <img src="assets/sme-logo.png" alt="SME Logo" class="h-16 object-contain">
+        <span class="font-bold text-brand text-sm leading-tight">SRI MUNI<br>ENGINEERING</span>
+      </a>
       <button (click)="toggleMenu()" class="text-gray-500 hover:text-brand p-1">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        <span class="material-symbols-outlined text-[24px]">menu</span>
       </button>
     </header>
 
-    <div class="flex-1 overflow-y-auto p-4 md:p-6 bg-gray-50">
+    <div class="flex-1 overflow-y-auto p-4 pb-24 md:p-6 md:pb-6 bg-gray-50">
       <router-outlet></router-outlet>
     </div>
 
@@ -136,23 +131,23 @@
   <!-- Mobile Bottom Nav -->
   <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around p-2 pb-safe z-20 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
     <a routerLink="/dashboard" routerLinkActive="text-brand" [routerLinkActiveOptions]="{exact: true}" class="flex flex-col items-center justify-center p-2 text-gray-500 hover:text-brand transition-colors">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span class="material-symbols-outlined text-[22px]">dashboard</span>
       <span class="text-[10px] mt-1 font-medium">Home</span>
     </a>
     <a routerLink="/customers" routerLinkActive="text-brand" class="flex flex-col items-center justify-center p-2 text-gray-500 hover:text-brand transition-colors">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      <span class="material-symbols-outlined text-[22px]">group</span>
       <span class="text-[10px] mt-1 font-medium">Cust</span>
     </a>
     <a routerLink="/stock" routerLinkActive="text-brand" class="flex flex-col items-center justify-center p-2 text-gray-500 hover:text-brand transition-colors">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      <span class="material-symbols-outlined text-[22px]">inventory</span>
       <span class="text-[10px] mt-1 font-medium">Stock</span>
     </a>
     <a routerLink="/invoices" routerLinkActive="text-brand" class="flex flex-col items-center justify-center p-2 text-gray-500 hover:text-brand transition-colors">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span class="material-symbols-outlined text-[22px]">receipt</span>
       <span class="text-[10px] mt-1 font-medium">Invoice</span>
     </a>
     <a routerLink="/ewaybill" routerLinkActive="text-brand" class="flex flex-col items-center justify-center p-2 text-gray-500 hover:text-brand transition-colors">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      <span class="material-symbols-outlined text-[22px]">local_shipping</span>
       <span class="text-[10px] mt-1 font-medium">E-Way</span>
     </a>
   </nav>

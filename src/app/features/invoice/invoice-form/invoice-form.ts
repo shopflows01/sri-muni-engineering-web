@@ -1,12 +1,13 @@
 import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FormBuilder, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { InvoiceService } from '../../../core/services/invoice.service';
 import { CustomerService } from '../../../core/services/customer';
 import { ProductService } from '../../../core/services/product';
 import { StockService } from '../../../core/services/stock';
 import { Customer, Product, StockLedger } from '../../../shared/models/api.models';
+import { uppercaseStrings } from '../../../shared/utils/string-utils';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -18,6 +19,7 @@ import { Subscription } from 'rxjs';
 export class InvoiceForm implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private invoiceService = inject(InvoiceService);
   private customerService = inject(CustomerService);
   private productService = inject(ProductService);
@@ -28,6 +30,9 @@ export class InvoiceForm implements OnInit, OnDestroy {
   stockItems = signal<StockLedger[]>([]);
   isSubmitting = signal(false);
   errorMessage = signal<string | null>(null);
+  
+  isEditMode = signal(false);
+  invoiceId: string | null = null;
 
   // Default home state code (e.g. Tamil Nadu)
   readonly HOME_STATE_CODE = '33';
@@ -55,12 +60,60 @@ export class InvoiceForm implements OnInit, OnDestroy {
     this.loadCustomers();
     this.loadProducts();
     this.loadStockItems();
-    this.fetchNextInvoiceNumber();
-
-    // Start with one item
-    if (this.items.length === 0) {
-      this.addItem();
+    
+    this.invoiceId = this.route.snapshot.paramMap.get('id');
+    if (this.invoiceId && this.invoiceId !== 'new') {
+      this.isEditMode.set(true);
+      this.loadInvoice(this.invoiceId);
+    } else {
+      this.fetchNextInvoiceNumber();
+      if (this.items.length === 0) {
+        this.addItem();
+      }
     }
+  }
+
+  loadInvoice(id: string) {
+    this.invoiceService.getById(id).subscribe({
+      next: (invoice) => {
+        this.invoiceForm.patchValue({
+          invoiceNo: invoice.invoiceNo,
+          date: invoice.date ? invoice.date.substring(0, 10) : new Date().toISOString().substring(0, 10),
+          customerId: invoice.customerId,
+          remarks: invoice.remarks,
+          dcLedgerId: invoice.dcLedgerId,
+          deliveryNoteNo: invoice.deliveryNoteNo,
+          referenceNo: invoice.referenceNo,
+          buyersOrderNo: invoice.buyersOrderNo,
+          dispatchDocNo: invoice.dispatchDocNo,
+          destination: invoice.destination,
+          termsOfDelivery: invoice.termsOfDelivery,
+          asnNo: invoice.asnNo,
+          ewbNo: invoice.ewbNo
+        });
+
+        this.items.clear();
+        if (invoice.items && invoice.items.length > 0) {
+          invoice.items.forEach(item => {
+            const itemGroup = this.createItem();
+            const isOthers = !item.productId;
+            itemGroup.patchValue({
+              productId: isOthers ? 'others' : item.productId,
+              customProductName: isOthers ? item.productName || item.productPartNo : '',
+              hsnCode: item.hsnCode || '',
+              description: item.description,
+              quantity: item.quantity,
+              rate: item.rate,
+              gstPercent: item.gstPercent
+            });
+            this.items.push(itemGroup);
+          });
+        } else {
+          this.addItem();
+        }
+      },
+      error: (err) => console.error('Error loading invoice', err)
+    });
   }
 
   ngOnDestroy() {
@@ -74,10 +127,11 @@ export class InvoiceForm implements OnInit, OnDestroy {
   createItem() {
     return this.fb.group({
       productId: ['', Validators.required],
+      customProductName: [''],
+      hsnCode: [''],
       description: [''],
       quantity: [0, [Validators.required, Validators.min(1)]],
       rate: [0, [Validators.required, Validators.min(0.01)]],
-      discount: [0, [Validators.min(0)]],
       gstPercent: [18, [Validators.required, Validators.min(0)]]
     });
   }
@@ -119,18 +173,31 @@ export class InvoiceForm implements OnInit, OnDestroy {
     });
   }
 
+  onProductChange(index: number) {
+    const itemGroup = this.items.at(index);
+    const productId = itemGroup.get('productId')?.value;
+    if (productId && productId !== 'others') {
+      const prod = this.products().find(p => p.id === productId);
+      if (prod) {
+        itemGroup.patchValue({ hsnCode: prod.hsnSac || '' });
+      }
+    } else {
+      itemGroup.patchValue({ hsnCode: '' });
+    }
+  }
+
   // Auto tax calculations based on customer state code
   isInterState(): boolean {
     const customerId = this.invoiceForm.get('customerId')?.value;
     if (!customerId) return false;
     const cust = this.customers().find(c => c.id === customerId);
-    if (!cust) return false;
-    return cust.stateCode !== this.HOME_STATE_CODE;
+    if (!cust || !cust.stateCode) return false;
+    return String(cust.stateCode).trim() !== String(this.HOME_STATE_CODE).trim();
   }
 
   getItemAmount(index: number): number {
     const item = this.items.at(index).value;
-    return (item.quantity || 0) * (item.rate || 0) - (item.discount || 0);
+    return (item.quantity || 0) * (item.rate || 0);
   }
 
   getItemTaxAmount(index: number): number {
@@ -157,7 +224,7 @@ export class InvoiceForm implements OnInit, OnDestroy {
       this.errorMessage.set(null);
       const val = this.invoiceForm.getRawValue();
       
-      const payload = {
+      let payload = {
         customerId: val.customerId,
         invoiceDate: new Date(val.date!).toISOString(),
         remarks: val.remarks || '',
@@ -171,23 +238,31 @@ export class InvoiceForm implements OnInit, OnDestroy {
         asnNo: val.asnNo || '',
         ewbNo: val.ewbNo || '',
         items: val.items?.map((item: any) => ({
-          productId: item.productId,
+          productId: item.productId === 'others' ? null : item.productId,
+          productName: item.productId === 'others' ? item.customProductName : undefined,
+          hsnCode: item.hsnCode || '',
           description: item.description || '',
           quantity: Number(item.quantity),
           rate: Number(item.rate),
-          discount: Number(item.discount),
           gstPercent: Number(item.gstPercent)
         }))
       };
 
-      this.invoiceService.create(payload as any).subscribe({
+      // Apply uppercase to all string fields
+      payload = uppercaseStrings(payload);
+
+      const req = this.isEditMode() && this.invoiceId 
+        ? this.invoiceService.update(this.invoiceId, payload as any)
+        : this.invoiceService.create(payload as any);
+
+      req.subscribe({
         next: () => {
           this.isSubmitting.set(false);
           this.router.navigate(['/invoices']);
         },
         error: (err) => {
           this.isSubmitting.set(false);
-          this.errorMessage.set(err?.error?.message || 'Failed to create invoice. Please check your inputs.');
+          this.errorMessage.set(err?.error?.message || 'Failed to save invoice. Please check your inputs.');
         }
       });
     } else {

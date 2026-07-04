@@ -76,6 +76,10 @@
             </td>
             <td class="px-4 py-3 text-center">
               <div class="flex items-center justify-center gap-1">
+                <a [routerLink]="['/invoices', inv.id, 'edit']"
+                  class="text-blue-600 hover:text-blue-800 text-xs font-medium px-2 py-1 rounded hover:bg-blue-50 transition-colors">
+                  Edit
+                </a>
                 <a [routerLink]="['/invoices', inv.id]"
                   class="text-brand hover:text-brand-light text-xs font-medium px-2 py-1 rounded hover:bg-brand-muted transition-colors">
                   View
@@ -110,6 +114,8 @@
             </div>
             <p class="text-xs text-gray-400 mt-1">{{ inv.date | date:'dd MMM yyyy' }}</p>
             <div class="flex gap-2 mt-3">
+              <a [routerLink]="['/invoices', inv.id, 'edit']"
+                class="flex-1 text-center bg-blue-50 text-blue-600 text-xs font-medium py-2 rounded-lg">Edit</a>
               <a [routerLink]="['/invoices', inv.id]"
                 class="flex-1 text-center bg-brand-muted text-brand text-xs font-medium py-2 rounded-lg">View</a>
               <button (click)="downloadPdf(inv)"

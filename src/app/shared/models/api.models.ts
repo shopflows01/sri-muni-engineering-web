@@ -15,6 +15,7 @@ export interface Product {
   id: string;
   customerId: string;
   customerName?: string;
+  customers?: { customerId: string; customerName: string }[];
   partNo: string;
   partName: string;
   partDescription?: string;
@@ -28,6 +29,7 @@ export interface InvoiceItem {
   productId: string;
   productName?: string;
   productPartNo?: string;
+  hsnCode?: string;
   description?: string;
   quantity: number;
   rate: number;

@@ -3,6 +3,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CustomerService } from '../../../core/services/customer';
 
+import { uppercaseStrings } from '../../../shared/utils/string-utils';
+
 @Component({
   selector: 'app-customer-form',
   imports: [ReactiveFormsModule, RouterLink],
@@ -47,7 +49,8 @@ export class CustomerForm implements OnInit {
   onSubmit() {
     if (this.customerForm.valid) {
       this.isSaving.set(true);
-      const data = this.customerForm.getRawValue() as any;
+      let data = this.customerForm.getRawValue() as any;
+      data = uppercaseStrings(data);
       
       const req = this.isEditMode() && this.customerId 
         ? this.customerService.updateCustomer(this.customerId, data)

@@ -43,7 +43,7 @@
             <tr class="hover:bg-gray-50/50">
               <td class="px-6 py-4 font-medium text-gray-900">{{ product.partNo }}</td>
               <td class="px-6 py-4 text-sm text-gray-600">{{ product.partName }}</td>
-              <td class="px-6 py-4 text-sm text-gray-600">{{ product.customerName || product.customerId }}</td>
+              <td class="px-6 py-4 text-sm text-gray-600">{{ getCustomerNames(product) }}</td>
               <td class="px-6 py-4 text-sm text-gray-600">{{ product.unit }}</td>
               <td class="px-6 py-4 text-right space-x-3">
                 <button [routerLink]="['/products', product.id, 'analysis']" class="text-brand-success hover:text-green-700 font-medium text-sm">Analysis</button>

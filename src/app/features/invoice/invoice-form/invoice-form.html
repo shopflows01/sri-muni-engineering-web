@@ -64,19 +64,30 @@
               </button>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-8 gap-3">
-              <div class="lg:col-span-2">
+            <div class="grid grid-cols-1 md:grid-cols-4 xl:grid-cols-12 gap-3">
+              <div class="xl:col-span-3">
                 <label class="block text-xs font-medium text-gray-600 mb-1">Product</label>
-                <select formControlName="productId" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none bg-white text-sm">
+                <select formControlName="productId" (change)="onProductChange($index)" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none bg-white text-sm">
                   <option value="">Select product</option>
                   @for (prod of products(); track prod.id) {
                     <option [value]="prod.id">{{ prod.partNo }} - {{ prod.partName }}</option>
                   }
+                  <option value="others">Others</option>
                 </select>
               </div>
-              <div class="lg:col-span-2">
+              @if (items.at($index).get('productId')?.value === 'others') {
+                <div class="xl:col-span-2">
+                  <label class="block text-xs font-medium text-gray-600 mb-1">Item Name</label>
+                  <input type="text" formControlName="customProductName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm" placeholder="Item name">
+                </div>
+              }
+              <div class="xl:col-span-2">
+                <label class="block text-xs font-medium text-gray-600 mb-1">HSN Code</label>
+                <input type="text" formControlName="hsnCode" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm" placeholder="HSN">
+              </div>
+              <div class="xl:col-span-2">
                 <label class="block text-xs font-medium text-gray-600 mb-1">Description</label>
-                <input type="text" formControlName="description" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm" placeholder="Optional remark">
+                <input type="text" formControlName="description" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm" placeholder="Remark">
               </div>
               <div>
                 <label class="block text-xs font-medium text-gray-600 mb-1">Quantity</label>
@@ -87,14 +98,10 @@
                 <input type="number" step="0.01" formControlName="rate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm">
               </div>
               <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1">Discount</label>
-                <input type="number" formControlName="discount" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm">
-              </div>
-              <div>
                 <label class="block text-xs font-medium text-gray-600 mb-1">GST (%)</label>
                 <input type="number" formControlName="gstPercent" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm">
               </div>
-              <div class="lg:col-span-8 flex items-end justify-end pb-2">
+              <div class="xl:col-span-12 flex items-end justify-end pb-2">
                 <div class="text-right flex gap-6 text-sm">
                   <div>
                     <span class="text-gray-500">Amount:</span>

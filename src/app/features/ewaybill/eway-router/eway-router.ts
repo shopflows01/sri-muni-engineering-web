@@ -184,7 +184,8 @@ export class EwayRouter implements OnInit {
   private populateEntry(inv: Invoice): BillEntry {
     const customer = this.customers().get(inv.customerId);
     const firstItem = inv.items && inv.items.length > 0 ? inv.items[0] : null;
-    const isInterState = customer ? customer.stateCode !== '33' : false;
+    const product = firstItem && firstItem.productId ? this.products().get(firstItem.productId) : null;
+    const isInterState = customer && customer.stateCode ? String(customer.stateCode).trim() !== String(COMPANY_PROFILE.stateCode).trim() : false;
 
     const entry = this.createEmptyEntry();
     entry.expanded = true;
@@ -208,13 +209,16 @@ export class EwayRouter implements OnInit {
     entry.igstValue = isInterState ? (inv.gstAmount || 0) : 0;
     entry.totInvValue = inv.grandTotal || inv.totalAmount || 0;
 
-    entry.itemProductName = firstItem?.productName || '';
-    entry.itemProductDesc = firstItem?.productPartNo || '';
-    entry.itemHsnCode = '';
-    entry.mainHsnCode = '';
+    entry.itemProductName = firstItem?.productName || product?.partName || '';
+    entry.itemProductDesc = firstItem?.description || firstItem?.productPartNo || product?.partNo || '';
+    
+    const hsn = firstItem?.hsnCode || product?.hsnSac || '';
+    entry.itemHsnCode = hsn;
+    entry.mainHsnCode = hsn;
+    
     entry.itemQuantity = firstItem?.quantity || 0;
-    entry.itemQtyUnit = 'NOS';
-    entry.itemTaxableAmount = firstItem?.amount || 0;
+    entry.itemQtyUnit = product?.unit || 'NOS';
+    entry.itemTaxableAmount = firstItem?.amount || ((firstItem?.quantity || 0) * (firstItem?.rate || 0));
     
     const gstPct = firstItem?.gstPercent || 0;
     entry.itemIgstRate = isInterState ? gstPct : 0;

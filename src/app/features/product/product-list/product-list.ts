@@ -32,4 +32,8 @@ export class ProductList implements OnInit {
       error: () => this.isLoading.set(false)
     });
   }
+
+  getCustomerNames(product: Product): string {
+    return product.customers?.map(c => c.customerName).join(', ') || product.customerName || product.customerId || '';
+  }
 }

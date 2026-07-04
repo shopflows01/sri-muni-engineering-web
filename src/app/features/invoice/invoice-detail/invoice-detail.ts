@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DecimalPipe, DatePipe } from '@angular/common';
 import { InvoiceService } from '../../../core/services/invoice.service';
@@ -7,7 +7,7 @@ import { Invoice } from '../../../shared/models/api.models';
 
 @Component({
   selector: 'app-invoice-detail',
-  imports: [DecimalPipe, DatePipe, FormsModule],
+  imports: [DecimalPipe, DatePipe, FormsModule, RouterLink],
   templateUrl: './invoice-detail.html',
   styleUrl: './invoice-detail.css',
 })

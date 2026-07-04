@@ -5,6 +5,8 @@ import { ProductService } from '../../../core/services/product';
 import { CustomerService } from '../../../core/services/customer';
 import { Customer } from '../../../shared/models/api.models';
 
+import { uppercaseStrings } from '../../../shared/utils/string-utils';
+
 @Component({
   selector: 'app-product-form',
   imports: [ReactiveFormsModule, RouterLink],
@@ -36,7 +38,13 @@ export class ProductForm implements OnInit {
     this.productId = this.route.snapshot.paramMap.get('id');
     if (this.productId && this.productId !== 'new') {
       this.isEditMode.set(true);
-      this.productService.getProduct(this.productId).subscribe(p => this.productForm.patchValue(p as any));
+      this.productService.getProduct(this.productId).subscribe(p => {
+        const data = p as any;
+        if (!data.customerId && data.customers?.length > 0) {
+          data.customerId = data.customers[0].customerId;
+        }
+        this.productForm.patchValue(data);
+      });
     }
   }
 
@@ -49,7 +57,8 @@ export class ProductForm implements OnInit {
   onSubmit() {
     if (this.productForm.valid) {
       this.isSaving.set(true);
-      const data = this.productForm.getRawValue() as any;
+      let data = this.productForm.getRawValue() as any;
+      data = uppercaseStrings(data);
       const req = this.isEditMode() && this.productId ? this.productService.updateProduct(this.productId, data) : this.productService.createProduct(data);
       req.subscribe({ next: () => this.router.navigate(['/products']), error: () => this.isSaving.set(false) });
     }
