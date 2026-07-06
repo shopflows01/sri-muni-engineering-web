@@ -19,3 +19,15 @@
   from { transform: translateX(-100%); }
   to { transform: translateX(0); }
 }
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-lg text-sm font-medium transition-colors;
+  }
+  .btn-primary {
+    @apply bg-brand hover:bg-brand-light text-white;
+  }
+  .btn-outline {
+    @apply border border-gray-300 text-gray-700 hover:bg-gray-50;
+  }
+}

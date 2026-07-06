@@ -27,6 +27,7 @@ export const routes: Routes = [
       { path: 'invoices/:id/edit', loadComponent: () => import('./features/invoice/invoice-form/invoice-form').then(m => m.InvoiceForm) },
       { path: 'invoices/:id', loadComponent: () => import('./features/invoice/invoice-detail/invoice-detail').then(m => m.InvoiceDetail) },
       { path: 'ewaybill', loadComponent: () => import('./features/ewaybill/eway-router/eway-router').then(m => m.EwayRouter) },
+      { path: 'accounts', loadChildren: () => import('./features/accounts/accounts-router') },
     ]
   },
   {
