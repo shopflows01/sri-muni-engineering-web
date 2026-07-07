@@ -37,9 +37,63 @@
           <select formControlName="dcLedgerId" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none bg-white">
             <option value="">Select DC entry</option>
             @for (stock of stockItems(); track stock.id) {
-              <option [value]="stock.id">DC {{ stock.dcNo }} - {{ stock.partNo }} ({{ stock.inwardQty }})</option>
+              <option [value]="stock.id">DC {{ stock.dcNo }} - {{ stock.partName }} ({{ stock.inwardQty }} Nos)</option>
             }
           </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order & Delivery Details -->
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+      <h3 class="text-sm font-semibold text-gray-500 uppercase mb-4">Shipping & Order Details</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Delivery Note No</label>
+          <input type="text" formControlName="deliveryNoteNo" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">DC Date</label>
+          <input type="date" formControlName="dcDate" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Reference No</label>
+          <input type="text" formControlName="referenceNo" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Buyer's Order No</label>
+          <input type="text" formControlName="buyersOrderNo" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Dispatch Doc No</label>
+          <input type="text" formControlName="dispatchDocNo" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Destination</label>
+          <input type="text" formControlName="destination" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Terms of Delivery</label>
+          <input type="text" formControlName="termsOfDelivery" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none">
+        </div>
+        <div class="lg:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Remarks</label>
+          <input type="text" formControlName="remarks" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none" placeholder="Optional remarks for invoice">
+        </div>
+      </div>
+    </div>
+
+    <!-- ASN & EWB -->
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+      <h3 class="text-sm font-semibold text-gray-500 uppercase mb-4">ASN & E-Way Bill</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">ASN No</label>
+          <input type="text" formControlName="asnNo" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">EWB No</label>
+          <input type="text" formControlName="ewbNo" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none">
         </div>
       </div>
     </div>
@@ -70,7 +124,7 @@
                 <select formControlName="productId" (change)="onProductChange($index)" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none bg-white text-sm">
                   <option value="">Select product</option>
                   @for (prod of products(); track prod.id) {
-                    <option [value]="prod.id">{{ prod.partNo }} - {{ prod.partName }}</option>
+                    <option [value]="prod.id">{{ prod.partName }} - {{ prod.partNo }}</option>
                   }
                   <option value="others">Others</option>
                 </select>
@@ -132,56 +186,6 @@
             <span>Grand Total:</span>
             <span>₹{{ getGrandTotal() | number:'1.2-2' }}</span>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Order & Delivery Details -->
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-      <h3 class="text-sm font-semibold text-gray-500 uppercase mb-4">Shipping & Order Details</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Delivery Note No</label>
-          <input type="text" formControlName="deliveryNoteNo" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Reference No</label>
-          <input type="text" formControlName="referenceNo" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Buyer's Order No</label>
-          <input type="text" formControlName="buyersOrderNo" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Dispatch Doc No</label>
-          <input type="text" formControlName="dispatchDocNo" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Destination</label>
-          <input type="text" formControlName="destination" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Terms of Delivery</label>
-          <input type="text" formControlName="termsOfDelivery" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none">
-        </div>
-        <div class="lg:col-span-3">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Remarks</label>
-          <input type="text" formControlName="remarks" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none" placeholder="Optional remarks for invoice">
-        </div>
-      </div>
-    </div>
-
-    <!-- ASN & EWB -->
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-      <h3 class="text-sm font-semibold text-gray-500 uppercase mb-4">ASN & E-Way Bill</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">ASN No</label>
-          <input type="text" formControlName="asnNo" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">EWB No</label>
-          <input type="text" formControlName="ewbNo" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none">
         </div>
       </div>
     </div>

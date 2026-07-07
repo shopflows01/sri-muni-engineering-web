@@ -19,17 +19,18 @@ export class CustomerForm implements OnInit {
 
   isEditMode = signal(false);
   isSaving = signal(false);
+  apiError = signal<string | null>(null);
   customerId: string | null = null;
 
   customerForm = this.fb.group({
     name: ['', Validators.required],
     vendorCode: [''],
-    gstin: [''],
-    stateName: [''],
-    stateCode: [''],
-    billingAddress: [''],
+    gstin: ['', Validators.required],
+    stateName: ['', Validators.required],
+    stateCode: ['', Validators.required],
+    billingAddress: ['', Validators.required],
     shippingAddress: [''],
-    pincode: ['']
+    pincode: ['', Validators.required]
   });
 
   ngOnInit() {
@@ -61,8 +62,14 @@ export class CustomerForm implements OnInit {
           this.isSaving.set(false);
           this.router.navigate(['/customers']);
         },
-        error: () => {
+        error: (err) => {
           this.isSaving.set(false);
+          if (err.error && err.error.errors) {
+            const firstError = Object.values(err.error.errors)[0] as string[];
+            this.apiError.set(firstError[0]);
+          } else {
+            this.apiError.set(err.error?.message || err.message || 'An error occurred while saving the customer.');
+          }
         }
       });
     } else {

@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { VoucherService } from '../../../../core/services/voucher.service';
 import { CustomerService } from '../../../../core/services/customer';
+import { getLocalDateString } from '../../../../shared/utils/date-utils';
 
 @Component({
   selector: 'app-voucher-form',
@@ -105,7 +106,7 @@ export class VoucherForm implements OnInit {
     this.form = this.fb.group({
       customerId: ['', Validators.required],
       amount: [null, [Validators.required, Validators.min(0.01)]],
-      receiptDate: [new Date().toISOString().split('T')[0], Validators.required],
+      receiptDate: [getLocalDateString(), Validators.required],
       referenceNumber: [''],
       narration: ['']
     });

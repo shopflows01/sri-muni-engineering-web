@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, of, delay, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { getLocalIsoString } from '../../shared/utils/date-utils';
 
 export interface Allocation {
   id: string;
@@ -38,7 +39,7 @@ export class AllocationService {
       invoiceNumber: 'INV-1001',
       customerName: 'Acme Corp',
       allocatedAmount: 5000,
-      allocationDate: new Date().toISOString()
+      allocationDate: getLocalIsoString()
     }
   ];
 
@@ -74,7 +75,7 @@ export class AllocationService {
     const newAllocation: Allocation = {
       id: Math.random().toString(36).substring(7),
       ...payload,
-      allocationDate: new Date().toISOString()
+      allocationDate: getLocalIsoString()
     };
     this.allocations = [newAllocation, ...this.allocations];
     return of(newAllocation).pipe(delay(500));

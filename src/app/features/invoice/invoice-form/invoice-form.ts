@@ -1,5 +1,6 @@
 import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
+import { CommonModule, DecimalPipe } from '@angular/common';
+import { getLocalDateString } from '../../../shared/utils/date-utils';
 import { FormBuilder, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { InvoiceService } from '../../../core/services/invoice.service';
@@ -39,11 +40,12 @@ export class InvoiceForm implements OnInit, OnDestroy {
 
   invoiceForm = this.fb.group({
     invoiceNo: [{ value: '', disabled: true }, Validators.required],
-    date: [new Date().toISOString().substring(0, 10), Validators.required],
+    date: [getLocalDateString(), Validators.required],
     customerId: ['', Validators.required],
     remarks: [''],
     dcLedgerId: [''],
     deliveryNoteNo: [''],
+    dcDate: [''],
     referenceNo: [''],
     buyersOrderNo: [''],
     dispatchDocNo: [''],
@@ -71,6 +73,20 @@ export class InvoiceForm implements OnInit, OnDestroy {
         this.addItem();
       }
     }
+
+    this.subs.add(
+      this.invoiceForm.get('dcLedgerId')?.valueChanges.subscribe(val => {
+        if (val) {
+          const stock = this.stockItems().find(s => s.id === val);
+          if (stock) {
+            this.invoiceForm.patchValue({
+              deliveryNoteNo: stock.dcNo,
+              dcDate: stock.dcDate ? stock.dcDate.substring(0, 10) : ''
+            });
+          }
+        }
+      })
+    );
   }
 
   loadInvoice(id: string) {
@@ -78,11 +94,12 @@ export class InvoiceForm implements OnInit, OnDestroy {
       next: (invoice) => {
         this.invoiceForm.patchValue({
           invoiceNo: invoice.invoiceNo,
-          date: invoice.date ? invoice.date.substring(0, 10) : new Date().toISOString().substring(0, 10),
+          date: invoice.date ? invoice.date.substring(0, 10) : getLocalDateString(),
           customerId: invoice.customerId,
           remarks: invoice.remarks,
           dcLedgerId: invoice.dcLedgerId,
           deliveryNoteNo: invoice.deliveryNoteNo,
+          dcDate: invoice.dcDate ? invoice.dcDate.substring(0, 10) : '',
           referenceNo: invoice.referenceNo,
           buyersOrderNo: invoice.buyersOrderNo,
           dispatchDocNo: invoice.dispatchDocNo,
@@ -179,10 +196,14 @@ export class InvoiceForm implements OnInit, OnDestroy {
     if (productId && productId !== 'others') {
       const prod = this.products().find(p => p.id === productId);
       if (prod) {
-        itemGroup.patchValue({ hsnCode: prod.hsnSac || '' });
+        itemGroup.patchValue({ 
+          hsnCode: prod.hsnSac || '',
+          rate: prod.ratePerItem || 0,
+          gstPercent: prod.gstPercent || 18
+        });
       }
     } else {
-      itemGroup.patchValue({ hsnCode: '' });
+      itemGroup.patchValue({ hsnCode: '', rate: 0, gstPercent: 18 });
     }
   }
 
@@ -226,10 +247,11 @@ export class InvoiceForm implements OnInit, OnDestroy {
       
       let payload = {
         customerId: val.customerId,
-        invoiceDate: new Date(val.date!).toISOString(),
+        invoiceDate: val.date!,
         remarks: val.remarks || '',
-        dcLedgerId: val.dcLedgerId,
+        dcLedgerId: val.dcLedgerId || null,
         deliveryNoteNo: val.deliveryNoteNo || '',
+        dcDate: val.dcDate || null,
         referenceNo: val.referenceNo || '',
         buyersOrderNo: val.buyersOrderNo || '',
         dispatchDocNo: val.dispatchDocNo || '',

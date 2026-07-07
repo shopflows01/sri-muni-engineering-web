@@ -13,7 +13,7 @@
       </div>
       <div>
         <p class="text-xs text-gray-500 font-medium">Monthly Revenue</p>
-        <p class="text-xl font-bold text-brand-text">₹{{ metrics()?.monthlyRevenueTotal ?? 0 | number:'1.2-2' }}</p>
+        <p class="text-xl font-bold text-brand-text">₹{{ (metrics()?.monthlyRevenueTotal ?? 0) | number:'1.2-2' }}</p>
       </div>
     </div>
 
@@ -23,7 +23,7 @@
       </div>
       <div>
         <p class="text-xs text-gray-500 font-medium">Pending Invoices</p>
-        <p class="text-xl font-bold text-brand-text">{{ metrics()?.pendingInvoicesCount ?? 0 }}</p>
+        <p class="text-xl font-bold text-brand-text">{{ (metrics()?.pendingInvoicesCount ?? 0) }}</p>
       </div>
     </div>
 
@@ -33,7 +33,7 @@
       </div>
       <div>
         <p class="text-xs text-gray-500 font-medium">Monthly Inward</p>
-        <p class="text-xl font-bold text-brand-text">{{ metrics()?.monthlyInwardQty ?? 0 | number }}</p>
+        <p class="text-xl font-bold text-brand-text">{{ (metrics()?.monthlyInwardQty ?? 0) | number }}</p>
       </div>
     </div>
 
@@ -43,7 +43,7 @@
       </div>
       <div>
         <p class="text-xs text-gray-500 font-medium">Monthly Outward</p>
-        <p class="text-xl font-bold text-brand-text">{{ metrics()?.monthlyOutwardQty ?? 0 | number }}</p>
+        <p class="text-xl font-bold text-brand-text">{{ (metrics()?.monthlyOutwardQty ?? 0) | number }}</p>
       </div>
     </div>
 
@@ -53,7 +53,7 @@
       </div>
       <div>
         <p class="text-xs text-gray-500 font-medium">Monthly Rejected</p>
-        <p class="text-xl font-bold text-brand-danger">{{ metrics()?.monthlyRejectedQty ?? 0 | number }}</p>
+        <p class="text-xl font-bold text-brand-danger">{{ (metrics()?.monthlyRejectedQty ?? 0) | number }}</p>
       </div>
     </div>
 
@@ -63,7 +63,7 @@
       </div>
       <div>
         <p class="text-xs text-gray-500 font-medium">In-Progress Ledgers</p>
-        <p class="text-xl font-bold text-brand-text">{{ metrics()?.inProgressLedgerCount ?? 0 }}</p>
+        <p class="text-xl font-bold text-brand-text">{{ (metrics()?.inProgressLedgerCount ?? 0) }}</p>
       </div>
     </div>
 
@@ -73,7 +73,7 @@
       </div>
       <div>
         <p class="text-xs text-gray-500 font-medium">Total Customers</p>
-        <p class="text-xl font-bold text-brand-text">{{ metrics()?.totalCustomers ?? 0 }}</p>
+        <p class="text-xl font-bold text-brand-text">{{ (metrics()?.totalCustomers ?? 0) }}</p>
       </div>
     </div>
 
@@ -83,7 +83,7 @@
       </div>
       <div>
         <p class="text-xs text-gray-500 font-medium">Total Products</p>
-        <p class="text-xl font-bold text-brand-text">{{ metrics()?.totalProducts ?? 0 }}</p>
+        <p class="text-xl font-bold text-brand-text">{{ (metrics()?.totalProducts ?? 0) }}</p>
       </div>
     </div>
   </div>

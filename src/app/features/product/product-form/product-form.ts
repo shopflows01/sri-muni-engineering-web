@@ -30,7 +30,9 @@ export class ProductForm implements OnInit {
     partNo: ['', Validators.required],
     partName: ['', Validators.required],
     hsnSac: [''],
-    unit: ['NOS']
+    unit: ['NOS'],
+    ratePerItem: [0, [Validators.required, Validators.min(0)]],
+    gstPercent: [18, [Validators.required, Validators.min(0), Validators.max(100)]]
   });
 
   ngOnInit() {

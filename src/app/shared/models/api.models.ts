@@ -19,6 +19,8 @@ export interface Product {
   partNo: string;
   partName: string;
   partDescription?: string;
+  ratePerItem: number;
+  gstPercent: number;
   hsnSac: string;
   unit: string;
   createdAt?: string;
@@ -29,6 +31,8 @@ export interface InvoiceItem {
   productId: string;
   productName?: string;
   productPartNo?: string;
+  partNo?: string;
+  partName?: string;
   hsnCode?: string;
   description?: string;
   quantity: number;
@@ -58,6 +62,7 @@ export interface Invoice {
   remarks?: string;
   items: InvoiceItem[];
   deliveryNoteNo?: string;
+  dcDate?: string;
   referenceNo?: string;
   buyersOrderNo?: string;
   dispatchDocNo?: string;

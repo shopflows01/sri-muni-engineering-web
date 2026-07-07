@@ -35,8 +35,35 @@
           <p class="text-sm font-semibold text-brand-text mt-1">{{ invoice()!.customerName }}</p>
         </div>
         <div>
+          <p class="text-xs text-gray-500 font-medium uppercase">Delivery Note</p>
+          <p class="text-sm font-semibold text-gray-800 mt-1">{{ invoice()!.deliveryNoteNo || '-' }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-500 font-medium uppercase">DC Date</p>
+          <p class="text-sm font-semibold text-gray-800 mt-1">{{ invoice()!.dcDate ? (invoice()!.dcDate | date:'dd MMM yyyy') : '-' }}</p>
+        </div>
+        <div>
           <p class="text-xs text-gray-500 font-medium uppercase">Total Amount</p>
           <p class="text-lg font-bold text-brand mt-1">₹{{ invoice()!.grandTotal || invoice()!.totalAmount | number:'1.2-2' }}</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-6 pt-6 border-t border-gray-100">
+        <div>
+          <p class="text-xs text-gray-500 font-medium uppercase">Buyer's Order No</p>
+          <p class="text-sm font-medium text-gray-800 mt-1">{{ invoice()!.buyersOrderNo || '-' }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-500 font-medium uppercase">Dispatch Doc No</p>
+          <p class="text-sm font-medium text-gray-800 mt-1">{{ invoice()!.dispatchDocNo || '-' }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-500 font-medium uppercase">Destination</p>
+          <p class="text-sm font-medium text-gray-800 mt-1">{{ invoice()!.destination || '-' }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-500 font-medium uppercase">Terms of Delivery</p>
+          <p class="text-sm font-medium text-gray-800 mt-1">{{ invoice()!.termsOfDelivery || '-' }}</p>
         </div>
       </div>
 
@@ -55,7 +82,10 @@
           <tbody class="divide-y divide-gray-100">
             @for (item of invoice()!.items; track item.id) {
               <tr class="hover:bg-gray-50/50 transition-colors">
-                <td class="px-4 py-3 font-medium text-gray-800">{{ item.productPartNo || item.productName }}</td>
+                <td class="px-4 py-3">
+                  <div class="font-medium text-gray-800">{{ item.partName }}</div>
+                  <div class="text-xs text-gray-500">{{ item.description || item.partNo }}</div>
+                </td>
                 <td class="px-4 py-3">{{ item.quantity | number }}</td>
                 <td class="px-4 py-3">₹{{ item.rate | number:'1.2-2' }}</td>
                 <td class="px-4 py-3">{{ item.gstPercent }}% (₹{{ item.gstAmount | number:'1.2-2' }})</td>

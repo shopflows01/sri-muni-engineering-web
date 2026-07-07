@@ -92,7 +92,7 @@ export class StockLedger implements OnInit {
       const val = this.inwardForm.getRawValue();
       let payload = {
         dcNo: val.dcNo!,
-        dcDate: new Date(val.dcDate!).toISOString(),
+        dcDate: val.dcDate!,
         customerId: val.customerId!,
         productId: val.productId!,
         inwardQty: val.inwardQty!
