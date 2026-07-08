@@ -16,6 +16,7 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', loadComponent: () => import('./dashboard/dashboard').then(m => m.AccountsDashboard) },
+      { path: 'status-invoices', loadComponent: () => import('./dashboard/status-invoices/status-invoices').then(m => m.StatusInvoices) },
       { path: 'management', loadComponent: () => import('./management/management').then(m => m.AccountsManagement) },
       { path: 'ledgers', loadComponent: () => import('./ledger/ledger-list/ledger-list').then(m => m.LedgerList) },
       { path: 'ledgers/new', loadComponent: () => import('./ledger/ledger-form/ledger-form').then(m => m.LedgerForm) },

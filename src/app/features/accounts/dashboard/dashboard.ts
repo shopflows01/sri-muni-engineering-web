@@ -20,7 +20,7 @@ import { AccountsDashboardService, InvoiceSummary, CustomerOutstanding } from '.
       <!-- KPI Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Paid Invoices -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
+        <a [routerLink]="['/accounts/status-invoices']" [queryParams]="{status: 'Paid'}" class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group block cursor-pointer">
           <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
             <span class="material-symbols-outlined text-6xl text-green-500">check_circle</span>
           </div>
@@ -28,10 +28,10 @@ import { AccountsDashboardService, InvoiceSummary, CustomerOutstanding } from '.
           <div class="mt-4 flex items-baseline gap-2 relative z-10">
             <span class="text-4xl font-extrabold text-gray-900 tracking-tight">{{ summary?.paidInvoices || 0 }}</span>
           </div>
-        </div>
+        </a>
 
         <!-- Partially Paid Invoices -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
+        <a [routerLink]="['/accounts/status-invoices']" [queryParams]="{status: 'PartiallyPaid'}" class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group block cursor-pointer">
           <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
             <span class="material-symbols-outlined text-6xl text-yellow-500">timelapse</span>
           </div>
@@ -39,10 +39,10 @@ import { AccountsDashboardService, InvoiceSummary, CustomerOutstanding } from '.
           <div class="mt-4 flex items-baseline gap-2 relative z-10">
             <span class="text-4xl font-extrabold text-gray-900 tracking-tight">{{ summary?.partiallyPaidInvoices || 0 }}</span>
           </div>
-        </div>
+        </a>
 
         <!-- Unpaid Invoices -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
+        <a [routerLink]="['/accounts/status-invoices']" [queryParams]="{status: 'Unpaid'}" class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group block cursor-pointer">
           <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
             <span class="material-symbols-outlined text-6xl text-red-500">error</span>
           </div>
@@ -50,7 +50,7 @@ import { AccountsDashboardService, InvoiceSummary, CustomerOutstanding } from '.
           <div class="mt-4 flex items-baseline gap-2 relative z-10">
             <span class="text-4xl font-extrabold text-gray-900 tracking-tight">{{ summary?.unpaidInvoices || 0 }}</span>
           </div>
-        </div>
+        </a>
       </div>
 
       <!-- Customer-wise Outstanding List -->
@@ -105,7 +105,7 @@ import { AccountsDashboardService, InvoiceSummary, CustomerOutstanding } from '.
                     </td>
                     <td class="px-6 py-4 text-right text-gray-600">{{ item.totalInvoiced | currency:'INR' }}</td>
                     <td class="px-6 py-4 text-right text-gray-600">{{ item.totalPaid | currency:'INR' }}</td>
-                    <td class="px-6 py-4 text-right font-semibold text-brand">{{ item.outstandingAmount | currency:'INR' }}</td>
+                    <td class="px-6 py-4 text-right font-semibold text-brand">{{ item.outstanding | currency:'INR' }}</td>
                     <td class="px-6 py-4 text-right font-medium text-green-600">{{ item.advanceBalance > 0 ? (item.advanceBalance | currency:'INR') : '-' }}</td>
                   </tr>
                 }
@@ -149,7 +149,7 @@ export class AccountsDashboard implements OnInit {
     this.dashboardService.getCustomerOutstanding(1, 50).subscribe({
       next: (data) => {
         // Sort by highest outstanding first as requested
-        this.outstandingList = (data.items || []).sort((a, b) => b.outstandingAmount - a.outstandingAmount);
+        this.outstandingList = (data.items || []).sort((a, b) => b.outstanding - a.outstanding);
         this.loading = false;
       },
       error: (err) => {

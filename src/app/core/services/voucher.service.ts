@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export interface ReceiptVoucher {
-  id: string;
+  voucherId: string;
   voucherNumber: string;
   customerId: string;
   customerName: string;
@@ -13,6 +13,7 @@ export interface ReceiptVoucher {
   referenceNumber: string;
   narration: string;
   status: 'Draft' | 'Posted';
+  voucherType: string;
 }
 
 export interface PaginatedResult<T> {

@@ -125,7 +125,7 @@ export class VoucherDetail implements OnInit {
     if (!this.voucher || !confirm('Are you sure you want to post this receipt? It cannot be edited once posted.')) return;
     
     this.posting = true;
-    this.voucherService.postVoucher(this.voucher.id).subscribe({
+    this.voucherService.postVoucher(this.voucher.voucherId).subscribe({
       next: () => {
         if (this.voucher) this.voucher.status = 'Posted';
         this.posting = false;

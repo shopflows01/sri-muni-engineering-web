@@ -30,55 +30,29 @@ export class AllocationService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/accounts/allocations`;
 
-  private allocations: Allocation[] = [
-    {
-      id: 'a1',
-      receiptVoucherId: 'v2',
-      receiptVoucherNumber: 'V-2026-002',
-      invoiceId: 'inv1',
-      invoiceNumber: 'INV-1001',
-      customerName: 'Acme Corp',
-      allocatedAmount: 5000,
-      allocationDate: getLocalIsoString()
-    }
-  ];
-
   getAllocations(pageNumber: number = 1, pageSize: number = 10, search: string = ''): Observable<PaginatedResult<Allocation>> {
-    let filtered = this.allocations;
+    let params = new HttpParams()
+      .set('pageNumber', pageNumber.toString())
+      .set('pageSize', pageSize.toString());
+      
     if (search) {
-      filtered = filtered.filter(a => 
-        a.invoiceNumber.toLowerCase().includes(search.toLowerCase()) || 
-        a.customerName.toLowerCase().includes(search.toLowerCase()) ||
-        a.receiptVoucherNumber.toLowerCase().includes(search.toLowerCase())
-      );
+      params = params.set('search', search);
     }
-    
-    const start = (pageNumber - 1) * pageSize;
-    const items = filtered.slice(start, start + pageSize);
-    
-    return of({
-      items,
-      totalCount: filtered.length,
-      pageNumber,
-      pageSize,
-      totalPages: Math.ceil(filtered.length / pageSize)
-    }).pipe(delay(400));
+
+    return this.http.get<PaginatedResult<Allocation>>(this.apiUrl, { params });
   }
 
   getAllocation(id: string): Observable<Allocation> {
-    const a = this.allocations.find(a => a.id === id);
-    if (a) return of(a).pipe(delay(300));
-    return throwError(() => new Error('Allocation not found'));
+    return this.http.get<Allocation>(`${this.apiUrl}/${id}`);
   }
 
   createAllocation(payload: { receiptVoucherId: string, receiptVoucherNumber: string, invoiceId: string, invoiceNumber: string, customerName: string, allocatedAmount: number }): Observable<Allocation> {
-    const newAllocation: Allocation = {
-      id: Math.random().toString(36).substring(7),
-      ...payload,
-      allocationDate: getLocalIsoString()
-    };
-    this.allocations = [newAllocation, ...this.allocations];
-    return of(newAllocation).pipe(delay(500));
+    // Actually we only need receiptVoucherId, invoiceId and amount for the backend, but we'll post to the actual endpoint
+    return this.http.post<Allocation>(`${environment.apiUrl}/accounts/receipts/${payload.receiptVoucherId}/allocate`, {
+      allocations: [
+        { invoiceId: payload.invoiceId, amount: payload.allocatedAmount }
+      ]
+    });
   }
 
   updateAllocation(id: string, amount: number): Observable<any> {

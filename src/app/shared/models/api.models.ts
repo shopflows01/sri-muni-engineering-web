@@ -71,6 +71,7 @@ export interface Invoice {
   asnNo?: string;
   ewbNo?: string;
   downloadUrl?: string;
+  status?: string;
   createdAt?: string;
 }
 

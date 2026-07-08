@@ -41,6 +41,7 @@
             <th class="text-right px-4 py-3 text-gray-500 font-medium">Amount</th>
             <th class="text-center px-4 py-3 text-gray-500 font-medium">ASN</th>
             <th class="text-center px-4 py-3 text-gray-500 font-medium">EWB</th>
+            <th class="text-center px-4 py-3 text-gray-500 font-medium">Status</th>
             <th class="text-center px-4 py-3 text-gray-500 font-medium">Actions</th>
           </tr>
         </thead>
@@ -73,6 +74,15 @@
               } @else {
               <span class="text-gray-400 text-xs">—</span>
               }
+            </td>
+            <td class="px-4 py-3 text-center">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+                [class.bg-red-50]="inv.status === 'Unpaid'" [class.text-red-700]="inv.status === 'Unpaid'"
+                [class.bg-yellow-50]="inv.status === 'PartiallyPaid'" [class.text-yellow-700]="inv.status === 'PartiallyPaid'"
+                [class.bg-green-50]="inv.status === 'Paid'" [class.text-green-700]="inv.status === 'Paid'"
+                [class.bg-gray-50]="!inv.status" [class.text-gray-700]="!inv.status">
+                {{ inv.status || 'Unpaid' }}
+              </span>
             </td>
             <td class="px-4 py-3 text-center">
               <div class="flex items-center justify-center gap-1">

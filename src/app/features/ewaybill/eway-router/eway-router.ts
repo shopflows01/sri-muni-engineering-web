@@ -190,7 +190,11 @@ export class EwayRouter implements OnInit {
     const entry = this.createEmptyEntry();
     entry.expanded = true;
     entry.docNo = inv.invoiceNo;
-    entry.docDate = new Date(inv.date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const d = new Date(inv.date);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    entry.docDate = `${day}/${month}/${year}`;
 
     if (customer) {
       entry.toGstin = customer.gstin || '';

@@ -32,20 +32,20 @@ import { CustomerService } from '../../../../core/services/customer';
               <select id="receiptVoucherId" formControlName="receiptVoucherId" (change)="onReceiptSelected()"
                       class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none transition-all text-sm">
                 <option value="">Select a receipt...</option>
-                @for (v of receipts; track v.id) {
-                  <option [value]="v.id">{{ v.voucherNumber }} - {{ v.amount | currency:'INR' }} ({{ v.receiptDate | date:'shortDate' }})</option>
+                @for (v of receipts; track v.voucherId) {
+                  <option [value]="v.voucherId">{{ v.voucherNumber }} - {{ v.amount | currency:'INR' }} ({{ v.customerName }})</option>
                 }
               </select>
             </div>
 
             <div>
               <label for="invoiceId" class="block text-sm font-medium text-gray-700 mb-1">Target Invoice <span class="text-red-500">*</span></label>
-              <select id="invoiceId" formControlName="invoiceId" 
+              <select id="invoiceId" formControlName="invoiceId" (change)="onInvoiceSelected()"
                       class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none transition-all text-sm">
                 <option value="">Select an invoice to allocate against...</option>
-                <option value="inv1">INV-1001 - Outstanding: ₹5,000.00 (Acme Corp)</option>
-                <option value="inv2">INV-1002 - Outstanding: ₹1,200.00 (Tech Solutions)</option>
-                <!-- In a real app, these would come from an InvoiceService based on selected customer -->
+                @for (inv of customerInvoices; track inv.invoiceId) {
+                  <option [value]="inv.invoiceId">{{ inv.invoiceNumber }} - Outstanding: {{ inv.outstanding | currency:'INR' }}</option>
+                }
               </select>
             </div>
 
@@ -56,9 +56,17 @@ import { CustomerService } from '../../../../core/services/customer';
                 <input type="number" id="allocatedAmount" formControlName="allocatedAmount" min="0" step="0.01"
                        class="w-full pl-8 pr-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none transition-all text-sm">
               </div>
-              @if (selectedReceiptAmount > 0) {
-                <p class="text-xs text-brand mt-1 font-medium">Max allocatable amount from receipt: {{ selectedReceiptAmount | currency:'INR' }}</p>
-              }
+              <div class="flex flex-col gap-1 mt-1">
+                @if (selectedReceiptAmount > 0) {
+                  <p class="text-xs text-brand font-medium">Available in receipt: {{ selectedReceiptAmount | currency:'INR' }}</p>
+                }
+                @if (selectedInvoiceOutstanding > 0) {
+                  <p class="text-xs text-amber-600 font-medium">Invoice outstanding: {{ selectedInvoiceOutstanding | currency:'INR' }}</p>
+                }
+                @if (form.get('allocatedAmount')?.errors?.['max']) {
+                  <p class="text-xs text-red-500 font-medium">Amount cannot exceed available receipt amount or invoice outstanding.</p>
+                }
+              </div>
             </div>
           </div>
 
@@ -84,11 +92,14 @@ export class AllocationForm implements OnInit {
   private allocationService = inject(AllocationService);
   private voucherService = inject(VoucherService);
   private router = inject(Router);
+  private http = inject(import('@angular/common/http').HttpClient);
 
   form: FormGroup;
   receipts: ReceiptVoucher[] = [];
+  customerInvoices: any[] = [];
   submitting = false;
   selectedReceiptAmount = 0;
+  selectedInvoiceOutstanding = 0;
 
   constructor() {
     this.form = this.fb.group({
@@ -103,23 +114,69 @@ export class AllocationForm implements OnInit {
   }
 
   loadReceipts() {
-    // In a real app we'd fetch only Receipts/Payments that have unallocated amounts
-    this.voucherService.getVouchers(1, 50).subscribe({
+    this.voucherService.getVouchers(1, 100).subscribe({
       next: (res) => {
-        this.receipts = res.items;
+        // Only show vouchers that have unallocated amounts
+        this.receipts = (res.items || []).filter(v => (v.amount - (v as any).allocatedAmount) > 0);
       }
     });
   }
 
   onReceiptSelected() {
     const id = this.form.get('receiptVoucherId')?.value;
-    const r = this.receipts.find(v => v.id === id);
+    const r = this.receipts.find(v => v.voucherId === id);
     if (r) {
-      this.selectedReceiptAmount = r.amount;
-      this.form.patchValue({ allocatedAmount: r.amount });
+      this.selectedReceiptAmount = r.amount - (r as any).allocatedAmount;
+      this.customerInvoices = [];
+      this.form.patchValue({ invoiceId: '' });
+      this.selectedInvoiceOutstanding = 0;
+      
+      // Load invoices for this customer
+      this.loadCustomerInvoices(r.customerId);
     } else {
       this.selectedReceiptAmount = 0;
+      this.customerInvoices = [];
     }
+    this.updateMaxValidation();
+  }
+
+  loadCustomerInvoices(customerId: string) {
+    import('../../../../environments/environment').then(m => {
+      this.http.get<any>(`${m.environment.apiUrl}/accounts/dashboard/invoices/status?customerId=${customerId}&pageSize=100`).subscribe({
+        next: (res) => {
+          this.customerInvoices = (res.items || []).filter((i: any) => i.outstanding > 0);
+        }
+      });
+    });
+  }
+
+  onInvoiceSelected() {
+    const id = this.form.get('invoiceId')?.value;
+    const inv = this.customerInvoices.find(i => i.invoiceId === id);
+    if (inv) {
+      this.selectedInvoiceOutstanding = inv.outstanding;
+      
+      const maxAllocatable = Math.min(this.selectedReceiptAmount, this.selectedInvoiceOutstanding);
+      this.form.patchValue({ allocatedAmount: maxAllocatable });
+    } else {
+      this.selectedInvoiceOutstanding = 0;
+    }
+    this.updateMaxValidation();
+  }
+
+  updateMaxValidation() {
+    const maxAmount = Math.min(
+      this.selectedReceiptAmount > 0 ? this.selectedReceiptAmount : Infinity,
+      this.selectedInvoiceOutstanding > 0 ? this.selectedInvoiceOutstanding : Infinity
+    );
+    
+    const control = this.form.get('allocatedAmount');
+    if (maxAmount !== Infinity) {
+      control?.setValidators([Validators.required, Validators.min(1), Validators.max(maxAmount)]);
+    } else {
+      control?.setValidators([Validators.required, Validators.min(1)]);
+    }
+    control?.updateValueAndValidity();
   }
 
   onSubmit() {
@@ -128,18 +185,15 @@ export class AllocationForm implements OnInit {
     this.submitting = true;
     const formData = this.form.value;
     
-    const receipt = this.receipts.find(v => v.id === formData.receiptVoucherId);
+    const receipt = this.receipts.find(v => v.voucherId === formData.receiptVoucherId);
+    const invoice = this.customerInvoices.find(i => i.invoiceId === formData.invoiceId);
     
-    // Mock the invoice number and customer since we don't have real invoice lookups here
-    const invoiceNumber = formData.invoiceId === 'inv1' ? 'INV-1001' : 'INV-1002';
-    const customerName = formData.invoiceId === 'inv1' ? 'Acme Corp' : 'Tech Solutions';
-
     this.allocationService.createAllocation({
       receiptVoucherId: formData.receiptVoucherId,
       receiptVoucherNumber: receipt?.voucherNumber || 'Unknown',
       invoiceId: formData.invoiceId,
-      invoiceNumber,
-      customerName,
+      invoiceNumber: invoice?.invoiceNumber || 'Unknown',
+      customerName: receipt?.customerName || 'Unknown',
       allocatedAmount: Number(formData.allocatedAmount)
     }).subscribe({
       next: () => {
@@ -149,6 +203,7 @@ export class AllocationForm implements OnInit {
       error: (err) => {
         console.error(err);
         this.submitting = false;
+        alert(err.error?.message || 'Failed to allocate payment');
       }
     });
   }

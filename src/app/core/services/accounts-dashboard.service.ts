@@ -14,7 +14,7 @@ export interface CustomerOutstanding {
   customerName: string;
   totalInvoiced: number;
   totalPaid: number;
-  outstandingAmount: number;
+  outstanding: number;
   advanceBalance: number;
 }
 
