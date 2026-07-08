@@ -30,7 +30,7 @@ import { VoucherService, ReceiptVoucher } from '../../../../core/services/vouche
         
         <div class="flex gap-3">
           @if (voucher?.status === 'Draft') {
-            <a [routerLink]="['/accounts/vouchers', voucher?.id, 'edit']" class="btn btn-outline text-gray-600 flex items-center gap-2">
+            <a [routerLink]="['/accounts/vouchers', voucher?.voucherId, 'edit']" class="btn btn-outline text-gray-700 bg-white shadow-sm hover:bg-gray-50 flex items-center gap-2">
               <span class="material-symbols-outlined text-[18px]">edit</span>
               Edit
             </a>

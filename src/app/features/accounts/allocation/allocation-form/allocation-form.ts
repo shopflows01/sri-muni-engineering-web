@@ -5,7 +5,8 @@ import { RouterLink, Router } from '@angular/router';
 import { AllocationService } from '../../../../core/services/allocation.service';
 import { VoucherService, ReceiptVoucher } from '../../../../core/services/voucher.service';
 import { CustomerService } from '../../../../core/services/customer';
-
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../../environments/environment';
 @Component({
   selector: 'app-allocation-form',
   standalone: true,
@@ -92,7 +93,7 @@ export class AllocationForm implements OnInit {
   private allocationService = inject(AllocationService);
   private voucherService = inject(VoucherService);
   private router = inject(Router);
-  private http = inject(import('@angular/common/http').HttpClient);
+  private http = inject(HttpClient);
 
   form: FormGroup;
   receipts: ReceiptVoucher[] = [];
@@ -141,12 +142,10 @@ export class AllocationForm implements OnInit {
   }
 
   loadCustomerInvoices(customerId: string) {
-    import('../../../../environments/environment').then(m => {
-      this.http.get<any>(`${m.environment.apiUrl}/accounts/dashboard/invoices/status?customerId=${customerId}&pageSize=100`).subscribe({
-        next: (res) => {
-          this.customerInvoices = (res.items || []).filter((i: any) => i.outstanding > 0);
-        }
-      });
+    this.http.get<any>(`${environment.apiUrl}/accounts/dashboard/invoices/status?customerId=${customerId}&pageSize=100`).subscribe({
+      next: (res) => {
+        this.customerInvoices = (res.items || []).filter((i: any) => i.outstanding > 0);
+      }
     });
   }
 

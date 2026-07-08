@@ -75,8 +75,11 @@ import { AccountsDashboardService, CustomerOutstanding } from '../../../../core/
                     <td class="px-6 py-4 text-right text-gray-600">{{ item.totalInvoiced | currency:'INR' }}</td>
                     <td class="px-6 py-4 text-right text-gray-600">{{ item.totalPaid | currency:'INR' }}</td>
                     <td class="px-6 py-4 text-right">
-                      @if (item.outstandingAmount > 0) {
-                        <span class="font-semibold text-red-600">{{ item.outstandingAmount | currency:'INR' }} (Dr)</span>
+                      @if (item.outstanding > 0) {
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-red-50 text-red-600 font-medium whitespace-nowrap">
+                          <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                          {{ item.outstanding | currency:'INR' }} (Dr)
+                        </span>
                       } @else if (item.advanceBalance > 0) {
                         <span class="font-semibold text-green-600">{{ item.advanceBalance | currency:'INR' }} (Cr)</span>
                       } @else {
