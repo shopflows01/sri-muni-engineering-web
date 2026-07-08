@@ -112,6 +112,7 @@ export class AllocationForm implements OnInit {
 
   ngOnInit() {
     this.loadReceipts();
+    this.loadAllUnpaidInvoices();
   }
 
   loadReceipts() {
@@ -136,9 +137,17 @@ export class AllocationForm implements OnInit {
       this.loadCustomerInvoices(r.customerId);
     } else {
       this.selectedReceiptAmount = 0;
-      this.customerInvoices = [];
+      this.loadAllUnpaidInvoices();
     }
     this.updateMaxValidation();
+  }
+
+  loadAllUnpaidInvoices() {
+    this.http.get<any>(`${environment.apiUrl}/accounts/dashboard/invoices/status?pageSize=1000`).subscribe({
+      next: (res) => {
+        this.customerInvoices = (res.items || []).filter((i: any) => i.outstanding > 0);
+      }
+    });
   }
 
   loadCustomerInvoices(customerId: string) {
