@@ -147,6 +147,20 @@ export class StockLedger implements OnInit {
     this.editingItem.set(null);
   }
 
+  deleteLedger(id: string) {
+    if (confirm('Are you sure you want to delete this stock ledger entry?')) {
+      this.stockService.delete(id).subscribe({
+        next: () => {
+          this.showSuccess('Stock ledger entry deleted successfully.');
+          this.loadLedger();
+        },
+        error: (err) => {
+          alert('Failed to delete stock ledger entry. It may be linked to an invoice.');
+        }
+      });
+    }
+  }
+
   openExportDialog() {
     this.showExportDialog.set(true);
   }

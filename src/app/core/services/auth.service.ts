@@ -64,4 +64,9 @@ export class AuthService {
     this.currentUser.set(null);
     this.router.navigate(['/login']);
   }
+
+  resetCredentials(payload: { email: string; newUsername?: string; newPassword?: string }): Observable<any> {
+    const apiUrl = environment.apiUrl || '/api';
+    return this.http.put(`${apiUrl}/auth/reset-credentials`, payload);
+  }
 }

@@ -69,9 +69,14 @@
                 <td class="px-4 py-3 text-right text-brand-danger font-medium">{{ item.rejectedQty }}</td>
                 <td class="px-4 py-3 text-right text-amber-600 font-medium">{{ item.pendingQty }}</td>
                 <td class="px-4 py-3 text-center">
-                  <button (click)="openOutward(item)" class="text-brand hover:text-brand-light text-xs font-medium px-2 py-1 rounded hover:bg-brand-muted transition-colors">
-                    Update
-                  </button>
+                  <div class="flex items-center justify-center gap-1">
+                    <button (click)="openOutward(item)" class="bg-blue-50 text-blue-600 hover:bg-blue-100 text-xs font-medium px-2 py-1 rounded transition-colors">
+                      Update
+                    </button>
+                    <button (click)="deleteLedger(item.id)" class="bg-red-50 text-red-600 hover:bg-red-100 text-xs font-medium px-2 py-1 rounded transition-colors" title="Delete">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                    </button>
+                  </div>
                 </td>
               </tr>
             }
@@ -88,9 +93,14 @@
                 <p class="font-semibold text-brand-text">DC: {{ item.dcNo }}</p>
                 <p class="text-xs text-gray-500">{{ item.customerName }} · {{ item.partName }} ({{ item.partNo }})</p>
               </div>
-              <button (click)="openOutward(item)" class="text-brand text-xs font-medium px-2 py-1 rounded bg-brand-muted">
-                Update
-              </button>
+              <div class="flex gap-2">
+                <button (click)="openOutward(item)" class="bg-blue-50 text-blue-600 text-xs font-medium px-2 py-1 rounded">
+                  Update
+                </button>
+                <button (click)="deleteLedger(item.id)" class="bg-red-50 text-red-600 text-xs font-medium px-2 py-1 rounded flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                </button>
+              </div>
             </div>
             <div class="grid grid-cols-4 gap-2 mt-3 text-center">
               <div class="bg-blue-50 rounded-lg p-2">

@@ -27,8 +27,8 @@
       (action)="router.navigate(['/products/new'])">
     </app-empty-state>
   } @else {
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-      <table class="w-full text-left border-collapse">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 w-full overflow-x-auto">
+      <table class="w-full text-left border-collapse min-w-[600px]">
         <thead>
           <tr class="bg-gray-50 border-b border-gray-200 text-xs uppercase text-gray-500">
             <th class="px-6 py-4 font-medium">Part Name</th>
@@ -45,9 +45,11 @@
               <td class="px-6 py-4 text-sm text-gray-600">{{ product.partNo }}</td>
               <td class="px-6 py-4 text-sm text-gray-600">{{ getCustomerNames(product) }}</td>
               <td class="px-6 py-4 text-sm text-gray-600">{{ product.unit }}</td>
-              <td class="px-6 py-4 text-right space-x-3">
-                <button [routerLink]="['/products', product.id, 'analysis']" class="text-brand-success hover:text-green-700 font-medium text-sm">Analysis</button>
-                <button [routerLink]="['/products', product.id]" class="text-brand hover:text-brand-light font-medium text-sm">Edit</button>
+              <td class="px-6 py-4 text-right">
+                <div class="flex justify-end gap-2">
+                  <button [routerLink]="['/products', product.id, 'analysis']" class="bg-green-50 text-brand-success hover:bg-green-100 font-medium text-xs px-2 py-1 rounded transition-colors">Analysis</button>
+                  <button [routerLink]="['/products', product.id]" class="bg-blue-50 text-blue-600 hover:bg-blue-100 font-medium text-xs px-2 py-1 rounded transition-colors">Edit</button>
+                </div>
               </td>
             </tr>
           }

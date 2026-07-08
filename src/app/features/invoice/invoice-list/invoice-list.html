@@ -77,15 +77,15 @@
             <td class="px-4 py-3 text-center">
               <div class="flex items-center justify-center gap-1">
                 <a [routerLink]="['/invoices', inv.id, 'edit']"
-                  class="text-blue-600 hover:text-blue-800 text-xs font-medium px-2 py-1 rounded hover:bg-blue-50 transition-colors">
+                  class="bg-blue-50 text-blue-600 hover:bg-blue-100 text-xs font-medium px-2 py-1 rounded transition-colors">
                   Edit
                 </a>
                 <a [routerLink]="['/invoices', inv.id]"
-                  class="text-brand hover:text-brand-light text-xs font-medium px-2 py-1 rounded hover:bg-brand-muted transition-colors">
+                  class="bg-brand/10 text-brand hover:bg-brand/20 text-xs font-medium px-2 py-1 rounded transition-colors">
                   View
                 </a>
                 <button (click)="downloadPdf(inv)"
-                  class="text-brand-success hover:opacity-80 text-xs font-medium px-2 py-1 rounded hover:bg-green-50 transition-colors">
+                  class="bg-green-50 text-brand-success hover:bg-green-100 text-xs font-medium px-2 py-1 rounded transition-colors">
                   PDF
                 </button>
               </div>

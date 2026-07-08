@@ -76,12 +76,14 @@ import { AllocationService, Allocation } from '../../../../core/services/allocat
                     <td class="px-6 py-4 text-right font-semibold text-green-600">{{ item.allocatedAmount | currency:'INR' }}</td>
                     <td class="px-6 py-4 text-gray-600">{{ item.allocationDate | date:'dd MMM yyyy' }}</td>
                     <td class="px-6 py-4 text-center">
-                      <a [routerLink]="['/accounts/allocations', item.id]" class="text-brand hover:text-brand-dark transition-colors" title="View">
-                        <span class="material-symbols-outlined text-[20px]">visibility</span>
-                      </a>
-                      <button (click)="editAmount(item)" class="text-amber-500 hover:text-amber-600 transition-colors ml-3" title="Edit Amount">
-                        <span class="material-symbols-outlined text-[20px]">edit</span>
-                      </button>
+                      <div class="flex items-center justify-center gap-1">
+                        <a [routerLink]="['/accounts/allocations', item.id]" class="bg-brand/10 text-brand hover:bg-brand/20 font-medium text-xs px-2 py-1 rounded transition-colors" title="View">
+                          View
+                        </a>
+                        <button (click)="editAmount(item)" class="bg-amber-50 text-amber-600 hover:bg-amber-100 font-medium text-xs px-2 py-1 rounded transition-colors" title="Edit Amount">
+                          Edit
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 }

@@ -84,10 +84,11 @@ import { AccountsDashboardService, CustomerOutstanding } from '../../../../core/
                       }
                     </td>
                     <td class="px-6 py-4 text-center">
-                      <a [routerLink]="['/accounts/ledgers', item.customerId]" class="text-brand hover:text-brand-dark hover:underline text-sm font-medium flex items-center justify-center gap-1">
-                        <span class="material-symbols-outlined text-[18px]">visibility</span>
-                        View
-                      </a>
+                      <div class="flex items-center justify-center">
+                        <a [routerLink]="['/accounts/ledgers', item.customerId]" class="bg-brand/10 text-brand hover:bg-brand/20 font-medium text-xs px-2 py-1 rounded transition-colors" title="View">
+                          View
+                        </a>
+                      </div>
                     </td>
                   </tr>
                 }

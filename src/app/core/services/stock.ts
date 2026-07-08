@@ -61,4 +61,8 @@ export class StockService {
       .set('period', 'monthly');
     return this.http.get<{ downloadUrl: string }>(`${this.apiUrl}/export-excel`, { params });
   }
+
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }

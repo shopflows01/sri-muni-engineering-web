@@ -81,13 +81,13 @@ import { VoucherService, ReceiptVoucher } from '../../../../core/services/vouche
                     </td>
                     <td class="px-6 py-4 text-right font-semibold text-gray-900">{{ item.amount | currency:'INR' }}</td>
                     <td class="px-6 py-4 text-center">
-                      <div class="flex items-center justify-center gap-3">
-                        <a [routerLink]="['/accounts/vouchers', item.id]" class="text-brand hover:text-brand-dark transition-colors" title="View">
-                          <span class="material-symbols-outlined text-[20px]">visibility</span>
+                      <div class="flex items-center justify-center gap-1">
+                        <a [routerLink]="['/accounts/vouchers', item.id]" class="bg-brand/10 text-brand hover:bg-brand/20 font-medium text-xs px-2 py-1 rounded transition-colors" title="View">
+                          View
                         </a>
                         @if (item.status === 'Draft') {
-                          <a [routerLink]="['/accounts/vouchers', item.id, 'edit']" class="text-blue-600 hover:text-blue-800 transition-colors" title="Edit">
-                            <span class="material-symbols-outlined text-[20px]">edit</span>
+                          <a [routerLink]="['/accounts/vouchers', item.id, 'edit']" class="bg-blue-50 text-blue-600 hover:bg-blue-100 font-medium text-xs px-2 py-1 rounded transition-colors" title="Edit">
+                            Edit
                           </a>
                         }
                       </div>
