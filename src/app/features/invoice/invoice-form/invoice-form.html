@@ -194,9 +194,9 @@
       <button type="submit" [disabled]="isSubmitting() || invoiceForm.invalid" class="bg-brand text-white px-8 py-3 rounded-lg font-medium hover:bg-brand-light transition-colors shadow-lg shadow-brand/25 disabled:opacity-70 disabled:shadow-none flex items-center gap-2">
         @if (isSubmitting()) {
           <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-          Creating...
+          @if (isEditMode()) { Updating... } @else { Creating... }
         } @else {
-          Create Invoice
+          @if (isEditMode()) { Update Invoice } @else { Create Invoice }
         }
       </button>
       <button type="button" (click)="cancel()" class="px-6 py-3 rounded-lg font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
