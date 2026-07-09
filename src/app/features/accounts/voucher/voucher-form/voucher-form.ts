@@ -73,7 +73,7 @@ import { getLocalDateString } from '../../../../shared/utils/date-utils';
           </div>
 
           <div class="pt-6 mt-6 flex justify-end gap-3 border-t border-gray-100">
-            <a routerLink="/accounts/vouchers" class="btn btn-outline text-gray-600">Cancel</a>
+            <a routerLink="/accounts/vouchers" class="btn btn-outline flex items-center gap-2 text-gray-600 border-gray-300 hover:bg-gray-50">Cancel</a>
             <button type="submit" [disabled]="form.invalid || submitting" class="btn btn-primary flex items-center gap-2">
               @if (submitting) {
                 <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
@@ -185,3 +185,4 @@ export class VoucherForm implements OnInit {
     }
   }
 }
+

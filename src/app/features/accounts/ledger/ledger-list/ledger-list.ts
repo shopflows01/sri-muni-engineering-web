@@ -16,7 +16,7 @@ import { AccountsDashboardService, CustomerOutstanding } from '../../../../core/
           <p class="text-sm text-gray-500 mt-1">View and manage customer running balances and entries.</p>
         </div>
         <div class="flex items-center gap-3">
-          <a routerLink="/accounts/management" class="btn btn-outline text-gray-600">
+          <a routerLink="/accounts/management" class="btn btn-outline flex items-center gap-2 text-gray-600 border-gray-300 hover:bg-gray-50">
             <span class="material-symbols-outlined text-[20px]">arrow_back</span>
             Back
           </a>
@@ -160,3 +160,4 @@ export class LedgerList implements OnInit {
     this.loadLedgers();
   }
 }
+

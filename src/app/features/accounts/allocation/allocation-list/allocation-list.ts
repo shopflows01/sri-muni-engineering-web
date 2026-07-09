@@ -16,7 +16,7 @@ import { AllocationService, Allocation } from '../../../../core/services/allocat
           <p class="text-sm text-gray-500 mt-1">Manage allocations of receipts to invoices.</p>
         </div>
         <div class="flex items-center gap-3">
-          <a routerLink="/accounts/management" class="btn btn-outline text-gray-600">
+          <a routerLink="/accounts/management" class="btn btn-outline flex items-center gap-2 text-gray-600 border-gray-300 hover:bg-gray-50">
             <span class="material-symbols-outlined text-[20px]">arrow_back</span>
             Back
           </a>
@@ -174,3 +174,4 @@ export class AllocationList implements OnInit {
     }
   }
 }
+

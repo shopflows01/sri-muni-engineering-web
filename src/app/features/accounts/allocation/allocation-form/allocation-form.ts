@@ -72,7 +72,7 @@ import { environment } from '../../../../../environments/environment';
           </div>
 
           <div class="pt-4 flex justify-end gap-3 border-t border-gray-100">
-            <a routerLink="/accounts/allocations" class="btn btn-outline text-gray-600">Cancel</a>
+            <a routerLink="/accounts/allocations" class="btn btn-outline flex items-center gap-2 text-gray-600 border-gray-300 hover:bg-gray-50">Cancel</a>
             <button type="submit" [disabled]="form.invalid || submitting" class="btn btn-primary flex items-center gap-2">
               @if (submitting) {
                 <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
@@ -216,3 +216,4 @@ export class AllocationForm implements OnInit {
     });
   }
 }
+

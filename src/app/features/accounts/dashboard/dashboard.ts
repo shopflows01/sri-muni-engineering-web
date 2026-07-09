@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AccountsDashboardService, InvoiceSummary, CustomerOutstanding } from '../../../core/services/accounts-dashboard.service';
@@ -26,7 +26,7 @@ import { AccountsDashboardService, InvoiceSummary, CustomerOutstanding } from '.
           </div>
           <p class="text-sm font-medium text-gray-500 uppercase tracking-wider relative z-10">Paid Invoices</p>
           <div class="mt-4 flex items-baseline gap-2 relative z-10">
-            <span class="text-4xl font-extrabold text-gray-900 tracking-tight">{{ summary?.paidInvoices || 0 }}</span>
+            <span class="text-4xl font-extrabold text-gray-900 tracking-tight">{{ summary()?.paidInvoices || 0 }}</span>
           </div>
         </a>
 
@@ -37,7 +37,7 @@ import { AccountsDashboardService, InvoiceSummary, CustomerOutstanding } from '.
           </div>
           <p class="text-sm font-medium text-gray-500 uppercase tracking-wider relative z-10">Partially Paid</p>
           <div class="mt-4 flex items-baseline gap-2 relative z-10">
-            <span class="text-4xl font-extrabold text-gray-900 tracking-tight">{{ summary?.partiallyPaidInvoices || 0 }}</span>
+            <span class="text-4xl font-extrabold text-gray-900 tracking-tight">{{ summary()?.partiallyPaidInvoices || 0 }}</span>
           </div>
         </a>
 
@@ -48,7 +48,7 @@ import { AccountsDashboardService, InvoiceSummary, CustomerOutstanding } from '.
           </div>
           <p class="text-sm font-medium text-gray-500 uppercase tracking-wider relative z-10">Unpaid Invoices</p>
           <div class="mt-4 flex items-baseline gap-2 relative z-10">
-            <span class="text-4xl font-extrabold text-gray-900 tracking-tight">{{ summary?.unpaidInvoices || 0 }}</span>
+            <span class="text-4xl font-extrabold text-gray-900 tracking-tight">{{ summary()?.unpaidInvoices || 0 }}</span>
           </div>
         </a>
       </div>
@@ -74,7 +74,7 @@ import { AccountsDashboardService, InvoiceSummary, CustomerOutstanding } from '.
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
-              @if (loading) {
+              @if (loading()) {
                 <tr>
                   <td colspan="5" class="px-6 py-12 text-center text-gray-500">
                     <div class="flex flex-col items-center justify-center gap-2">
@@ -83,7 +83,7 @@ import { AccountsDashboardService, InvoiceSummary, CustomerOutstanding } from '.
                     </div>
                   </td>
                 </tr>
-              } @else if (outstandingList.length === 0) {
+              } @else if (outstandingList().length === 0) {
                 <tr>
                   <td colspan="5" class="px-6 py-12 text-center text-gray-500">
                     <div class="flex flex-col items-center justify-center gap-3">
@@ -93,7 +93,7 @@ import { AccountsDashboardService, InvoiceSummary, CustomerOutstanding } from '.
                   </td>
                 </tr>
               } @else {
-                @for (item of outstandingList; track item.customerId) {
+                @for (item of outstandingList(); track item.customerId) {
                   <tr class="hover:bg-gray-50/80 transition-colors group">
                     <td class="px-6 py-4 font-medium text-gray-900">
                       <div class="flex items-center gap-3">
@@ -126,9 +126,9 @@ import { AccountsDashboardService, InvoiceSummary, CustomerOutstanding } from '.
   `
 })
 export class AccountsDashboard implements OnInit {
-  summary: InvoiceSummary | null = null;
-  outstandingList: CustomerOutstanding[] = [];
-  loading = true;
+  summary = signal<InvoiceSummary | null>(null);
+  outstandingList = signal<CustomerOutstanding[]>([]);
+  loading = signal(true);
 
   private dashboardService = inject(AccountsDashboardService);
 
@@ -141,7 +141,7 @@ export class AccountsDashboard implements OnInit {
     
     this.dashboardService.getInvoiceSummary().subscribe({
       next: (data) => {
-        this.summary = data;
+        this.summary.set(data);
       },
       error: (err) => console.error('Error fetching summary', err)
     });
@@ -149,12 +149,12 @@ export class AccountsDashboard implements OnInit {
     this.dashboardService.getCustomerOutstanding(1, 50).subscribe({
       next: (data) => {
         // Sort by highest outstanding first as requested
-        this.outstandingList = (data.items || []).sort((a, b) => b.outstanding - a.outstanding);
-        this.loading = false;
+        this.outstandingList.set((data.items || []).sort((a, b) => b.outstanding - a.outstanding));
+        this.loading.set(false);
       },
       error: (err) => {
         console.error('Error fetching outstanding', err);
-        this.loading = false;
+        this.loading.set(false);
       }
     });
   }

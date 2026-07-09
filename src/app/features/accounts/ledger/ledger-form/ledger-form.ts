@@ -66,7 +66,7 @@ import { Customer } from '../../../../shared/models/api.models';
           </div>
 
           <div class="pt-4 flex justify-end gap-3 border-t border-gray-100">
-            <a routerLink="/accounts/ledgers" class="btn btn-outline text-gray-600">Cancel</a>
+            <a routerLink="/accounts/ledgers" class="btn btn-outline flex items-center gap-2 text-gray-600 border-gray-300 hover:bg-gray-50">Cancel</a>
             <button type="submit" [disabled]="form.invalid || submitting" 
                     class="btn btn-primary flex items-center gap-2">
               @if (submitting) {
@@ -139,3 +139,4 @@ export class LedgerForm implements OnInit {
     });
   }
 }
+

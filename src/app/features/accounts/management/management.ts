@@ -12,7 +12,7 @@ import { RouterLink } from '@angular/router';
           <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Accounts Management</h1>
           <p class="text-sm text-gray-500 mt-1">Select a module below to manage ledgers, vouchers, and allocations.</p>
         </div>
-        <a routerLink="/accounts/dashboard" class="btn btn-outline text-gray-600 border-gray-300 hover:bg-gray-50">
+        <a routerLink="/accounts/dashboard" class="btn btn-outline flex items-center gap-2 text-gray-600 border-gray-300 hover:bg-gray-50 border-gray-300 hover:bg-gray-50">
           <span class="material-symbols-outlined text-[20px]">arrow_back</span>
           Back to Dashboard
         </a>
@@ -65,3 +65,4 @@ import { RouterLink } from '@angular/router';
   `
 })
 export class AccountsManagement {}
+
