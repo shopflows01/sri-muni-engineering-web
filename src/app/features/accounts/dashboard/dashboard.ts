@@ -137,7 +137,7 @@ export class AccountsDashboard implements OnInit {
   }
 
   loadData() {
-    this.loading = true;
+    this.loading.set(true);
     
     this.dashboardService.getInvoiceSummary().subscribe({
       next: (data) => {
