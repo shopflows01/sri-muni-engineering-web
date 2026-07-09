@@ -4,9 +4,12 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export interface InvoiceSummary {
-  paidInvoices: number;
-  unpaidInvoices: number;
-  partiallyPaidInvoices: number;
+  totalInvoices: number;
+  paidCount: number;
+  unpaidCount: number;
+  partiallyPaidCount: number;
+  totalInvoiceAmount: number;
+  totalOutstanding: number;
 }
 
 export interface CustomerOutstanding {

@@ -13,9 +13,7 @@ import { Customer } from '../../../../shared/models/api.models';
     <div class="space-y-6 animate-fade-in max-w-6xl mx-auto pt-6">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <a routerLink="/accounts/ledgers" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500 transition-colors">
-            <span class="material-symbols-outlined text-[20px]">arrow_back</span>
-          </a>
+          <a routerLink="/accounts/ledgers" class="btn flex items-center gap-2 text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-900 shadow-sm rounded-lg transition-all font-medium"><span class="material-symbols-outlined text-[20px]">arrow_back</span>Back</a>
           <div>
             <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Ledger: {{ customer?.name || 'Loading...' }}</h1>
           </div>
@@ -178,3 +176,4 @@ export class LedgerDetail implements OnInit {
     this.loadLedger();
   }
 }
+

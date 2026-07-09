@@ -14,9 +14,7 @@ import { environment } from '../../../../../environments/environment';
   template: `
     <div class="max-w-2xl mx-auto pt-6 animate-fade-in">
       <div class="flex items-center gap-3 mb-6">
-        <a routerLink="/accounts/allocations" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500 transition-colors">
-          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
-        </a>
+        <a routerLink="/accounts/allocations" class="btn flex items-center gap-2 text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-900 shadow-sm rounded-lg transition-all font-medium"><span class="material-symbols-outlined text-[20px]">arrow_back</span>Back</a>
         <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Create Payment Allocation</h1>
       </div>
 
@@ -72,7 +70,7 @@ import { environment } from '../../../../../environments/environment';
           </div>
 
           <div class="pt-4 flex justify-end gap-3 border-t border-gray-100">
-            <a routerLink="/accounts/allocations" class="btn btn-outline flex items-center gap-2 text-gray-600 border-gray-300 hover:bg-gray-50">Cancel</a>
+            <a routerLink="/accounts/allocations" class="btn flex items-center gap-2 text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-900 shadow-sm rounded-lg transition-all font-medium">Cancel</a>
             <button type="submit" [disabled]="form.invalid || submitting" class="btn btn-primary flex items-center gap-2">
               @if (submitting) {
                 <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
@@ -216,4 +214,6 @@ export class AllocationForm implements OnInit {
     });
   }
 }
+
+
 

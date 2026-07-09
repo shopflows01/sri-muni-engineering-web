@@ -11,9 +11,7 @@ import { VoucherService, ReceiptVoucher } from '../../../../core/services/vouche
     <div class="space-y-6 animate-fade-in max-w-4xl mx-auto pt-6">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <a routerLink="/accounts/vouchers" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500 transition-colors">
-            <span class="material-symbols-outlined text-[20px]">arrow_back</span>
-          </a>
+          <a routerLink="/accounts/vouchers" class="btn flex items-center gap-2 text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-900 shadow-sm rounded-lg transition-all font-medium"><span class="material-symbols-outlined text-[20px]">arrow_back</span>Back</a>
           <div>
             <div class="flex items-center gap-2">
               <h1 class="text-2xl font-bold text-gray-900 tracking-tight">{{ voucher?.voucherNumber || 'Loading...' }}</h1>
@@ -30,7 +28,7 @@ import { VoucherService, ReceiptVoucher } from '../../../../core/services/vouche
         
         <div class="flex gap-3">
           @if (voucher?.status === 'Draft') {
-            <a [routerLink]="['/accounts/vouchers', voucher?.voucherId, 'edit']" class="btn btn-outline text-gray-700 bg-white shadow-sm hover:bg-gray-50 flex items-center gap-2">
+            <a [routerLink]="['/accounts/vouchers', voucher?.voucherId, 'edit']" class="btn flex items-center gap-2 text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-900 shadow-sm rounded-lg transition-all font-medium">
               <span class="material-symbols-outlined text-[18px]">edit</span>
               Edit
             </a>
@@ -137,3 +135,5 @@ export class VoucherDetail implements OnInit {
     });
   }
 }
+
+

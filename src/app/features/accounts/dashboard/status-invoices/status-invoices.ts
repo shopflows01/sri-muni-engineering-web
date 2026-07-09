@@ -11,9 +11,7 @@ import { environment } from '../../../../../environments/environment';
   template: `
     <div class="space-y-6 animate-fade-in">
       <div class="flex items-center gap-4">
-        <a routerLink="/accounts/dashboard" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500 transition-colors">
-          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
-        </a>
+        <a routerLink="/accounts/dashboard" class="btn flex items-center gap-2 text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-900 shadow-sm rounded-lg transition-all font-medium"><span class="material-symbols-outlined text-[20px]">arrow_back</span>Back</a>
         <h1 class="text-2xl font-bold text-gray-900 tracking-tight">{{ status }} Invoices</h1>
       </div>
 
@@ -82,8 +80,8 @@ import { environment } from '../../../../../environments/environment';
             Showing <span class="font-medium text-gray-900">{{ (pageNumber - 1) * pageSize + (invoices.length > 0 ? 1 : 0) }}</span> to <span class="font-medium text-gray-900">{{ (pageNumber - 1) * pageSize + invoices.length }}</span> of <span class="font-medium text-gray-900">{{ totalCount }}</span> results
           </div>
           <div class="flex items-center gap-2">
-            <button class="btn btn-outline px-3 py-1 text-sm" [disabled]="pageNumber === 1" (click)="loadPage(pageNumber - 1)">Previous</button>
-            <button class="btn btn-outline px-3 py-1 text-sm" [disabled]="pageNumber === totalPages || totalPages === 0" (click)="loadPage(pageNumber + 1)">Next</button>
+            <button class="btn flex items-center gap-2 text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-900 shadow-sm rounded-lg transition-all font-medium" [disabled]="pageNumber === 1" (click)="loadPage(pageNumber - 1)">Previous</button>
+            <button class="btn flex items-center gap-2 text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-900 shadow-sm rounded-lg transition-all font-medium" [disabled]="pageNumber === totalPages || totalPages === 0" (click)="loadPage(pageNumber + 1)">Next</button>
           </div>
         </div>
       </div>
@@ -134,3 +132,5 @@ export class StatusInvoices implements OnInit {
     this.loadInvoices();
   }
 }
+
+

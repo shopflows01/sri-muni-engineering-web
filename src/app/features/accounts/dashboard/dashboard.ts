@@ -26,7 +26,7 @@ import { AccountsDashboardService, InvoiceSummary, CustomerOutstanding } from '.
           </div>
           <p class="text-sm font-medium text-gray-500 uppercase tracking-wider relative z-10">Paid Invoices</p>
           <div class="mt-4 flex items-baseline gap-2 relative z-10">
-            <span class="text-4xl font-extrabold text-gray-900 tracking-tight">{{ summary()?.paidInvoices || 0 }}</span>
+            <span class="text-4xl font-extrabold text-gray-900 tracking-tight">{{ summary()?.paidCount || 0 }}</span>
           </div>
         </a>
 
@@ -37,7 +37,7 @@ import { AccountsDashboardService, InvoiceSummary, CustomerOutstanding } from '.
           </div>
           <p class="text-sm font-medium text-gray-500 uppercase tracking-wider relative z-10">Partially Paid</p>
           <div class="mt-4 flex items-baseline gap-2 relative z-10">
-            <span class="text-4xl font-extrabold text-gray-900 tracking-tight">{{ summary()?.partiallyPaidInvoices || 0 }}</span>
+            <span class="text-4xl font-extrabold text-gray-900 tracking-tight">{{ summary()?.partiallyPaidCount || 0 }}</span>
           </div>
         </a>
 
@@ -48,7 +48,7 @@ import { AccountsDashboardService, InvoiceSummary, CustomerOutstanding } from '.
           </div>
           <p class="text-sm font-medium text-gray-500 uppercase tracking-wider relative z-10">Unpaid Invoices</p>
           <div class="mt-4 flex items-baseline gap-2 relative z-10">
-            <span class="text-4xl font-extrabold text-gray-900 tracking-tight">{{ summary()?.unpaidInvoices || 0 }}</span>
+            <span class="text-4xl font-extrabold text-gray-900 tracking-tight">{{ summary()?.unpaidCount || 0 }}</span>
           </div>
         </a>
       </div>

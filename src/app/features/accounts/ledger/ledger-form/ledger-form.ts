@@ -13,9 +13,7 @@ import { Customer } from '../../../../shared/models/api.models';
   template: `
     <div class="max-w-2xl mx-auto pt-6 animate-fade-in">
       <div class="flex items-center gap-3 mb-6">
-        <a routerLink="/accounts/ledgers" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500 transition-colors">
-          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
-        </a>
+        <a routerLink="/accounts/ledgers" class="btn flex items-center gap-2 text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-900 shadow-sm rounded-lg transition-all font-medium"><span class="material-symbols-outlined text-[20px]">arrow_back</span>Back</a>
         <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Create Customer Ledger</h1>
       </div>
 
@@ -66,7 +64,7 @@ import { Customer } from '../../../../shared/models/api.models';
           </div>
 
           <div class="pt-4 flex justify-end gap-3 border-t border-gray-100">
-            <a routerLink="/accounts/ledgers" class="btn btn-outline flex items-center gap-2 text-gray-600 border-gray-300 hover:bg-gray-50">Cancel</a>
+            <a routerLink="/accounts/ledgers" class="btn flex items-center gap-2 text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-900 shadow-sm rounded-lg transition-all font-medium">Cancel</a>
             <button type="submit" [disabled]="form.invalid || submitting" 
                     class="btn btn-primary flex items-center gap-2">
               @if (submitting) {
@@ -139,4 +137,6 @@ export class LedgerForm implements OnInit {
     });
   }
 }
+
+
 
