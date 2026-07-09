@@ -80,6 +80,10 @@ export class InvoiceDetail implements OnInit {
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         window.open(url, '_blank');
+      },
+      error: (err) => {
+        console.error('Failed to generate PDF:', err);
+        alert('Failed to generate PDF. Please try again.');
       }
     });
   }
