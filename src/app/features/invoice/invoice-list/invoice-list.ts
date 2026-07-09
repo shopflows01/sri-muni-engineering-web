@@ -1,4 +1,5 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { InvoiceService } from '../../../core/services/invoice.service';
@@ -7,7 +8,7 @@ import { EmptyState } from '../../../shared/components/empty-state/empty-state';
 
 @Component({
   selector: 'app-invoice-list',
-  imports: [RouterLink, DatePipe, DecimalPipe, EmptyState],
+  imports: [RouterLink, DatePipe, DecimalPipe, EmptyState, FormsModule],
   templateUrl: './invoice-list.html',
   styleUrl: './invoice-list.css',
 })
@@ -60,11 +61,40 @@ export class InvoiceList implements OnInit {
     this.router.navigate(['/ewaybill'], { queryParams: { invoiceIds: ids.join(',') } });
   }
 
-  downloadPdf(invoice: Invoice) {
-    this.invoiceService.getPdfPreview(invoice.id, { originalForRecipient: true }).subscribe({
+  showPdfDialog = signal(false);
+  selectedInvoiceForPdf = signal<Invoice | null>(null);
+  pdfOptions = {
+    original: false,
+    duplicate: false,
+    triplicate: false
+  };
+
+  openPdfDialog(invoice: Invoice) {
+    this.selectedInvoiceForPdf.set(invoice);
+    this.pdfOptions = { original: false, duplicate: false, triplicate: false };
+    this.showPdfDialog.set(true);
+  }
+
+  closePdfDialog() {
+    this.showPdfDialog.set(false);
+    this.selectedInvoiceForPdf.set(null);
+  }
+
+  confirmPdfDownload() {
+    const invoice = this.selectedInvoiceForPdf();
+    if (!invoice) return;
+
+    const params = {
+      originalForRecipient: this.pdfOptions.original,
+      duplicateForTransporter: this.pdfOptions.duplicate,
+      triplicateForSupplier: this.pdfOptions.triplicate
+    };
+
+    this.invoiceService.getPdfPreview(invoice.id, params).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         window.open(url, '_blank');
+        this.closePdfDialog();
       }
     });
   }

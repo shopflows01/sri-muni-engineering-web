@@ -1,55 +1,74 @@
 <div class="flex h-screen bg-gray-50 overflow-hidden text-gray-800">
   <!-- Desktop Sidebar -->
-  <aside [class]="sidebarExpanded() ? 'w-60' : 'w-[72px]'" class="hidden md:flex flex-col bg-brand transition-all duration-300 ease-in-out overflow-hidden">
-    <a routerLink="/dashboard" class="py-4 px-2 flex flex-col items-center justify-center gap-1 border-b border-white/10 transition-all duration-300 text-center hover:bg-white/5 cursor-pointer">
-      <img src="assets/svi-logo.png" alt="SVI Logo" 
-           class="object-contain flex-shrink-0 transition-all duration-300"
-           [class]="sidebarExpanded() ? 'h-24 w-24' : 'h-14 w-14'">
-      <span class="text-white font-bold transition-all duration-300" 
-            [class]="sidebarExpanded() ? 'text-sm leading-tight mt-1' : 'text-[9px] leading-[1.1]'">
+  <aside [class]="sidebarExpanded() ? 'w-60' : 'w-[72px]'"
+    class="hidden md:flex flex-col bg-brand transition-all duration-300 ease-in-out overflow-hidden">
+    <a routerLink="/dashboard"
+      class="py-4 px-2 flex flex-col items-center justify-center gap-1 border-b border-white/10 transition-all duration-300 text-center hover:bg-white/5 cursor-pointer">
+      <img src="assets/svi-logo.png" alt="SVI Logo" class="object-contain flex-shrink-0 transition-all duration-300"
+        [class]="sidebarExpanded() ? 'h-24 w-24' : 'h-14 w-14'">
+      <span class="text-white font-bold transition-all duration-300"
+        [class]="sidebarExpanded() ? 'text-sm leading-tight mt-1' : 'text-[9px] leading-[1.1]'">
         SRI VALLI<br>INDUSTRIES
       </span>
     </a>
     <!-- Toggle Button -->
-    <button (click)="toggleSidebar()" class="mx-2 mt-2 flex items-center justify-center p-2 rounded-lg text-white/70 hover:bg-white/15 hover:text-white transition-colors" title="Toggle Sidebar">
+    <button (click)="toggleSidebar()"
+      class="mx-2 mt-2 flex items-center justify-center p-2 rounded-lg text-white/70 hover:bg-white/15 hover:text-white transition-colors"
+      title="Toggle Sidebar">
       @if (sidebarExpanded()) {
-        <span class="material-symbols-outlined text-[20px]">keyboard_double_arrow_left</span>
+      <span class="material-symbols-outlined text-[20px]">keyboard_double_arrow_left</span>
       } @else {
-        <span class="material-symbols-outlined text-[20px]">keyboard_double_arrow_right</span>
+      <span class="material-symbols-outlined text-[20px]">keyboard_double_arrow_right</span>
       }
     </button>
     <nav class="flex-1 p-2 space-y-1 overflow-y-auto">
-      <a routerLink="/dashboard" routerLinkActive="bg-white/20 shadow-lg" [routerLinkActiveOptions]="{exact: true}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium" [title]="sidebarExpanded() ? '' : 'Dashboard'">
+      <a routerLink="/dashboard" routerLinkActive="bg-white/20 shadow-lg" [routerLinkActiveOptions]="{exact: true}"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium"
+        [title]="sidebarExpanded() ? '' : 'Dashboard'">
         <span class="material-symbols-outlined flex-shrink-0 text-[20px]">dashboard</span>
         @if (sidebarExpanded()) { <span class="whitespace-nowrap text-sm">Dashboard</span> }
       </a>
-      <a routerLink="/customers" routerLinkActive="bg-white/20 shadow-lg" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium" [title]="sidebarExpanded() ? '' : 'Customers'">
+      <a routerLink="/customers" routerLinkActive="bg-white/20 shadow-lg"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium"
+        [title]="sidebarExpanded() ? '' : 'Customers'">
         <span class="material-symbols-outlined flex-shrink-0 text-[20px]">group</span>
         @if (sidebarExpanded()) { <span class="whitespace-nowrap text-sm">Customers</span> }
       </a>
-      <a routerLink="/products" routerLinkActive="bg-white/20 shadow-lg" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium" [title]="sidebarExpanded() ? '' : 'Products'">
+      <a routerLink="/products" routerLinkActive="bg-white/20 shadow-lg"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium"
+        [title]="sidebarExpanded() ? '' : 'Products'">
         <span class="material-symbols-outlined flex-shrink-0 text-[20px]">category</span>
         @if (sidebarExpanded()) { <span class="whitespace-nowrap text-sm">Products</span> }
       </a>
-      <a routerLink="/stock" routerLinkActive="bg-white/20 shadow-lg" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium" [title]="sidebarExpanded() ? '' : 'Stock Ledger'">
+      <a routerLink="/stock" routerLinkActive="bg-white/20 shadow-lg"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium"
+        [title]="sidebarExpanded() ? '' : 'Stock Ledger'">
         <span class="material-symbols-outlined flex-shrink-0 text-[20px]">inventory</span>
         @if (sidebarExpanded()) { <span class="whitespace-nowrap text-sm">Stock Ledger</span> }
       </a>
-      <a routerLink="/invoices" routerLinkActive="bg-white/20 shadow-lg" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium" [title]="sidebarExpanded() ? '' : 'Invoices'">
+      <a routerLink="/invoices" routerLinkActive="bg-white/20 shadow-lg"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium"
+        [title]="sidebarExpanded() ? '' : 'Invoices'">
         <span class="material-symbols-outlined flex-shrink-0 text-[20px]">receipt</span>
         @if (sidebarExpanded()) { <span class="whitespace-nowrap text-sm">Invoices</span> }
       </a>
-      <a routerLink="/ewaybill" routerLinkActive="bg-white/20 shadow-lg" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium" [title]="sidebarExpanded() ? '' : 'E-Way Bill'">
+      <a routerLink="/ewaybill" routerLinkActive="bg-white/20 shadow-lg"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium"
+        [title]="sidebarExpanded() ? '' : 'E-Way Bill'">
         <span class="material-symbols-outlined flex-shrink-0 text-[20px]">local_shipping</span>
         @if (sidebarExpanded()) { <span class="whitespace-nowrap text-sm">E-Way Bill</span> }
       </a>
-      <a routerLink="/accounts" routerLinkActive="bg-white/20 shadow-lg" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium" [title]="sidebarExpanded() ? '' : 'Accounts'">
+      <a routerLink="/accounts" routerLinkActive="bg-white/20 shadow-lg"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium"
+        [title]="sidebarExpanded() ? '' : 'Accounts'">
         <span class="material-symbols-outlined flex-shrink-0 text-[20px]">account_balance</span>
         @if (sidebarExpanded()) { <span class="whitespace-nowrap text-sm">Accounts</span> }
       </a>
     </nav>
     <div class="p-3 border-t border-white/10">
-      <button (click)="logout()" class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-white/70 hover:bg-white/15 hover:text-white transition-all duration-200" title="Logout">
+      <button (click)="logout()"
+        class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-white/70 hover:bg-white/15 hover:text-white transition-all duration-200"
+        title="Logout">
         <span class="material-symbols-outlined flex-shrink-0 text-[20px]">logout</span>
         @if (sidebarExpanded()) { <span class="whitespace-nowrap text-sm">Logout</span> }
       </button>
@@ -58,63 +77,73 @@
 
   <!-- Mobile Slide-in Menu Overlay -->
   @if (mobileMenuOpen()) {
-    <div class="md:hidden fixed inset-0 z-40 bg-black/30 backdrop-blur-sm" (click)="closeMenu()"></div>
-    <aside class="md:hidden fixed top-0 left-0 bottom-0 z-50 w-72 bg-brand shadow-xl flex flex-col animate-slide-in">
-      <div class="p-5 border-b border-white/10 flex items-center justify-between">
-        <a routerLink="/dashboard" (click)="closeMenu()" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
-          <img src="assets/svi-logo.png" alt="SVI Logo" class="h-20 w-20 object-contain rounded-lg">
-          <span class="text-white font-bold text-sm leading-tight">SRI VALLI<br>INDUSTRIES</span>
-        </a>
-        <button (click)="closeMenu()" class="text-white/60 hover:text-white p-1">
-          <span class="material-symbols-outlined text-[24px]">close</span>
-        </button>
+  <div class="md:hidden fixed inset-0 z-40 bg-black/30 backdrop-blur-sm" (click)="closeMenu()"></div>
+  <aside class="md:hidden fixed top-0 left-0 bottom-0 z-50 w-72 bg-brand shadow-xl flex flex-col animate-slide-in">
+    <div class="p-5 border-b border-white/10 flex items-center justify-between">
+      <a routerLink="/dashboard" (click)="closeMenu()"
+        class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+        <img src="assets/svi-logo.png" alt="SVI Logo" class="h-20 w-20 object-contain rounded-lg">
+        <span class="text-white font-bold text-sm leading-tight">SRI VALLI<br>INDUSTRIES</span>
+      </a>
+      <button (click)="closeMenu()" class="text-white/60 hover:text-white p-1">
+        <span class="material-symbols-outlined text-[24px]">close</span>
+      </button>
+    </div>
+    <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
+      <a routerLink="/dashboard" routerLinkActive="bg-white/20" (click)="closeMenu()"
+        class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
+        <span class="material-symbols-outlined text-[20px]">dashboard</span>
+        Dashboard
+      </a>
+      <a routerLink="/customers" routerLinkActive="bg-white/20" (click)="closeMenu()"
+        class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
+        <span class="material-symbols-outlined text-[20px]">group</span>
+        Customers
+      </a>
+      <a routerLink="/products" routerLinkActive="bg-white/20" (click)="closeMenu()"
+        class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
+        <span class="material-symbols-outlined text-[20px]">category</span>
+        Products
+      </a>
+      <a routerLink="/stock" routerLinkActive="bg-white/20" (click)="closeMenu()"
+        class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
+        <span class="material-symbols-outlined text-[20px]">inventory</span>
+        Stock Ledger
+      </a>
+      <a routerLink="/invoices" routerLinkActive="bg-white/20" (click)="closeMenu()"
+        class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
+        <span class="material-symbols-outlined text-[20px]">receipt</span>
+        Invoices
+      </a>
+      <a routerLink="/ewaybill" routerLinkActive="bg-white/20" (click)="closeMenu()"
+        class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
+        <span class="material-symbols-outlined text-[20px]">local_shipping</span>
+        E-Way Bill
+      </a>
+      <a routerLink="/accounts" routerLinkActive="bg-white/20" (click)="closeMenu()"
+        class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
+        <span class="material-symbols-outlined text-[20px]">account_balance</span>
+        Accounts
+      </a>
+    </nav>
+    <div class="p-4 border-t border-white/10 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-white font-bold">{{
+          userInitial() }}</div>
+        <span class="text-sm font-semibold text-white">{{ userName() }}</span>
       </div>
-      <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
-        <a routerLink="/dashboard" routerLinkActive="bg-white/20" (click)="closeMenu()" class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
-          <span class="material-symbols-outlined text-[20px]">dashboard</span>
-          Dashboard
-        </a>
-        <a routerLink="/customers" routerLinkActive="bg-white/20" (click)="closeMenu()" class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
-          <span class="material-symbols-outlined text-[20px]">group</span>
-          Customers
-        </a>
-        <a routerLink="/products" routerLinkActive="bg-white/20" (click)="closeMenu()" class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
-          <span class="material-symbols-outlined text-[20px]">category</span>
-          Products
-        </a>
-        <a routerLink="/stock" routerLinkActive="bg-white/20" (click)="closeMenu()" class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
-          <span class="material-symbols-outlined text-[20px]">inventory</span>
-          Stock Ledger
-        </a>
-        <a routerLink="/invoices" routerLinkActive="bg-white/20" (click)="closeMenu()" class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
-          <span class="material-symbols-outlined text-[20px]">receipt</span>
-          Invoices
-        </a>
-        <a routerLink="/ewaybill" routerLinkActive="bg-white/20" (click)="closeMenu()" class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
-          <span class="material-symbols-outlined text-[20px]">local_shipping</span>
-          E-Way Bill
-        </a>
-        <a routerLink="/accounts" routerLinkActive="bg-white/20" (click)="closeMenu()" class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
-          <span class="material-symbols-outlined text-[20px]">account_balance</span>
-          Accounts
-        </a>
-      </nav>
-      <div class="p-4 border-t border-white/10 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-white font-bold">{{ userInitial() }}</div>
-          <span class="text-sm font-semibold text-white">{{ userName() }}</span>
-        </div>
-        <button (click)="logout()" class="text-white/60 hover:text-white p-2 rounded-md hover:bg-white/10" title="Logout">
-          <span class="material-symbols-outlined text-[20px]">logout</span>
-        </button>
-      </div>
-    </aside>
+      <button (click)="logout()" class="text-white/60 hover:text-white p-2 rounded-md hover:bg-white/10" title="Logout">
+        <span class="material-symbols-outlined text-[20px]">logout</span>
+      </button>
+    </div>
+  </aside>
   }
 
   <!-- Main Content Area -->
   <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
     <!-- Mobile Header -->
-    <header class="md:hidden flex items-center justify-between p-4 bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+    <header
+      class="md:hidden flex items-center justify-between p-4 bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
       <a routerLink="/dashboard" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
         <img src="assets/svi-logo.png" alt="SVI Logo" class="h-16 object-contain">
         <span class="font-bold text-brand text-sm leading-tight">SRI VALLI<br>INDUSTRIES</span>
@@ -129,36 +158,44 @@
     </div>
 
     <!-- Footer -->
-    <footer class="hidden md:flex items-center justify-center px-6 py-2 bg-white border-t border-gray-200 text-xs text-gray-400 gap-2">
+    <footer
+      class="hidden md:flex items-center justify-center px-6 py-2 bg-white border-t border-gray-200 text-xs text-gray-400 gap-2">
       <span>&copy; 2026 Sri Valli Industries. All rights reserved.</span>
       <span>&middot;</span>
-      <span>v1.1.0</span>
+      <span>v2.1.0</span>
     </footer>
   </main>
 
   <!-- Mobile Bottom Nav -->
-  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around p-2 pb-safe z-20 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-    <a routerLink="/dashboard" routerLinkActive="text-brand" [routerLinkActiveOptions]="{exact: true}" class="flex flex-col items-center justify-center p-2 text-gray-500 hover:text-brand transition-colors">
+  <nav
+    class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around p-2 pb-safe z-20 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+    <a routerLink="/dashboard" routerLinkActive="text-brand" [routerLinkActiveOptions]="{exact: true}"
+      class="flex flex-col items-center justify-center p-2 text-gray-500 hover:text-brand transition-colors">
       <span class="material-symbols-outlined text-[22px]">dashboard</span>
       <span class="text-[10px] mt-1 font-medium">Home</span>
     </a>
-    <a routerLink="/customers" routerLinkActive="text-brand" class="flex flex-col items-center justify-center p-2 text-gray-500 hover:text-brand transition-colors">
+    <a routerLink="/customers" routerLinkActive="text-brand"
+      class="flex flex-col items-center justify-center p-2 text-gray-500 hover:text-brand transition-colors">
       <span class="material-symbols-outlined text-[22px]">group</span>
       <span class="text-[10px] mt-1 font-medium">Cust</span>
     </a>
-    <a routerLink="/stock" routerLinkActive="text-brand" class="flex flex-col items-center justify-center p-2 text-gray-500 hover:text-brand transition-colors">
+    <a routerLink="/stock" routerLinkActive="text-brand"
+      class="flex flex-col items-center justify-center p-2 text-gray-500 hover:text-brand transition-colors">
       <span class="material-symbols-outlined text-[22px]">inventory</span>
       <span class="text-[10px] mt-1 font-medium">Stock</span>
     </a>
-    <a routerLink="/invoices" routerLinkActive="text-brand" class="flex flex-col items-center justify-center p-2 text-gray-500 hover:text-brand transition-colors">
+    <a routerLink="/invoices" routerLinkActive="text-brand"
+      class="flex flex-col items-center justify-center p-2 text-gray-500 hover:text-brand transition-colors">
       <span class="material-symbols-outlined text-[22px]">receipt</span>
       <span class="text-[10px] mt-1 font-medium">Invoice</span>
     </a>
-    <a routerLink="/ewaybill" routerLinkActive="text-brand" class="flex flex-col items-center justify-center p-2 text-gray-500 hover:text-brand transition-colors">
+    <a routerLink="/ewaybill" routerLinkActive="text-brand"
+      class="flex flex-col items-center justify-center p-2 text-gray-500 hover:text-brand transition-colors">
       <span class="material-symbols-outlined text-[22px]">local_shipping</span>
       <span class="text-[10px] mt-1 font-medium">E-Way</span>
     </a>
-    <a routerLink="/accounts" routerLinkActive="text-brand" class="flex flex-col items-center justify-center p-2 text-gray-500 hover:text-brand transition-colors">
+    <a routerLink="/accounts" routerLinkActive="text-brand"
+      class="flex flex-col items-center justify-center p-2 text-gray-500 hover:text-brand transition-colors">
       <span class="material-symbols-outlined text-[22px]">account_balance</span>
       <span class="text-[10px] mt-1 font-medium">Accts</span>
     </a>

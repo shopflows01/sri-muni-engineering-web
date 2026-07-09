@@ -18,6 +18,39 @@
     </div>
   </div>
 
+@if (showPdfDialog()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center">
+    <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" (click)="closePdfDialog()"></div>
+    <div class="relative bg-white rounded-xl shadow-xl w-full max-w-md p-6 animate-fade-in">
+      <h3 class="text-xl font-bold text-gray-900 mb-4">Print PDF Options</h3>
+      <p class="text-sm text-gray-500 mb-6">Select the labels you want to include in the PDF. Leave unchecked for a single page invoice without labels.</p>
+      
+      <div class="space-y-4 mb-6">
+        <label class="flex items-center gap-3 cursor-pointer group">
+          <input type="checkbox" [(ngModel)]="pdfOptions.original" class="w-5 h-5 rounded border-gray-300 text-brand focus:ring-brand">
+          <span class="text-gray-700 group-hover:text-gray-900">Original for Recipient</span>
+        </label>
+        <label class="flex items-center gap-3 cursor-pointer group">
+          <input type="checkbox" [(ngModel)]="pdfOptions.duplicate" class="w-5 h-5 rounded border-gray-300 text-brand focus:ring-brand">
+          <span class="text-gray-700 group-hover:text-gray-900">Duplicate for Transporter</span>
+        </label>
+        <label class="flex items-center gap-3 cursor-pointer group">
+          <input type="checkbox" [(ngModel)]="pdfOptions.triplicate" class="w-5 h-5 rounded border-gray-300 text-brand focus:ring-brand">
+          <span class="text-gray-700 group-hover:text-gray-900">Triplicate for Supplier</span>
+        </label>
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <button (click)="closePdfDialog()" class="btn btn-outline">Cancel</button>
+        <button (click)="confirmPdfDownload()" class="btn btn-primary shadow-sm flex items-center gap-2">
+          <span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+          Generate PDF
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
   @if (isLoading()) {
   <div class="flex justify-center py-12">
     <div class="w-8 h-8 border-3 border-brand-muted border-t-brand rounded-full animate-spin"></div>
@@ -94,7 +127,7 @@
                   class="bg-brand/10 text-brand hover:bg-brand/20 text-xs font-medium px-2 py-1 rounded transition-colors">
                   View
                 </a>
-                <button (click)="downloadPdf(inv)"
+                <button (click)="openPdfDialog(inv)"
                   class="bg-green-50 text-brand-success hover:bg-green-100 text-xs font-medium px-2 py-1 rounded transition-colors">
                   PDF
                 </button>
@@ -128,7 +161,7 @@
                 class="flex-1 text-center bg-blue-50 text-blue-600 text-xs font-medium py-2 rounded-lg">Edit</a>
               <a [routerLink]="['/invoices', inv.id]"
                 class="flex-1 text-center bg-brand-muted text-brand text-xs font-medium py-2 rounded-lg">View</a>
-              <button (click)="downloadPdf(inv)"
+              <button (click)="openPdfDialog(inv)"
                 class="flex-1 text-center bg-green-50 text-brand-success text-xs font-medium py-2 rounded-lg">PDF</button>
             </div>
           </div>
