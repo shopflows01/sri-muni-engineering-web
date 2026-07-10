@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { StockLedger } from '../../shared/models/api.models';
+import { JobWorkDC } from '../../shared/models/api.models';
 import { Observable } from 'rxjs';
 
 export interface StockFilterRequest {
@@ -28,7 +28,7 @@ export class StockService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/stock`;
 
-  getAll(filter?: StockFilterRequest): Observable<PaginatedResponse<StockLedger>> {
+  getAll(filter?: StockFilterRequest): Observable<PaginatedResponse<JobWorkDC>> {
     let params = new HttpParams();
     if (filter) {
       if (filter.page) params = params.set('Page', filter.page.toString());
@@ -39,19 +39,15 @@ export class StockService {
       if (filter.customerId) params = params.set('CustomerId', filter.customerId);
       if (filter.productId) params = params.set('ProductId', filter.productId);
     }
-    return this.http.get<PaginatedResponse<StockLedger>>(this.apiUrl, { params });
+    return this.http.get<PaginatedResponse<JobWorkDC>>(this.apiUrl, { params });
   }
 
-  createInward(data: { dcNo: string; dcDate: string; customerId: string; productId: string; inwardQty: number }): Observable<StockLedger> {
-    return this.http.post<StockLedger>(`${this.apiUrl}/inward`, data);
+  createDC(data: { dcNo: string; dcDate: string; customerId: string; remarks?: string; items: { productId: string; qtySent: number; rate?: number; gstPercent?: number; remarks?: string }[] }): Observable<JobWorkDC> {
+    return this.http.post<JobWorkDC>(`${this.apiUrl}/dc`, data);
   }
 
-  updateOutward(id: string, qty: number): Observable<any> {
-    return this.http.put(`${this.apiUrl}/outward/${id}`, { outwardQty: qty });
-  }
-
-  updateRejected(id: string, qty: number): Observable<any> {
-    return this.http.put(`${this.apiUrl}/rejected/${id}`, { rejectedQty: qty });
+  addTransaction(dcItemId: string, data: { transactionType: number; transactionDate: string; quantity: number; referenceNo?: string; remarks?: string }): Observable<JobWorkDC> {
+    return this.http.post<JobWorkDC>(`${this.apiUrl}/dc-item/${dcItemId}/transaction`, data);
   }
 
   exportExcel(fromDate: string, toDate: string): Observable<{ downloadUrl: string }> {

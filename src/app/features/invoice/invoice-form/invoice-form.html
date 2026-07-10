@@ -37,7 +37,7 @@
           <select formControlName="dcLedgerId" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none bg-white">
             <option value="">Select DC entry</option>
             @for (stock of stockItems(); track stock.id) {
-              <option [value]="stock.id">DC {{ stock.dcNo }} - {{ stock.partName }} ({{ stock.inwardQty }} Nos)</option>
+              <option [value]="stock.id">DC {{ stock.dcNo }} - {{ stock.partNo }} ({{ stock.qtySent }} Sent)</option>
             }
           </select>
         </div>

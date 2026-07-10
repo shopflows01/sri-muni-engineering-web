@@ -3,10 +3,29 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { StockService, PaginatedResponse } from '../../../core/services/stock';
 import { CustomerService } from '../../../core/services/customer';
 import { ProductService } from '../../../core/services/product';
-import { StockLedger as StockLedgerModel, Customer, Product } from '../../../shared/models/api.models';
+import { JobWorkDC, Customer, Product } from '../../../shared/models/api.models';
 import { EmptyState } from '../../../shared/components/empty-state/empty-state';
 
 import { uppercaseStrings } from '../../../shared/utils/string-utils';
+
+export interface LedgerViewModel {
+  dcId: string;
+  dcNo: string;
+  dcDate: string;
+  customerId: string;
+  customerName: string;
+  dcItemId: string;
+  productId: string;
+  partName: string;
+  partNo: string;
+  qtySent: number;
+  rate?: number;
+  gstPercent?: number;
+  inwardQty: number;
+  outwardQty: number;
+  rejectedQty: number;
+  pendingQty: number;
+}
 
 @Component({
   selector: 'app-stock-ledger',
@@ -21,7 +40,7 @@ export class StockLedger implements OnInit {
   private fb = inject(FormBuilder);
 
   activeTab = signal<'list' | 'inward'>('list');
-  ledgerItems = signal<StockLedgerModel[]>([]);
+  ledgerItems = signal<LedgerViewModel[]>([]);
   isLoading = signal(false);
   totalCount = signal(0);
   page = signal(1);
@@ -30,7 +49,7 @@ export class StockLedger implements OnInit {
   products = signal<Product[]>([]);
 
   // Outward/Rejected edit
-  editingItem = signal<StockLedgerModel | null>(null);
+  editingItem = signal<LedgerViewModel | null>(null);
   outwardQty = signal<number>(0);
   rejectedQty = signal<number>(0);
 
@@ -39,7 +58,9 @@ export class StockLedger implements OnInit {
     dcDate: ['', Validators.required],
     customerId: ['', Validators.required],
     productId: ['', Validators.required],
-    inwardQty: [0, [Validators.required, Validators.min(1)]]
+    qtySent: [0, [Validators.required, Validators.min(1)]],
+    rate: [0, [Validators.min(0)]],
+    gstPercent: [18, [Validators.min(0)]]
   });
 
   isSubmitting = signal(false);
@@ -61,7 +82,30 @@ export class StockLedger implements OnInit {
     this.isLoading.set(true);
     this.stockService.getAll({ page: this.page(), pageSize: 20 }).subscribe({
       next: (res) => {
-        this.ledgerItems.set(res.items);
+        const viewModels: LedgerViewModel[] = [];
+        for (const dc of res.items) {
+          for (const item of dc.items) {
+            viewModels.push({
+              dcId: dc.id,
+              dcNo: dc.dcNo,
+              dcDate: dc.dcDate,
+              customerId: dc.customerId,
+              customerName: dc.customerName,
+              dcItemId: item.id,
+              productId: item.productId,
+              partName: item.partName,
+              partNo: item.partNo,
+              qtySent: item.qtySent,
+              rate: item.rate,
+              gstPercent: item.gstPercent,
+              inwardQty: item.inwardQty,
+              outwardQty: item.outwardQty,
+              rejectedQty: item.rejectedQty,
+              pendingQty: item.pendingQty
+            });
+          }
+        }
+        this.ledgerItems.set(viewModels);
         this.totalCount.set(res.totalCount);
         this.isLoading.set(false);
       },
@@ -94,12 +138,16 @@ export class StockLedger implements OnInit {
         dcNo: val.dcNo!,
         dcDate: val.dcDate!,
         customerId: val.customerId!,
-        productId: val.productId!,
-        inwardQty: val.inwardQty!
+        items: [{
+          productId: val.productId!,
+          qtySent: val.qtySent!,
+          rate: val.rate!,
+          gstPercent: val.gstPercent!
+        }]
       };
       payload = uppercaseStrings(payload);
       
-      this.stockService.createInward(payload).subscribe({
+      this.stockService.createDC(payload).subscribe({
         next: () => {
           this.isSubmitting.set(false);
           this.inwardForm.reset();
@@ -113,18 +161,22 @@ export class StockLedger implements OnInit {
     }
   }
 
-  openOutward(item: StockLedgerModel) {
+  openOutward(item: LedgerViewModel) {
     this.editingItem.set(item);
-    this.outwardQty.set(item.outwardQty);
-    this.rejectedQty.set(item.rejectedQty);
+    this.outwardQty.set(0); // Assuming you're recording a new transaction
+    this.rejectedQty.set(0);
   }
 
   saveOutward() {
     const item = this.editingItem();
-    if (!item) return;
-    this.stockService.updateOutward(item.id, this.outwardQty()).subscribe({
+    if (!item || !this.outwardQty()) return;
+    this.stockService.addTransaction(item.dcItemId, {
+      transactionType: 1, // Outward
+      transactionDate: new Date().toISOString().split('T')[0],
+      quantity: this.outwardQty()
+    }).subscribe({
       next: () => {
-        this.showSuccess('Outward quantity updated.');
+        this.showSuccess('Outward transaction added.');
         this.editingItem.set(null);
         this.loadLedger();
       }
@@ -133,10 +185,14 @@ export class StockLedger implements OnInit {
 
   saveRejected() {
     const item = this.editingItem();
-    if (!item) return;
-    this.stockService.updateRejected(item.id, this.rejectedQty()).subscribe({
+    if (!item || !this.rejectedQty()) return;
+    this.stockService.addTransaction(item.dcItemId, {
+      transactionType: 2, // Rejected
+      transactionDate: new Date().toISOString().split('T')[0],
+      quantity: this.rejectedQty()
+    }).subscribe({
       next: () => {
-        this.showSuccess('Rejected quantity updated.');
+        this.showSuccess('Rejected transaction added.');
         this.editingItem.set(null);
         this.loadLedger();
       }
@@ -148,14 +204,14 @@ export class StockLedger implements OnInit {
   }
 
   deleteLedger(id: string) {
-    if (confirm('Are you sure you want to delete this stock ledger entry?')) {
+    if (confirm('Are you sure you want to delete this DC entry? This will delete all items and transactions.')) {
       this.stockService.delete(id).subscribe({
         next: () => {
-          this.showSuccess('Stock ledger entry deleted successfully.');
+          this.showSuccess('DC entry deleted successfully.');
           this.loadLedger();
         },
         error: (err) => {
-          alert('Failed to delete stock ledger entry. It may be linked to an invoice.');
+          alert('Failed to delete DC entry. It may be linked to an invoice.');
         }
       });
     }

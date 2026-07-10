@@ -58,7 +58,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (item of ledgerItems(); track item.id) {
+            @for (item of ledgerItems(); track item.dcItemId) {
               <tr class="border-b border-gray-100 hover:bg-gray-50/50">
                 <td class="px-4 py-3 font-medium text-brand-text">{{ item.dcNo }}</td>
                 <td class="px-4 py-3 text-gray-700">{{ item.customerName }}</td>
@@ -73,7 +73,7 @@
                     <button (click)="openOutward(item)" class="bg-blue-50 text-blue-600 hover:bg-blue-100 text-xs font-medium px-2 py-1 rounded transition-colors">
                       Update
                     </button>
-                    <button (click)="deleteLedger(item.id)" class="bg-red-50 text-red-600 hover:bg-red-100 text-xs font-medium px-2 py-1 rounded transition-colors" title="Delete">
+                    <button (click)="deleteLedger(item.dcId)" class="bg-red-50 text-red-600 hover:bg-red-100 text-xs font-medium px-2 py-1 rounded transition-colors" title="Delete">
                       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                     </button>
                   </div>
@@ -86,7 +86,7 @@
 
       <!-- Mobile Cards -->
       <div class="md:hidden space-y-3">
-        @for (item of ledgerItems(); track item.id) {
+        @for (item of ledgerItems(); track item.dcItemId) {
           <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
             <div class="flex justify-between items-start mb-2">
               <div>
@@ -97,7 +97,7 @@
                 <button (click)="openOutward(item)" class="bg-blue-50 text-blue-600 text-xs font-medium px-2 py-1 rounded">
                   Update
                 </button>
-                <button (click)="deleteLedger(item.id)" class="bg-red-50 text-red-600 text-xs font-medium px-2 py-1 rounded flex items-center justify-center">
+                <button (click)="deleteLedger(item.dcId)" class="bg-red-50 text-red-600 text-xs font-medium px-2 py-1 rounded flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                 </button>
               </div>
@@ -174,11 +174,22 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Inward Quantity</label>
-          <input type="number" formControlName="inwardQty" (wheel)="$any($event.target).blur()" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none" placeholder="e.g. 7500">
-          @if (inwardForm.get('inwardQty')?.touched && inwardForm.get('inwardQty')?.invalid) {
+          <label class="block text-sm font-medium text-gray-700 mb-1">Quantity Sent</label>
+          <input type="number" formControlName="qtySent" (wheel)="$any($event.target).blur()" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none" placeholder="e.g. 7500">
+          @if (inwardForm.get('qtySent')?.touched && inwardForm.get('qtySent')?.invalid) {
             <p class="text-brand-danger text-xs mt-1">Please enter a valid quantity (at least 1).</p>
           }
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Rate (₹)</label>
+            <input type="number" step="0.01" formControlName="rate" (wheel)="$any($event.target).blur()" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none" placeholder="e.g. 10.50">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">GST (%)</label>
+            <input type="number" step="0.01" formControlName="gstPercent" (wheel)="$any($event.target).blur()" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none" placeholder="e.g. 18">
+          </div>
         </div>
 
         <div class="flex gap-3 pt-2">

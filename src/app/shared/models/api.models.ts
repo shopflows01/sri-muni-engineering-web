@@ -95,21 +95,43 @@ export interface Quotation {
   createdAt?: string;
 }
 
-export interface StockLedger {
+export interface JobWorkTransaction {
   id: string;
-  dcNo: string;
-  dcDate: string;
-  customerId: string;
-  customerName?: string;
+  transactionDate: string;
+  transactionType: number;
+  transactionTypeText: string;
+  quantity: number;
+  referenceNo?: string;
+  remarks?: string;
+}
+
+export interface JobWorkDCItem {
+  id: string;
   productId: string;
-  partNo?: string;
-  partName?: string;
+  partNo: string;
+  partName: string;
+  qtySent: number;
+  rate?: number;
+  gstPercent?: number;
+  remarks?: string;
   inwardQty: number;
   outwardQty: number;
   rejectedQty: number;
   pendingQty: number;
+  transactions: JobWorkTransaction[];
+}
+
+export interface JobWorkDC {
+  id: string;
+  dcNo: string;
+  dcDate: string;
+  customerId: string;
+  customerName: string;
+  remarks?: string;
   status: number;
-  createdAt?: string;
+  statusText: string;
+  createdAt: string;
+  items: JobWorkDCItem[];
 }
 
 export interface ProductAnalysisResponse {

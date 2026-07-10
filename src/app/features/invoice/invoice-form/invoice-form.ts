@@ -7,7 +7,7 @@ import { InvoiceService } from '../../../core/services/invoice.service';
 import { CustomerService } from '../../../core/services/customer';
 import { ProductService } from '../../../core/services/product';
 import { StockService } from '../../../core/services/stock';
-import { Customer, Product, StockLedger } from '../../../shared/models/api.models';
+import { Customer, Product, JobWorkDC, JobWorkDCItem } from '../../../shared/models/api.models';
 import { uppercaseStrings } from '../../../shared/utils/string-utils';
 import { Subscription } from 'rxjs';
 
@@ -28,7 +28,7 @@ export class InvoiceForm implements OnInit, OnDestroy {
 
   customers = signal<Customer[]>([]);
   products = signal<Product[]>([]);
-  stockItems = signal<StockLedger[]>([]);
+  stockItems = signal<{ id: string, dcNo: string, dcDate: string, partNo: string, qtySent: number }[]>([]);
   isSubmitting = signal(false);
   errorMessage = signal<string | null>(null);
   
@@ -186,7 +186,21 @@ export class InvoiceForm implements OnInit, OnDestroy {
 
   loadStockItems() {
     this.stockService.getAll({ page: 1, pageSize: 100 }).subscribe({
-      next: (res) => this.stockItems.set(res.items)
+      next: (res) => {
+        const items = [];
+        for (const dc of res.items) {
+          for (const item of dc.items) {
+            items.push({
+              id: item.id,
+              dcNo: dc.dcNo,
+              dcDate: dc.dcDate,
+              partNo: item.partNo,
+              qtySent: item.qtySent
+            });
+          }
+        }
+        this.stockItems.set(items);
+      }
     });
   }
 
