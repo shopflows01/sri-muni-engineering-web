@@ -146,7 +146,7 @@ export class InvoiceForm implements OnInit, OnDestroy {
       productId: ['', Validators.required],
       customProductName: [''],
       hsnCode: [''],
-      description: [''],
+      description: ['MACHINING'],
       quantity: [0, [Validators.required, Validators.min(1)]],
       rate: [0, [Validators.required, Validators.min(0.01)]],
       gstPercent: [18, [Validators.required, Validators.min(0)]]
