@@ -46,16 +46,38 @@ export class StockService {
     return this.http.post<JobWorkDC>(`${this.apiUrl}/dc`, data);
   }
 
+  getById(id: string): Observable<JobWorkDC> {
+    return this.http.get<JobWorkDC>(`${this.apiUrl}/${id}`);
+  }
+
+  updateDC(id: string, data: { dcNo: string; dcDate: string; customerId: string; remarks?: string; items: { id?: string; productId: string; qtySent: number; rate?: number; gstPercent?: number; remarks?: string }[] }): Observable<JobWorkDC> {
+    return this.http.put<JobWorkDC>(`${this.apiUrl}/${id}`, data);
+  }
+
   addTransaction(dcItemId: string, data: { transactionType: number; transactionDate: string; quantity: number; referenceNo?: string; remarks?: string }): Observable<JobWorkDC> {
     return this.http.post<JobWorkDC>(`${this.apiUrl}/dc-item/${dcItemId}/transaction`, data);
   }
 
-  exportExcel(fromDate: string, toDate: string): Observable<{ downloadUrl: string }> {
-    const params = new HttpParams()
-      .set('fromDate', fromDate)
-      .set('toDate', toDate)
-      .set('period', 'monthly');
+  exportExcel(fromDate?: string, toDate?: string): Observable<{ downloadUrl: string }> {
+    let params = new HttpParams();
+    if (fromDate) params = params.set('fromDate', fromDate);
+    if (toDate) params = params.set('toDate', toDate);
     return this.http.get<{ downloadUrl: string }>(`${this.apiUrl}/export-excel`, { params });
+  }
+
+  getTransactions(filters: { page: number; pageSize: number; search?: string; customerId?: string; productId?: string; fromDate?: string; toDate?: string; transactionType?: string }): Observable<PaginatedResponse<any>> {
+    let params = new HttpParams()
+      .set('page', filters.page.toString())
+      .set('pageSize', filters.pageSize.toString());
+      
+    if (filters.search) params = params.set('search', filters.search);
+    if (filters.customerId) params = params.set('customerId', filters.customerId);
+    if (filters.productId) params = params.set('productId', filters.productId);
+    if (filters.fromDate) params = params.set('fromDate', filters.fromDate);
+    if (filters.toDate) params = params.set('toDate', filters.toDate);
+    if (filters.transactionType) params = params.set('transactionType', filters.transactionType);
+
+    return this.http.get<PaginatedResponse<any>>(`${this.apiUrl}/transactions`, { params });
   }
 
   delete(id: string): Observable<void> {

@@ -1,12 +1,13 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DatePipe, DecimalPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../../core/services/product';
 import { ProductAnalysisResponse } from '../../../shared/models/api.models';
 
 @Component({
   selector: 'app-product-analysis',
-  imports: [DatePipe, DecimalPipe, RouterLink],
+  imports: [DatePipe, DecimalPipe, RouterLink, FormsModule],
   templateUrl: './product-analysis.html',
   styleUrl: './product-analysis.css',
 })
@@ -37,5 +38,38 @@ export class ProductAnalysis implements OnInit {
 
   getCustomerNames(info: any): string {
     return info.customers?.map((c: any) => c.customerName).join(', ') || info.customerName || info.customerId || 'N/A';
+  }
+
+  // Export State
+  showExportDialog = signal(false);
+  exportFromDate = signal('');
+  exportToDate = signal('');
+  isExporting = signal(false);
+
+  openExportDialog() {
+    this.showExportDialog.set(true);
+  }
+
+  closeExportDialog() {
+    this.showExportDialog.set(false);
+  }
+
+  submitExport() {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (!id) return;
+    
+    this.isExporting.set(true);
+    this.productService.exportAnalysisReport(id, this.exportFromDate(), this.exportToDate()).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        this.isExporting.set(false);
+        this.closeExportDialog();
+      },
+      error: () => {
+        alert('Failed to generate report.');
+        this.isExporting.set(false);
+      }
+    });
   }
 }

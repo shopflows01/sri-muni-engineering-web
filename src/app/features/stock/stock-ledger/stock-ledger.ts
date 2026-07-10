@@ -1,35 +1,17 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { StockService, PaginatedResponse } from '../../../core/services/stock';
 import { CustomerService } from '../../../core/services/customer';
 import { ProductService } from '../../../core/services/product';
 import { JobWorkDC, Customer, Product } from '../../../shared/models/api.models';
 import { EmptyState } from '../../../shared/components/empty-state/empty-state';
 
-import { uppercaseStrings } from '../../../shared/utils/string-utils';
-
-export interface LedgerViewModel {
-  dcId: string;
-  dcNo: string;
-  dcDate: string;
-  customerId: string;
-  customerName: string;
-  dcItemId: string;
-  productId: string;
-  partName: string;
-  partNo: string;
-  qtySent: number;
-  rate?: number;
-  gstPercent?: number;
-  inwardQty: number;
-  outwardQty: number;
-  rejectedQty: number;
-  pendingQty: number;
-}
-
 @Component({
   selector: 'app-stock-ledger',
-  imports: [ReactiveFormsModule, EmptyState],
+  standalone: true,
+  imports: [CommonModule, RouterLink, FormsModule, EmptyState],
   templateUrl: './stock-ledger.html',
   styleUrl: './stock-ledger.css',
 })
@@ -37,40 +19,37 @@ export class StockLedger implements OnInit {
   private stockService = inject(StockService);
   private customerService = inject(CustomerService);
   private productService = inject(ProductService);
-  private fb = inject(FormBuilder);
 
-  activeTab = signal<'list' | 'inward'>('list');
-  ledgerItems = signal<LedgerViewModel[]>([]);
+  activeTab = signal<'list' | 'transactions'>('list');
+  
+  // Ledger list
+  dcList = signal<JobWorkDC[]>([]);
   isLoading = signal(false);
   totalCount = signal(0);
   page = signal(1);
+  pageSize = signal(20);
+
+  // Transactions list
+  transactions = signal<any[]>([]);
+  isTxLoading = signal(false);
+  txTotalCount = signal(0);
+  txPage = signal(1);
+  txPageSize = signal(20);
+  
+  txFilters = {
+    search: '',
+    transactionType: '',
+    customerId: '',
+    fromDate: '',
+    toDate: ''
+  };
 
   customers = signal<Customer[]>([]);
   products = signal<Product[]>([]);
 
-  // Outward/Rejected edit
-  editingItem = signal<LedgerViewModel | null>(null);
-  outwardQty = signal<number>(0);
-  rejectedQty = signal<number>(0);
-
-  inwardForm = this.fb.group({
-    dcNo: ['', Validators.required],
-    dcDate: ['', Validators.required],
-    customerId: ['', Validators.required],
-    productId: ['', Validators.required],
-    qtySent: [0, [Validators.required, Validators.min(1)]],
-    rate: [0, [Validators.min(0)]],
-    gstPercent: [18, [Validators.min(0)]]
-  });
-
-  isSubmitting = signal(false);
   successMessage = signal<string | null>(null);
 
-  // Export Excel
-  showExportDialog = signal(false);
-  exportFromDate = signal('');
-  exportToDate = signal('');
-  isExporting = signal(false);
+  Math = Math;
 
   ngOnInit() {
     this.loadLedger();
@@ -80,37 +59,38 @@ export class StockLedger implements OnInit {
 
   loadLedger() {
     this.isLoading.set(true);
-    this.stockService.getAll({ page: this.page(), pageSize: 20 }).subscribe({
+    this.stockService.getAll({ page: this.page(), pageSize: this.pageSize() }).subscribe({
       next: (res) => {
-        const viewModels: LedgerViewModel[] = [];
-        for (const dc of res.items) {
-          for (const item of dc.items) {
-            viewModels.push({
-              dcId: dc.id,
-              dcNo: dc.dcNo,
-              dcDate: dc.dcDate,
-              customerId: dc.customerId,
-              customerName: dc.customerName,
-              dcItemId: item.id,
-              productId: item.productId,
-              partName: item.partName,
-              partNo: item.partNo,
-              qtySent: item.qtySent,
-              rate: item.rate,
-              gstPercent: item.gstPercent,
-              inwardQty: item.inwardQty,
-              outwardQty: item.outwardQty,
-              rejectedQty: item.rejectedQty,
-              pendingQty: item.pendingQty
-            });
-          }
-        }
-        this.ledgerItems.set(viewModels);
+        this.dcList.set(res.items);
         this.totalCount.set(res.totalCount);
         this.isLoading.set(false);
       },
       error: () => this.isLoading.set(false)
     });
+  }
+
+  loadTransactions() {
+    this.isTxLoading.set(true);
+    const filters: any = { page: this.txPage(), pageSize: this.txPageSize() };
+    if (this.txFilters.search) filters.search = this.txFilters.search;
+    if (this.txFilters.transactionType) filters.transactionType = this.txFilters.transactionType;
+    if (this.txFilters.customerId) filters.customerId = this.txFilters.customerId;
+    if (this.txFilters.fromDate) filters.fromDate = this.txFilters.fromDate;
+    if (this.txFilters.toDate) filters.toDate = this.txFilters.toDate;
+
+    this.stockService.getTransactions(filters).subscribe({
+      next: (res) => {
+        this.transactions.set(res.items);
+        this.txTotalCount.set(res.totalCount);
+        this.isTxLoading.set(false);
+      },
+      error: () => this.isTxLoading.set(false)
+    });
+  }
+
+  applyTxFilters() {
+    this.txPage.set(1);
+    this.loadTransactions();
   }
 
   loadCustomers() {
@@ -125,82 +105,23 @@ export class StockLedger implements OnInit {
     });
   }
 
-  switchTab(tab: 'list' | 'inward') {
+  switchTab(tab: 'list' | 'transactions') {
     this.activeTab.set(tab);
-    if (tab === 'list') this.loadLedger();
-  }
-
-  submitInward() {
-    if (this.inwardForm.valid) {
-      this.isSubmitting.set(true);
-      const val = this.inwardForm.getRawValue();
-      let payload = {
-        dcNo: val.dcNo!,
-        dcDate: val.dcDate!,
-        customerId: val.customerId!,
-        items: [{
-          productId: val.productId!,
-          qtySent: val.qtySent!,
-          rate: val.rate!,
-          gstPercent: val.gstPercent!
-        }]
-      };
-      payload = uppercaseStrings(payload);
-      
-      this.stockService.createDC(payload).subscribe({
-        next: () => {
-          this.isSubmitting.set(false);
-          this.inwardForm.reset();
-          this.showSuccess('Inward entry saved successfully.');
-          this.switchTab('list');
-        },
-        error: () => this.isSubmitting.set(false)
-      });
+    if (tab === 'list') {
+      this.loadLedger();
     } else {
-      this.inwardForm.markAllAsTouched();
+      this.loadTransactions();
     }
   }
 
-  openOutward(item: LedgerViewModel) {
-    this.editingItem.set(item);
-    this.outwardQty.set(0); // Assuming you're recording a new transaction
-    this.rejectedQty.set(0);
+  changePage(newPage: number) {
+    this.page.set(newPage);
+    this.loadLedger();
   }
 
-  saveOutward() {
-    const item = this.editingItem();
-    if (!item || !this.outwardQty()) return;
-    this.stockService.addTransaction(item.dcItemId, {
-      transactionType: 1, // Outward
-      transactionDate: new Date().toISOString().split('T')[0],
-      quantity: this.outwardQty()
-    }).subscribe({
-      next: () => {
-        this.showSuccess('Outward transaction added.');
-        this.editingItem.set(null);
-        this.loadLedger();
-      }
-    });
-  }
-
-  saveRejected() {
-    const item = this.editingItem();
-    if (!item || !this.rejectedQty()) return;
-    this.stockService.addTransaction(item.dcItemId, {
-      transactionType: 2, // Rejected
-      transactionDate: new Date().toISOString().split('T')[0],
-      quantity: this.rejectedQty()
-    }).subscribe({
-      next: () => {
-        this.showSuccess('Rejected transaction added.');
-        this.editingItem.set(null);
-        this.loadLedger();
-      }
-    });
-  }
-
-  cancelEdit() {
-    this.editingItem.set(null);
+  changeTxPage(newPage: number) {
+    this.txPage.set(newPage);
+    this.loadTransactions();
   }
 
   deleteLedger(id: string) {
@@ -217,33 +138,13 @@ export class StockLedger implements OnInit {
     }
   }
 
-  openExportDialog() {
-    this.showExportDialog.set(true);
-  }
-
-  closeExportDialog() {
-    this.showExportDialog.set(false);
-  }
-
-  submitExport() {
-    const from = this.exportFromDate();
-    const to = this.exportToDate();
-    if (!from || !to) return;
-    this.isExporting.set(true);
-    this.stockService.exportExcel(from, to).subscribe({
-      next: (res) => {
-        if (res.downloadUrl) {
-          window.open(res.downloadUrl, '_blank');
-        }
-        this.isExporting.set(false);
-        this.showExportDialog.set(false);
-      },
-      error: () => this.isExporting.set(false)
-    });
-  }
 
   private showSuccess(msg: string) {
     this.successMessage.set(msg);
     setTimeout(() => this.successMessage.set(null), 3000);
+  }
+
+  getTotalQty(dc: JobWorkDC): number {
+    return dc.items.reduce((acc, item) => acc + item.qtySent, 0);
   }
 }
