@@ -222,7 +222,7 @@ export class EwayRouter implements OnInit {
     
     entry.itemQuantity = firstItem?.quantity || 0;
     entry.itemQtyUnit = product?.unit || 'NOS';
-    entry.itemTaxableAmount = firstItem?.amount || ((firstItem?.quantity || 0) * (firstItem?.rate || 0));
+    entry.itemTaxableAmount = inv.subTotal || 0;
     
     const gstPct = firstItem?.gstPercent || 0;
     entry.itemIgstRate = isInterState ? gstPct : 0;
@@ -311,7 +311,7 @@ export class EwayRouter implements OnInit {
 
   generateJson(): string {
     const ewayBillJson = {
-      version: '1.0.1118',
+      version: '1.0.0621',
       billLists: this.billEntries().map(entry => ({
         userGstin: entry.userGstin,
         supplyType: entry.supplyType,
