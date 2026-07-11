@@ -3,11 +3,12 @@ import { DatePipe, DecimalPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { DashboardService, DashboardMetrics } from '../../core/services/dashboard.service';
+import { PaginationComponent } from '../../shared/components/pagination/pagination';
 import * as echarts from 'echarts';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, PaginationComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
   providers: [DatePipe]
@@ -43,6 +44,16 @@ export class Dashboard implements OnInit, OnDestroy, AfterViewInit {
   });
 
   metrics = signal<DashboardMetrics | null>(null);
+  
+  // Pagination for Top Customers by Volume
+  topCustomersPage = signal(1);
+  topCustomersPageSize = signal(5);
+  paginatedTopCustomers = computed(() => {
+    const data = this.metrics()?.topCustomersByVolume || [];
+    const startIndex = (this.topCustomersPage() - 1) * this.topCustomersPageSize();
+    return data.slice(startIndex, startIndex + this.topCustomersPageSize());
+  });
+
   private charts: echarts.ECharts[] = [];
   private intervalId: any;
 

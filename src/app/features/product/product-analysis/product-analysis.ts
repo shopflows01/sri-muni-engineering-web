@@ -1,13 +1,15 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../../core/services/product';
 import { ProductAnalysisResponse } from '../../../shared/models/api.models';
+import { PaginationComponent } from '../../../shared/components/pagination/pagination';
 
 @Component({
   selector: 'app-product-analysis',
-  imports: [DatePipe, DecimalPipe, RouterLink, FormsModule],
+  standalone: true,
+  imports: [DatePipe, DecimalPipe, RouterLink, FormsModule, PaginationComponent],
   templateUrl: './product-analysis.html',
   styleUrl: './product-analysis.css',
 })
@@ -18,6 +20,24 @@ export class ProductAnalysis implements OnInit {
   analysis = signal<ProductAnalysisResponse | null>(null);
   isLoading = signal(true);
   error = signal<string | null>(null);
+
+  // Sales Pagination
+  salesPage = signal(1);
+  salesPageSize = signal(10);
+  paginatedSales = computed(() => {
+    const data = this.analysis()?.recentInvoiceHistory || [];
+    const startIndex = (this.salesPage() - 1) * this.salesPageSize();
+    return data.slice(startIndex, startIndex + this.salesPageSize());
+  });
+
+  // Production Pagination
+  prodPage = signal(1);
+  prodPageSize = signal(10);
+  paginatedProduction = computed(() => {
+    const data = this.analysis()?.recentProductionHistory || [];
+    const startIndex = (this.prodPage() - 1) * this.prodPageSize();
+    return data.slice(startIndex, startIndex + this.prodPageSize());
+  });
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');

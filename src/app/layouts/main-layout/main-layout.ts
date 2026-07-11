@@ -13,9 +13,15 @@ export class MainLayout {
 
   userName = computed(() => this.authService.currentUser()?.username || 'User');
   userInitial = computed(() => this.userName().charAt(0).toUpperCase());
+  userEmail = computed(() => this.authService.currentUser()?.email || 'user@example.com');
+  userRole = computed(() => {
+    const role = this.authService.currentUser()?.role || 'user';
+    return role.charAt(0).toUpperCase() + role.slice(1);
+  });
 
   mobileMenuOpen = signal(false);
   sidebarExpanded = signal(false);
+  profileDialogOpen = signal(false);
 
   toggleMenu() {
     this.mobileMenuOpen.update(v => !v);
@@ -28,8 +34,22 @@ export class MainLayout {
   toggleSidebar() {
     this.sidebarExpanded.update(v => !v);
   }
+  
+  openProfileDialog() {
+    this.profileDialogOpen.set(true);
+    this.closeMenu();
+    // Refresh profile when opening dialog
+    this.authService.getProfile().subscribe({
+      error: (err) => console.error('Failed to fetch profile', err)
+    });
+  }
+  
+  closeProfileDialog() {
+    this.profileDialogOpen.set(false);
+  }
 
   logout() {
     this.authService.logout();
+    this.profileDialogOpen.set(false);
   }
 }

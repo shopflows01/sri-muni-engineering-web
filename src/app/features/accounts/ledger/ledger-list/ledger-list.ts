@@ -89,8 +89,9 @@ import { PaginationComponent } from '../../../../shared/components/pagination/pa
                     </td>
                     <td class="px-6 py-4 text-center">
                       <div class="flex items-center justify-center">
-                        <a [routerLink]="['/accounts/ledgers', item.customerId]" class="bg-brand/10 text-brand hover:bg-brand/20 font-medium text-xs px-2 py-1 rounded transition-colors" title="View">
-                          View
+                        <a [routerLink]="['/accounts/ledgers', item.customerId]" class="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium text-xs rounded-md transition-colors border border-gray-200 shadow-sm" title="View">
+                          <span class="material-symbols-outlined text-[16px]">visibility</span>
+                          <span class="hidden lg:inline">View</span>
                         </a>
                       </div>
                     </td>

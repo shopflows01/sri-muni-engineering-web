@@ -69,4 +69,17 @@ export class AuthService {
     const apiUrl = environment.apiUrl || '/api';
     return this.http.put(`${apiUrl}/auth/reset-credentials`, payload);
   }
+
+  getProfile(): Observable<User> {
+    const apiUrl = environment.apiUrl || '/api';
+    return this.http.get<User>(`${apiUrl}/auth/profile`).pipe(
+      tap(user => {
+        // Update the current user signal and session storage with fetched profile
+        const current = this.currentUser();
+        const updatedUser = { ...current, ...user };
+        this.currentUser.set(updatedUser as User);
+        sessionStorage.setItem('user', JSON.stringify(updatedUser));
+      })
+    );
+  }
 }

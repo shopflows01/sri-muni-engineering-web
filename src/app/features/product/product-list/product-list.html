@@ -1,60 +1,74 @@
 <div class="space-y-6">
-  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-gray-200">
+  <div
+    class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-gray-200">
     <div>
       <h1 class="text-2xl font-bold text-brand">Products</h1>
       <p class="text-gray-500 text-sm mt-1">Manage your product catalog</p>
     </div>
-    
+
     <div class="flex items-center gap-3 w-full sm:w-auto">
       <div class="relative flex-1 sm:w-64">
-        <input type="text" [formControl]="searchControl" placeholder="Search by Part No or Name..." class="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand outline-none transition-all text-sm">
+        <input type="text" [formControl]="searchControl" placeholder="Search by Part No or Name..."
+          class="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand outline-none transition-all text-sm">
       </div>
-      <button routerLink="/products/new" class="bg-brand hover:bg-brand-light text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+      <button routerLink="/products/new"
+        class="bg-brand hover:bg-brand-light text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
         Add Product
       </button>
     </div>
   </div>
 
   @if (isLoading()) {
-    <div class="py-12 flex justify-center">
-      <div class="w-8 h-8 border-4 border-brand-muted border-t-brand rounded-full animate-spin"></div>
-    </div>
+  <div class="py-12 flex justify-center">
+    <div class="w-8 h-8 border-4 border-brand-muted border-t-brand rounded-full animate-spin"></div>
+  </div>
   } @else if (products().length === 0) {
-    <app-empty-state 
-      title="No products found" 
-      message="You haven't added any products yet."
-      actionLabel="Add Product"
-      (action)="router.navigate(['/products/new'])">
-    </app-empty-state>
+  <app-empty-state title="No products found" message="You haven't added any products yet." actionLabel="Add Product"
+    (action)="router.navigate(['/products/new'])">
+  </app-empty-state>
   } @else {
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 w-full overflow-x-auto">
-      <table class="w-full text-left border-collapse min-w-[600px]">
-        <thead>
-          <tr class="bg-gray-50 border-b border-gray-200 text-xs uppercase text-gray-500">
-            <th class="px-6 py-4 font-medium">Part Name</th>
-            <th class="px-6 py-4 font-medium">Part No</th>
-            <th class="px-6 py-4 font-medium">Customer</th>
-            <th class="px-6 py-4 font-medium">Unit</th>
-            <th class="px-6 py-4 font-medium text-right">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200">
-          @for (product of products(); track product.id) {
-            <tr class="hover:bg-gray-50/50">
-              <td class="px-6 py-4 font-medium text-gray-900">{{ product.partName }}</td>
-              <td class="px-6 py-4 text-sm text-gray-600">{{ product.partNo }}</td>
-              <td class="px-6 py-4 text-sm text-gray-600">{{ getCustomerNames(product) }}</td>
-              <td class="px-6 py-4 text-sm text-gray-600">{{ product.unit }}</td>
-              <td class="px-6 py-4 text-right">
-                <div class="flex justify-end gap-2">
-                  <button [routerLink]="['/products', product.id, 'analysis']" class="bg-green-50 text-brand-success hover:bg-green-100 font-medium text-xs px-2 py-1 rounded transition-colors">Analysis</button>
-                  <button [routerLink]="['/products', product.id]" class="bg-blue-50 text-blue-600 hover:bg-blue-100 font-medium text-xs px-2 py-1 rounded transition-colors">Edit</button>
-                </div>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 w-full overflow-x-auto">
+    <table class="w-full text-left border-collapse min-w-[600px]">
+      <thead>
+        <tr class="bg-gray-50 border-b border-gray-200 text-xs uppercase text-gray-500">
+          <th class="px-6 py-4 font-medium">Part Name</th>
+          <th class="px-6 py-4 font-medium">Part No</th>
+          <th class="px-6 py-4 font-medium">Customer</th>
+          <th class="px-6 py-4 font-medium">Rate/Unit</th>
+          <th class="px-6 py-4 font-medium">Unit</th>
+          <th class="px-6 py-4 font-medium text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        @for (product of products(); track product.id) {
+        <tr class="hover:bg-gray-50/50">
+          <td class="px-6 py-4 font-medium text-gray-900">{{ product.partName }}</td>
+          <td class="px-6 py-4 text-sm text-gray-600">{{ product.partNo }}</td>
+          <td class="px-6 py-4 text-sm text-gray-600">{{ getCustomerNames(product) }}</td>
+          <td class="px-6 py-4 text-sm text-gray-600">{{ product.ratePerItem }}</td>
+          <td class="px-6 py-4 text-sm text-gray-600">{{ product.unit }}</td>
+          <td class="px-6 py-4 text-right">
+            <div class="flex justify-end gap-2">
+              <button [routerLink]="['/products', product.id, 'analysis']"
+                class="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-medium text-xs rounded-md transition-colors border border-emerald-200 shadow-sm">
+                <span class="material-symbols-outlined text-[16px]">analytics</span>
+                Analysis
+              </button>
+              <button [routerLink]="['/products', product.id]"
+                class="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium text-xs rounded-md transition-colors border border-blue-200 shadow-sm">
+                <span class="material-symbols-outlined text-[16px]">edit</span>
+                Edit
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+
+    <app-pagination [page]="page()" [pageSize]="pageSize()" [totalCount]="totalCount()"
+      (pageChange)="page.set($event); loadProducts()" (pageSizeChange)="pageSize.set($event); loadProducts()">
+    </app-pagination>
+  </div>
   }
 </div>

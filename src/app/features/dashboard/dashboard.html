@@ -6,84 +6,92 @@
   </div>
 
   <!-- KPIs -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-    <div (click)="onMetricClick('revenue')" class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-md">
-      <div class="w-11 h-11 rounded-full bg-brand-muted flex items-center justify-center text-brand">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
+    <div (click)="onMetricClick('revenue')" class="bg-gradient-to-br from-blue-50 to-indigo-50/50 p-5 rounded-2xl shadow-sm border border-blue-100/50 flex items-center gap-4 cursor-pointer transition-all hover:-translate-y-1 hover:shadow-md group relative overflow-hidden">
+      <div class="absolute -right-4 -top-4 w-20 h-20 bg-blue-100/50 rounded-full blur-xl group-hover:scale-110 transition-transform"></div>
+      <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600 shadow-sm relative z-10 group-hover:scale-105 transition-transform">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
       </div>
-      <div>
-        <p class="text-xs text-gray-500 font-medium">Monthly Revenue</p>
-        <p class="text-xl font-bold text-brand-text">₹{{ (metrics()?.monthlyRevenueTotal ?? 0) | number:'1.2-2' }}</p>
-      </div>
-    </div>
-
-    <div (click)="onMetricClick('pendingInvoices')" class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-md">
-      <div class="w-11 h-11 rounded-full bg-brand-muted flex items-center justify-center text-brand">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><polyline points="14 2 14 8 20 8"/></svg>
-      </div>
-      <div>
-        <p class="text-xs text-gray-500 font-medium">Pending Invoices</p>
-        <p class="text-xl font-bold text-brand-text">{{ (metrics()?.pendingInvoicesCount ?? 0) }}</p>
+      <div class="relative z-10">
+        <p class="text-xs text-blue-900/60 font-semibold uppercase tracking-wider mb-1">Monthly Revenue</p>
+        <p class="text-2xl font-bold text-blue-950">₹{{ (metrics()?.monthlyRevenueTotal ?? 0) | number:'1.2-2' }}</p>
       </div>
     </div>
 
-    <div (click)="onMetricClick('inward')" class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-md">
-      <div class="w-11 h-11 rounded-full bg-brand-muted flex items-center justify-center text-brand">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+    <div (click)="onMetricClick('pendingInvoices')" class="bg-gradient-to-br from-amber-50 to-orange-50/50 p-5 rounded-2xl shadow-sm border border-amber-100/50 flex items-center gap-4 cursor-pointer transition-all hover:-translate-y-1 hover:shadow-md group relative overflow-hidden">
+      <div class="absolute -right-4 -top-4 w-20 h-20 bg-amber-100/50 rounded-full blur-xl group-hover:scale-110 transition-transform"></div>
+      <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 shadow-sm relative z-10 group-hover:scale-105 transition-transform">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><polyline points="14 2 14 8 20 8"/></svg>
       </div>
-      <div>
-        <p class="text-xs text-gray-500 font-medium">Monthly Inward</p>
-        <p class="text-xl font-bold text-brand-text">{{ (metrics()?.monthlyInwardQty ?? 0) | number }}</p>
-      </div>
-    </div>
-
-    <div (click)="onMetricClick('outward')" class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-md">
-      <div class="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center text-brand-success">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
-      </div>
-      <div>
-        <p class="text-xs text-gray-500 font-medium">Monthly Outward</p>
-        <p class="text-xl font-bold text-brand-text">{{ (metrics()?.monthlyOutwardQty ?? 0) | number }}</p>
+      <div class="relative z-10">
+        <p class="text-xs text-amber-900/60 font-semibold uppercase tracking-wider mb-1">Pending Invoices</p>
+        <p class="text-2xl font-bold text-amber-950">{{ (metrics()?.pendingInvoicesCount ?? 0) }}</p>
       </div>
     </div>
 
-    <div (click)="onMetricClick('rejected')" class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-md">
-      <div class="w-11 h-11 rounded-full bg-red-50 flex items-center justify-center text-brand-danger">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+    <div (click)="onMetricClick('inward')" class="bg-gradient-to-br from-indigo-50 to-purple-50/50 p-5 rounded-2xl shadow-sm border border-indigo-100/50 flex items-center gap-4 cursor-pointer transition-all hover:-translate-y-1 hover:shadow-md group relative overflow-hidden">
+      <div class="absolute -right-4 -top-4 w-20 h-20 bg-indigo-100/50 rounded-full blur-xl group-hover:scale-110 transition-transform"></div>
+      <div class="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm relative z-10 group-hover:scale-105 transition-transform">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
       </div>
-      <div>
-        <p class="text-xs text-gray-500 font-medium">Monthly Rejected</p>
-        <p class="text-xl font-bold text-brand-danger">{{ (metrics()?.monthlyRejectedQty ?? 0) | number }}</p>
-      </div>
-    </div>
-
-    <div (click)="onMetricClick('ledgers')" class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-md">
-      <div class="w-11 h-11 rounded-full bg-brand-muted flex items-center justify-center text-brand">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-      </div>
-      <div>
-        <p class="text-xs text-gray-500 font-medium">In-Progress Ledgers</p>
-        <p class="text-xl font-bold text-brand-text">{{ (metrics()?.inProgressLedgerCount ?? 0) }}</p>
+      <div class="relative z-10">
+        <p class="text-xs text-indigo-900/60 font-semibold uppercase tracking-wider mb-1">Monthly Inward</p>
+        <p class="text-2xl font-bold text-indigo-950">{{ (metrics()?.monthlyInwardQty ?? 0) | number }}</p>
       </div>
     </div>
 
-    <div (click)="onMetricClick('customers')" class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-md">
-      <div class="w-11 h-11 rounded-full bg-brand-muted flex items-center justify-center text-brand">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    <div (click)="onMetricClick('outward')" class="bg-gradient-to-br from-emerald-50 to-green-50/50 p-5 rounded-2xl shadow-sm border border-emerald-100/50 flex items-center gap-4 cursor-pointer transition-all hover:-translate-y-1 hover:shadow-md group relative overflow-hidden">
+      <div class="absolute -right-4 -top-4 w-20 h-20 bg-emerald-100/50 rounded-full blur-xl group-hover:scale-110 transition-transform"></div>
+      <div class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm relative z-10 group-hover:scale-105 transition-transform">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
       </div>
-      <div>
-        <p class="text-xs text-gray-500 font-medium">Total Customers</p>
-        <p class="text-xl font-bold text-brand-text">{{ (metrics()?.totalCustomers ?? 0) }}</p>
+      <div class="relative z-10">
+        <p class="text-xs text-emerald-900/60 font-semibold uppercase tracking-wider mb-1">Monthly Outward</p>
+        <p class="text-2xl font-bold text-emerald-950">{{ (metrics()?.monthlyOutwardQty ?? 0) | number }}</p>
       </div>
     </div>
 
-    <div (click)="onMetricClick('products')" class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 cursor-pointer transition-transform hover:scale-[1.02] hover:shadow-md">
-      <div class="w-11 h-11 rounded-full bg-brand-muted flex items-center justify-center text-brand">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/></svg>
+    <div (click)="onMetricClick('rejected')" class="bg-gradient-to-br from-red-50 to-rose-50/50 p-5 rounded-2xl shadow-sm border border-red-100/50 flex items-center gap-4 cursor-pointer transition-all hover:-translate-y-1 hover:shadow-md group relative overflow-hidden">
+      <div class="absolute -right-4 -top-4 w-20 h-20 bg-red-100/50 rounded-full blur-xl group-hover:scale-110 transition-transform"></div>
+      <div class="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center text-red-600 shadow-sm relative z-10 group-hover:scale-105 transition-transform">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
       </div>
-      <div>
-        <p class="text-xs text-gray-500 font-medium">Total Products</p>
-        <p class="text-xl font-bold text-brand-text">{{ (metrics()?.totalProducts ?? 0) }}</p>
+      <div class="relative z-10">
+        <p class="text-xs text-red-900/60 font-semibold uppercase tracking-wider mb-1">Monthly Rejected</p>
+        <p class="text-2xl font-bold text-red-950">{{ (metrics()?.monthlyRejectedQty ?? 0) | number }}</p>
+      </div>
+    </div>
+
+    <div (click)="onMetricClick('ledgers')" class="bg-gradient-to-br from-cyan-50 to-sky-50/50 p-5 rounded-2xl shadow-sm border border-cyan-100/50 flex items-center gap-4 cursor-pointer transition-all hover:-translate-y-1 hover:shadow-md group relative overflow-hidden">
+      <div class="absolute -right-4 -top-4 w-20 h-20 bg-cyan-100/50 rounded-full blur-xl group-hover:scale-110 transition-transform"></div>
+      <div class="w-12 h-12 rounded-xl bg-cyan-100 flex items-center justify-center text-cyan-600 shadow-sm relative z-10 group-hover:scale-105 transition-transform">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+      </div>
+      <div class="relative z-10">
+        <p class="text-xs text-cyan-900/60 font-semibold uppercase tracking-wider mb-1">In-Progress DCs</p>
+        <p class="text-2xl font-bold text-cyan-950">{{ (metrics()?.inProgressLedgerCount ?? 0) }}</p>
+      </div>
+    </div>
+
+    <div (click)="onMetricClick('customers')" class="bg-gradient-to-br from-violet-50 to-fuchsia-50/50 p-5 rounded-2xl shadow-sm border border-violet-100/50 flex items-center gap-4 cursor-pointer transition-all hover:-translate-y-1 hover:shadow-md group relative overflow-hidden">
+      <div class="absolute -right-4 -top-4 w-20 h-20 bg-violet-100/50 rounded-full blur-xl group-hover:scale-110 transition-transform"></div>
+      <div class="w-12 h-12 rounded-xl bg-violet-100 flex items-center justify-center text-violet-600 shadow-sm relative z-10 group-hover:scale-105 transition-transform">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <div class="relative z-10">
+        <p class="text-xs text-violet-900/60 font-semibold uppercase tracking-wider mb-1">Total Customers</p>
+        <p class="text-2xl font-bold text-violet-950">{{ (metrics()?.totalCustomers ?? 0) }}</p>
+      </div>
+    </div>
+
+    <div (click)="onMetricClick('products')" class="bg-gradient-to-br from-teal-50 to-cyan-50/50 p-5 rounded-2xl shadow-sm border border-teal-100/50 flex items-center gap-4 cursor-pointer transition-all hover:-translate-y-1 hover:shadow-md group relative overflow-hidden">
+      <div class="absolute -right-4 -top-4 w-20 h-20 bg-teal-100/50 rounded-full blur-xl group-hover:scale-110 transition-transform"></div>
+      <div class="w-12 h-12 rounded-xl bg-teal-100 flex items-center justify-center text-teal-600 shadow-sm relative z-10 group-hover:scale-105 transition-transform">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/></svg>
+      </div>
+      <div class="relative z-10">
+        <p class="text-xs text-teal-900/60 font-semibold uppercase tracking-wider mb-1">Total Products</p>
+        <p class="text-2xl font-bold text-teal-950">{{ (metrics()?.totalProducts ?? 0) }}</p>
       </div>
     </div>
   </div>
@@ -134,7 +142,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (cust of metrics()!.topCustomersByVolume; track cust.customerId) {
+            @for (cust of paginatedTopCustomers(); track cust.customerId) {
               <tr class="border-b border-gray-100">
                 <td class="py-2 text-brand-text font-medium">{{ cust.customerName }}</td>
                 <td class="py-2 text-right text-brand-text">{{ cust.totalInwardQty | number }}</td>
@@ -144,6 +152,13 @@
           </tbody>
         </table>
       </div>
+      <app-pagination 
+        [page]="topCustomersPage()"
+        [pageSize]="topCustomersPageSize()"
+        [totalCount]="metrics()!.topCustomersByVolume.length"
+        (pageChange)="topCustomersPage.set($event)"
+        (pageSizeChange)="topCustomersPageSize.set($event); topCustomersPage.set(1)">
+      </app-pagination>
     </div>
   }
 </div>

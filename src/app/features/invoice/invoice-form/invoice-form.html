@@ -37,7 +37,7 @@
           <select formControlName="dcLedgerId" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none bg-white">
             <option value="">Select DC entry</option>
             @for (stock of stockItems(); track stock.id) {
-              <option [value]="stock.id">DC {{ stock.dcNo }} - {{ stock.partNo }} ({{ stock.qtySent }} Sent)</option>
+              <option [value]="stock.id">DC {{ stock.dcNo }} - {{ stock.customerName }}</option>
             }
           </select>
         </div>
@@ -121,12 +121,14 @@
             <div class="grid grid-cols-1 md:grid-cols-4 xl:grid-cols-12 gap-3">
               <div class="xl:col-span-3">
                 <label class="block text-xs font-medium text-gray-600 mb-1">Product</label>
-                <select formControlName="productId" (change)="onProductChange($index)" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none bg-white text-sm">
+                <select formControlName="productId" (change)="onProductChange($index)" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none bg-white text-sm" [title]="!selectedDc() ? 'Please select a DC Ledger Entry first' : ''">
                   <option value="">Select product</option>
-                  @for (prod of products(); track prod.id) {
+                  @for (prod of getAvailableProducts($index); track prod.id) {
                     <option [value]="prod.id">{{ prod.partName }} - {{ prod.partNo }}</option>
                   }
-                  <option value="others">Others</option>
+                  @if (selectedDc()) {
+                    <option value="others">Others</option>
+                  }
                 </select>
               </div>
               @if (items.at($index).get('productId')?.value === 'others') {
@@ -143,15 +145,23 @@
                 <label class="block text-xs font-medium text-gray-600 mb-1">Description</label>
                 <input type="text" formControlName="description" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm" placeholder="Remark">
               </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1">Quantity</label>
-                <input type="number" formControlName="quantity" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm">
+              <div class="xl:col-span-2">
+                <label class="block text-xs font-medium text-gray-600 mb-1 flex items-center gap-1 whitespace-nowrap">
+                  Quantity
+                  @if (getDcPendingQty(items.at($index).get('productId')?.value) !== null) {
+                    <span class="text-[10px] text-brand bg-brand/10 px-1.5 rounded">(Max: {{ getDcPendingQty(items.at($index).get('productId')?.value) }})</span>
+                  }
+                </label>
+                <input type="number" formControlName="quantity" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm" [class.border-red-300]="items.at($index).get('quantity')?.invalid && (items.at($index).get('quantity')?.dirty || items.at($index).get('quantity')?.touched)">
+                @if (items.at($index).get('quantity')?.errors?.['exceededDcLimit'] && (items.at($index).get('quantity')?.dirty || items.at($index).get('quantity')?.touched)) {
+                  <p class="text-red-500 text-[10px] mt-0.5">Exceeds pending qty ({{ items.at($index).get('quantity')?.errors?.['exceededDcLimit'].max }})</p>
+                }
               </div>
-              <div>
+              <div class="xl:col-span-2">
                 <label class="block text-xs font-medium text-gray-600 mb-1">Rate (₹)</label>
                 <input type="number" step="0.01" formControlName="rate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm">
               </div>
-              <div>
+              <div class="xl:col-span-1">
                 <label class="block text-xs font-medium text-gray-600 mb-1">GST (%)</label>
                 <input type="number" formControlName="gstPercent" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm">
               </div>

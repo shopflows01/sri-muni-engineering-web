@@ -164,7 +164,7 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
-              @for (sale of analysis()!.recentInvoiceHistory; track sale.invoiceNo) {
+              @for (sale of paginatedSales(); track sale.invoiceNo) {
                 <tr class="hover:bg-gray-50">
                   <td class="px-4 py-2 whitespace-nowrap">{{ sale.invoiceDate | date:'dd MMM yyyy' }}</td>
                   <td class="px-4 py-2 font-medium text-brand">{{ sale.invoiceNo }}</td>
@@ -178,6 +178,13 @@
             </tbody>
           </table>
         </div>
+        <app-pagination 
+          [page]="salesPage()"
+          [pageSize]="salesPageSize()"
+          [totalCount]="analysis()!.recentInvoiceHistory.length"
+          (pageChange)="salesPage.set($event)"
+          (pageSizeChange)="salesPageSize.set($event); salesPage.set(1)">
+        </app-pagination>
       </div>
 
       <!-- Recent Production -->
@@ -196,7 +203,7 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
-              @for (prod of analysis()!.recentProductionHistory; track prod.dcNo) {
+              @for (prod of paginatedProduction(); track prod.dcNo) {
                 <tr class="hover:bg-gray-50">
                   <td class="px-4 py-2 whitespace-nowrap">{{ prod.dcDate | date:'dd MMM yyyy' }}</td>
                   <td class="px-4 py-2 font-medium text-orange-600">{{ prod.dcNo }}</td>
@@ -210,6 +217,13 @@
             </tbody>
           </table>
         </div>
+        <app-pagination 
+          [page]="prodPage()"
+          [pageSize]="prodPageSize()"
+          [totalCount]="analysis()!.recentProductionHistory.length"
+          (pageChange)="prodPage.set($event)"
+          (pageSizeChange)="prodPageSize.set($event); prodPage.set(1)">
+        </app-pagination>
       </div>
 
     </div>

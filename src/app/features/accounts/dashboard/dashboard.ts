@@ -2,11 +2,12 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AccountsDashboardService, InvoiceSummary, CustomerOutstanding } from '../../../core/services/accounts-dashboard.service';
+import { PaginationComponent } from '../../../shared/components/pagination/pagination';
 
 @Component({
   selector: 'app-accounts-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, PaginationComponent],
   template: `
     <div class="space-y-6 animate-fade-in">
       <div class="flex items-center justify-between">
@@ -20,35 +21,38 @@ import { AccountsDashboardService, InvoiceSummary, CustomerOutstanding } from '.
       <!-- KPI Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Paid Invoices -->
-        <a [routerLink]="['/accounts/status-invoices']" [queryParams]="{status: 'Paid'}" class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group block cursor-pointer">
-          <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-            <span class="material-symbols-outlined text-6xl text-green-500">check_circle</span>
+        <a [routerLink]="['/accounts/status-invoices']" [queryParams]="{status: 'Paid'}" class="bg-gradient-to-br from-emerald-50 to-green-100/50 rounded-2xl shadow-sm border border-emerald-200/50 p-6 flex flex-col justify-between hover:shadow-md hover:-translate-y-1 transition-all relative overflow-hidden group block cursor-pointer">
+          <div class="absolute -right-6 -top-6 w-32 h-32 bg-emerald-200/40 rounded-full blur-2xl group-hover:scale-110 transition-transform"></div>
+          <div class="absolute top-4 right-4 text-emerald-500/80 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-5xl">check_circle</span>
           </div>
-          <p class="text-sm font-medium text-gray-500 uppercase tracking-wider relative z-10">Paid Invoices</p>
+          <p class="text-xs font-bold text-emerald-800/70 uppercase tracking-wider relative z-10">Paid Invoices</p>
           <div class="mt-4 flex items-baseline gap-2 relative z-10">
-            <span class="text-4xl font-extrabold text-gray-900 tracking-tight">{{ summary()?.paidCount || 0 }}</span>
+            <span class="text-4xl font-extrabold text-emerald-950 tracking-tight">{{ summary()?.paidCount || 0 }}</span>
           </div>
         </a>
 
         <!-- Partially Paid Invoices -->
-        <a [routerLink]="['/accounts/status-invoices']" [queryParams]="{status: 'PartiallyPaid'}" class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group block cursor-pointer">
-          <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-            <span class="material-symbols-outlined text-6xl text-yellow-500">timelapse</span>
+        <a [routerLink]="['/accounts/status-invoices']" [queryParams]="{status: 'PartiallyPaid'}" class="bg-gradient-to-br from-amber-50 to-yellow-100/50 rounded-2xl shadow-sm border border-amber-200/50 p-6 flex flex-col justify-between hover:shadow-md hover:-translate-y-1 transition-all relative overflow-hidden group block cursor-pointer">
+          <div class="absolute -right-6 -top-6 w-32 h-32 bg-amber-200/40 rounded-full blur-2xl group-hover:scale-110 transition-transform"></div>
+          <div class="absolute top-4 right-4 text-amber-500/80 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-5xl">timelapse</span>
           </div>
-          <p class="text-sm font-medium text-gray-500 uppercase tracking-wider relative z-10">Partially Paid</p>
+          <p class="text-xs font-bold text-amber-800/70 uppercase tracking-wider relative z-10">Partially Paid</p>
           <div class="mt-4 flex items-baseline gap-2 relative z-10">
-            <span class="text-4xl font-extrabold text-gray-900 tracking-tight">{{ summary()?.partiallyPaidCount || 0 }}</span>
+            <span class="text-4xl font-extrabold text-amber-950 tracking-tight">{{ summary()?.partiallyPaidCount || 0 }}</span>
           </div>
         </a>
 
         <!-- Unpaid Invoices -->
-        <a [routerLink]="['/accounts/status-invoices']" [queryParams]="{status: 'Unpaid'}" class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group block cursor-pointer">
-          <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-            <span class="material-symbols-outlined text-6xl text-red-500">error</span>
+        <a [routerLink]="['/accounts/status-invoices']" [queryParams]="{status: 'Unpaid'}" class="bg-gradient-to-br from-red-50 to-rose-100/50 rounded-2xl shadow-sm border border-red-200/50 p-6 flex flex-col justify-between hover:shadow-md hover:-translate-y-1 transition-all relative overflow-hidden group block cursor-pointer">
+          <div class="absolute -right-6 -top-6 w-32 h-32 bg-red-200/40 rounded-full blur-2xl group-hover:scale-110 transition-transform"></div>
+          <div class="absolute top-4 right-4 text-red-500/80 group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-5xl">error</span>
           </div>
-          <p class="text-sm font-medium text-gray-500 uppercase tracking-wider relative z-10">Unpaid Invoices</p>
+          <p class="text-xs font-bold text-red-800/70 uppercase tracking-wider relative z-10">Unpaid Invoices</p>
           <div class="mt-4 flex items-baseline gap-2 relative z-10">
-            <span class="text-4xl font-extrabold text-gray-900 tracking-tight">{{ summary()?.unpaidCount || 0 }}</span>
+            <span class="text-4xl font-extrabold text-red-950 tracking-tight">{{ summary()?.unpaidCount || 0 }}</span>
           </div>
         </a>
       </div>
@@ -113,6 +117,14 @@ import { AccountsDashboardService, InvoiceSummary, CustomerOutstanding } from '.
             </tbody>
           </table>
         </div>
+        
+        <app-pagination 
+          [page]="pageNumber()"
+          [pageSize]="pageSize()"
+          [totalCount]="totalCount()"
+          (pageChange)="pageNumber.set($event); loadData()"
+          (pageSizeChange)="pageSize.set($event); loadData()">
+        </app-pagination>
       </div>
       
       <!-- Bottom CTA (Alternative if they missed the top one) -->
@@ -129,6 +141,9 @@ export class AccountsDashboard implements OnInit {
   summary = signal<InvoiceSummary | null>(null);
   outstandingList = signal<CustomerOutstanding[]>([]);
   loading = signal(true);
+  pageNumber = signal(1);
+  pageSize = signal(25);
+  totalCount = signal(0);
 
   private dashboardService = inject(AccountsDashboardService);
 
@@ -146,10 +161,11 @@ export class AccountsDashboard implements OnInit {
       error: (err) => console.error('Error fetching summary', err)
     });
 
-    this.dashboardService.getCustomerOutstanding(1, 50).subscribe({
+    this.dashboardService.getCustomerOutstanding(this.pageNumber(), this.pageSize()).subscribe({
       next: (data) => {
         // Sort by highest outstanding first as requested
         this.outstandingList.set((data.items || []).sort((a, b) => b.outstanding - a.outstanding));
+        this.totalCount.set(data.totalCount);
         this.loading.set(false);
       },
       error: (err) => {

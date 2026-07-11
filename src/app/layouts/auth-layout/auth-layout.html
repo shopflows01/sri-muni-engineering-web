@@ -1,7 +1,53 @@
-<div class="min-h-screen flex flex-col items-center justify-center bg-brand-muted p-4">
-  <!-- Logo / Brand -->
-  <div class="flex flex-col items-center mb-8">
-    <img src="assets/svi-logo.png" alt="SVI Logo" class="h-32 w-32 object-contain mb-3">
+<div class="min-h-screen flex w-full bg-gray-50">
+  <!-- Left Side: Brand & Visuals (Hidden on mobile) -->
+  <div class="hidden lg:flex w-1/2 bg-brand text-white flex-col justify-between p-12 relative overflow-hidden">
+    <!-- Decorative background elements -->
+    <div class="absolute -top-24 -left-24 w-96 h-96 bg-brand-light/30 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-indigo-900/20 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent"></div>
+    
+    <!-- Header -->
+    <div class="relative z-10 flex items-center gap-4">
+      <div class="bg-white p-3 rounded-2xl shadow-lg">
+        <img src="assets/svi-logo.png" alt="SVI Logo" class="h-10 w-10 object-contain">
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight">Sri Valli Industries</h1>
+        <p class="text-brand-light/80 text-sm font-medium">Enterprise Management</p>
+      </div>
+    </div>
+
+    <!-- Main Text -->
+    <div class="relative z-10 max-w-lg mt-auto mb-auto">
+      <h2 class="text-5xl font-extrabold leading-tight tracking-tight mb-6">
+        Streamline your <br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-yellow-400">operations</span> seamlessly.
+      </h2>
+      <p class="text-lg text-brand-light/90 leading-relaxed font-medium">
+        Manage inventory, invoices, and customer accounts in one unified platform designed for maximum efficiency.
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div class="relative z-10 text-sm font-medium text-brand-light/60">
+      &copy; 2026 Sri Valli Industries. All rights reserved.
+    </div>
   </div>
-  <router-outlet></router-outlet>
+
+  <!-- Right Side: Auth Forms -->
+  <div class="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 relative">
+    <!-- Mobile Logo (only visible when left side is hidden) -->
+    <div class="absolute top-8 left-1/2 -translate-x-1/2 lg:hidden flex flex-col items-center">
+      <img src="assets/svi-logo.png" alt="SVI Logo" class="h-16 w-16 object-contain drop-shadow-md mb-2">
+      <h1 class="text-xl font-bold text-gray-800">Sri Valli Industries</h1>
+    </div>
+
+    <!-- Router Outlet for Login/Signup -->
+    <div class="w-full max-w-[480px] animate-fade-in mt-16 lg:mt-0 relative z-10">
+      <router-outlet></router-outlet>
+    </div>
+    
+    <!-- Abstract background shape for right side -->
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-brand/5 to-transparent rounded-full blur-3xl -z-0 pointer-events-none"></div>
+  </div>
 </div>

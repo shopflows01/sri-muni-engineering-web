@@ -77,12 +77,14 @@ import { PaginationComponent } from '../../../../shared/components/pagination/pa
                     <td class="px-6 py-4 text-right font-semibold text-green-600">{{ item.allocatedAmount | currency:'INR' }}</td>
                     <td class="px-6 py-4 text-gray-600">{{ item.allocationDate | date:'dd MMM yyyy' }}</td>
                     <td class="px-6 py-4 text-center">
-                      <div class="flex items-center justify-center gap-1">
-                        <a [routerLink]="['/accounts/allocations', item.id]" class="bg-brand/10 text-brand hover:bg-brand/20 font-medium text-xs px-2 py-1 rounded transition-colors" title="View">
-                          View
+                      <div class="flex items-center justify-center gap-2">
+                        <a [routerLink]="['/accounts/allocations', item.id]" class="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium text-xs rounded-md transition-colors border border-gray-200 shadow-sm" title="View">
+                          <span class="material-symbols-outlined text-[16px]">visibility</span>
+                          <span class="hidden lg:inline">View</span>
                         </a>
-                        <button (click)="editAmount(item)" class="bg-amber-50 text-amber-600 hover:bg-amber-100 font-medium text-xs px-2 py-1 rounded transition-colors" title="Edit Amount">
-                          Edit
+                        <button (click)="editAmount(item)" class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 font-medium text-xs rounded-md transition-colors border border-amber-200 shadow-sm" title="Edit Amount">
+                          <span class="material-symbols-outlined text-[16px]">edit_square</span>
+                          <span class="hidden lg:inline">Edit</span>
                         </button>
                       </div>
                     </td>

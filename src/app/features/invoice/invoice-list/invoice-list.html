@@ -118,18 +118,21 @@
               </span>
             </td>
             <td class="px-4 py-3 text-center">
-              <div class="flex items-center justify-center gap-1">
+              <div class="flex items-center justify-center gap-2">
                 <a [routerLink]="['/invoices', inv.id, 'edit']"
-                  class="bg-blue-50 text-blue-600 hover:bg-blue-100 text-xs font-medium px-2 py-1 rounded transition-colors">
-                  Edit
+                  class="flex items-center gap-1 px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium text-xs rounded-md transition-colors border border-blue-200 shadow-sm" title="Edit">
+                  <span class="material-symbols-outlined text-[16px]">edit</span>
+                  <span class="hidden lg:inline">Edit</span>
                 </a>
                 <a [routerLink]="['/invoices', inv.id]"
-                  class="bg-brand/10 text-brand hover:bg-brand/20 text-xs font-medium px-2 py-1 rounded transition-colors">
-                  View
+                  class="flex items-center gap-1 px-2.5 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium text-xs rounded-md transition-colors border border-gray-200 shadow-sm" title="View">
+                  <span class="material-symbols-outlined text-[16px]">visibility</span>
+                  <span class="hidden lg:inline">View</span>
                 </a>
                 <button (click)="openPdfDialog(inv)"
-                  class="bg-green-50 text-brand-success hover:bg-green-100 text-xs font-medium px-2 py-1 rounded transition-colors">
-                  PDF
+                  class="flex items-center gap-1 px-2.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 font-medium text-xs rounded-md transition-colors border border-red-200 shadow-sm" title="PDF">
+                  <span class="material-symbols-outlined text-[16px]">picture_as_pdf</span>
+                  <span class="hidden lg:inline">PDF</span>
                 </button>
               </div>
             </td>
