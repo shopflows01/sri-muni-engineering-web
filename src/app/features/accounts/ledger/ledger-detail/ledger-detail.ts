@@ -132,35 +132,37 @@ export class LedgerDetail implements OnInit {
   ngOnInit() {
     this.customerId = this.route.snapshot.paramMap.get('id') || '';
     if (this.customerId) {
-      this.loadCustomerDetails();
       this.loadLedger();
     }
-  }
-
-  loadCustomerDetails() {
-    this.customerService.getCustomer(this.customerId).subscribe({
-      next: (c) => this.customer = c,
-      error: (err) => console.error('Error fetching customer', err)
-    });
-
-    this.ledgerService.getOutstanding(this.customerId).subscribe({
-      next: (res) => this.outstanding = res.outstanding,
-      error: (err) => console.error('Error fetching outstanding', err)
-    });
-
-    this.ledgerService.getAdvanceBalance(this.customerId).subscribe({
-      next: (res) => this.advanceBalance = res.advanceBalance,
-      error: (err) => console.error('Error fetching advance balance', err)
-    });
   }
 
   loadLedger() {
     this.loading = true;
     this.ledgerService.getLedger(this.customerId, this.pageNumber, this.pageSize).subscribe({
       next: (res) => {
-        this.entries = res.items || [];
-        this.totalCount = res.totalCount;
-        this.loading = false;
+        try {
+          let ledgerData = res as any;
+          if (ledgerData && Array.isArray(ledgerData.items) && ledgerData.items.length > 0 && ledgerData.items[0].entries) {
+              ledgerData = ledgerData.items[0];
+          }
+          
+          this.entries = ledgerData?.entries?.items || ledgerData?.items || [];
+          this.totalCount = ledgerData?.entries?.totalCount || ledgerData?.totalCount || 0;
+          
+          // Use the consolidated data from the API response
+          this.customer = { name: ledgerData?.customerName } as Customer;
+          this.outstanding = ledgerData?.outstandingAmount || 0;
+          this.advanceBalance = ledgerData?.advanceAmount || 0;
+          
+          // Debug fallback if entries is still empty
+          if (this.entries.length === 0 && ledgerData) {
+            console.log("DEBUG LEDGER RES:", res);
+          }
+        } catch (e) {
+          console.error("Mapping error:", e);
+        } finally {
+          this.loading = false;
+        }
       },
       error: (err) => {
         console.error('Error loading ledger entries', err);

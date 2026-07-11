@@ -8,6 +8,7 @@ export interface Customer {
   billingAddress: string;
   shippingAddress: string;
   pincode: string;
+  ledgerNo?: string;
   createdAt?: string;
 }
 

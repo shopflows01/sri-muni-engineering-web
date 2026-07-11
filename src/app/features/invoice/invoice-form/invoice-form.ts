@@ -30,13 +30,13 @@ export class InvoiceForm implements OnInit, OnDestroy {
   products = signal<Product[]>([]);
   stockItems = signal<JobWorkDC[]>([]);
   selectedDc = signal<JobWorkDC | null>(null);
-  
+
   isSubmitting = signal(false);
   errorMessage = signal<string | null>(null);
-  
+
   isEditMode = signal(false);
   invoiceId: string | null = null;
-  
+
   // Track initial quantities for edit mode so we don't count them against the limit
   initialQuantities = new Map<string, number>();
 
@@ -67,7 +67,7 @@ export class InvoiceForm implements OnInit, OnDestroy {
     this.loadCustomers();
     this.loadProducts();
     this.loadStockItems();
-    
+
     this.invoiceId = this.route.snapshot.paramMap.get('id');
     if (this.invoiceId && this.invoiceId !== 'new') {
       this.isEditMode.set(true);
@@ -91,8 +91,8 @@ export class InvoiceForm implements OnInit, OnDestroy {
             });
             // Revalidate existing items
             this.items.controls.forEach(control => {
-               control.get('quantity')?.updateValueAndValidity();
-               control.get('productId')?.updateValueAndValidity();
+              control.get('quantity')?.updateValueAndValidity();
+              control.get('productId')?.updateValueAndValidity();
             });
           }
         } else {
@@ -100,7 +100,7 @@ export class InvoiceForm implements OnInit, OnDestroy {
         }
       })
     );
-    
+
     // Subscribe to item value changes to re-evaluate duplicate selections
     this.subs.add(
       this.items.valueChanges.subscribe(() => {
@@ -128,12 +128,12 @@ export class InvoiceForm implements OnInit, OnDestroy {
           asnNo: invoice.asnNo,
           ewbNo: invoice.ewbNo
         });
-        
+
         this.tryMatchDcLedger();
 
         this.items.clear();
         this.initialQuantities.clear();
-        
+
         if (invoice.items && invoice.items.length > 0) {
           invoice.items.forEach(item => {
             if (item.productId) {
@@ -173,7 +173,7 @@ export class InvoiceForm implements OnInit, OnDestroy {
       productId: ['', Validators.required],
       customProductName: [''],
       hsnCode: [''],
-      description: ['MACHINING'],
+      description: ['Machining'],
       quantity: [0, [Validators.required, Validators.min(1), this.quantityValidator.bind(this)]],
       rate: [0, [Validators.required, Validators.min(0.01)]],
       gstPercent: [18, [Validators.required, Validators.min(0)]]
@@ -185,25 +185,25 @@ export class InvoiceForm implements OnInit, OnDestroy {
     if (!control.parent) return null;
     const productId = control.parent.get('productId')?.value;
     const dc = this.selectedDc();
-    
+
     if (dc && productId && productId !== 'others') {
       const dcItem = dc.items?.find(i => i.productId === productId);
       if (dcItem) {
         const qty = Number(control.value) || 0;
         let pending = (dcItem.inwardQty || 0) - (dcItem.outwardQty || 0) - (dcItem.rejectedQty || 0);
-        
+
         // Add back the quantity this invoice already consumed (in edit mode)
         if (this.isEditMode() && this.initialQuantities.has(productId)) {
           pending += this.initialQuantities.get(productId) || 0;
         }
-        
+
         // Subtract quantities of the same product used in other rows (though we prevent duplicates, it's good safety)
         const otherRowsQty = this.items.controls
-           .filter(c => c !== control.parent && c.get('productId')?.value === productId)
-           .reduce((sum, c) => sum + (Number(c.get('quantity')?.value) || 0), 0);
-           
+          .filter(c => c !== control.parent && c.get('productId')?.value === productId)
+          .reduce((sum, c) => sum + (Number(c.get('quantity')?.value) || 0), 0);
+
         const available = pending - otherRowsQty;
-        
+
         if (qty > available) {
           return { exceededDcLimit: { max: available, actual: qty } };
         }
@@ -215,45 +215,45 @@ export class InvoiceForm implements OnInit, OnDestroy {
   // Returns available products for a specific dropdown, filtering out already selected ones
   getAvailableProducts(currentIndex: number): Product[] {
     const dc = this.selectedDc();
-    
+
     // Enforce cascading: No DC selected = no products available
     if (!dc) return [];
 
     const allProducts = this.products();
-    
+
     // Filter to only products in the DC
     let available = allProducts;
     if (dc.items) {
-       const dcProductIds = new Set(dc.items.map(i => i.productId));
-       available = allProducts.filter(p => dcProductIds.has(p.id));
+      const dcProductIds = new Set(dc.items.map(i => i.productId));
+      available = allProducts.filter(p => dcProductIds.has(p.id));
     }
-    
+
     // Filter out products already selected in other rows
     const selectedIds = new Set<string>();
     for (let i = 0; i < this.items.length; i++) {
-       if (i !== currentIndex) {
-          const val = this.items.at(i).get('productId')?.value;
-          if (val && val !== 'others') {
-             selectedIds.add(val);
-          }
-       }
+      if (i !== currentIndex) {
+        const val = this.items.at(i).get('productId')?.value;
+        if (val && val !== 'others') {
+          selectedIds.add(val);
+        }
+      }
     }
-    
+
     return available.filter(p => !selectedIds.has(p.id));
   }
-  
+
   getDcPendingQty(productId: string): number | null {
-     const dc = this.selectedDc();
-     if (!dc || !dc.items || !productId || productId === 'others') return null;
-     
-     const item = dc.items.find(i => i.productId === productId);
-     if (!item) return null;
-     
-     let pending = (item.inwardQty || 0) - (item.outwardQty || 0) - (item.rejectedQty || 0);
-     if (this.isEditMode() && this.initialQuantities.has(productId)) {
-        pending += this.initialQuantities.get(productId) || 0;
-     }
-     return pending;
+    const dc = this.selectedDc();
+    if (!dc || !dc.items || !productId || productId === 'others') return null;
+
+    const item = dc.items.find(i => i.productId === productId);
+    if (!item) return null;
+
+    let pending = (item.inwardQty || 0) - (item.outwardQty || 0) - (item.rejectedQty || 0);
+    if (this.isEditMode() && this.initialQuantities.has(productId)) {
+      pending += this.initialQuantities.get(productId) || 0;
+    }
+    return pending;
   }
 
   addItem() {
@@ -295,7 +295,7 @@ export class InvoiceForm implements OnInit, OnDestroy {
       }
     });
   }
-  
+
   tryMatchDcLedger() {
     if (this.isEditMode() && this.stockItems().length > 0) {
       const deliveryNoteNo = this.invoiceForm.get('deliveryNoteNo')?.value;
@@ -313,11 +313,12 @@ export class InvoiceForm implements OnInit, OnDestroy {
     const productId = itemGroup.get('productId')?.value;
     if (productId && productId !== 'others') {
       const prod = this.products().find(p => p.id === productId);
+      const dcItem = this.selectedDc()?.items?.find(i => i.productId === productId);
       if (prod) {
         itemGroup.patchValue({ 
           hsnCode: prod.hsnSac || '',
-          rate: prod.ratePerItem || 0,
-          gstPercent: prod.gstPercent || 18
+          rate: dcItem?.rate || prod.ratePerItem || 0,
+          gstPercent: dcItem?.gstPercent || prod.gstPercent || 18
         });
       }
     } else {
@@ -363,7 +364,7 @@ export class InvoiceForm implements OnInit, OnDestroy {
       this.isSubmitting.set(true);
       this.errorMessage.set(null);
       const val = this.invoiceForm.getRawValue();
-      
+
       let payload = {
         customerId: val.customerId,
         invoiceDate: val.date!,
@@ -392,7 +393,7 @@ export class InvoiceForm implements OnInit, OnDestroy {
       // Apply uppercase to all string fields
       payload = uppercaseStrings(payload);
 
-      const req = this.isEditMode() && this.invoiceId 
+      const req = this.isEditMode() && this.invoiceId
         ? this.invoiceService.update(this.invoiceId, payload as any)
         : this.invoiceService.create(payload as any);
 

@@ -50,38 +50,91 @@ import { VoucherService, ReceiptVoucher } from '../../../../core/services/vouche
           <span>Loading receipt details...</span>
         </div>
       } @else if (voucher) {
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div class="p-6 border-b border-gray-100 grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50/30">
-            <div>
-              <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">Receipt Info</h3>
-              <div class="space-y-3 text-sm text-gray-900">
-                <div class="grid grid-cols-3 gap-2 border-b border-gray-100 pb-2">
-                  <span class="text-gray-500">Customer:</span>
-                  <span class="col-span-2 font-medium">{{ voucher.customerName || 'Unknown' }}</span>
+        <div class="relative w-full filter drop-shadow-[0_0_15px_rgba(0,0,0,0.08)]">
+          <!-- Outer mask: Middle notches -->
+          <div style="
+               -webkit-mask-image: radial-gradient(circle at 66.666667% 0px, transparent 14px, black 14.5px), radial-gradient(circle at 66.666667% 100%, transparent 14px, black 14.5px);
+               -webkit-mask-size: 100% 60%, 100% 60%;
+               -webkit-mask-position: top, bottom;
+               -webkit-mask-repeat: no-repeat;
+               mask-image: radial-gradient(circle at 66.666667% 0px, transparent 14px, black 14.5px), radial-gradient(circle at 66.666667% 100%, transparent 14px, black 14.5px);
+               mask-size: 100% 60%, 100% 60%;
+               mask-position: top, bottom;
+               mask-repeat: no-repeat;
+               ">
+            <!-- Inner mask: Wavy outer border -->
+            <div class="bg-white flex w-full overflow-hidden"
+                 style="
+                   -webkit-mask-image: linear-gradient(black, black), radial-gradient(circle at 8px 8px, transparent 5px, black 5.5px);
+                   -webkit-mask-size: calc(100% - 12px) calc(100% - 12px), 16px 16px;
+                   -webkit-mask-position: center center, -8px -8px;
+                   -webkit-mask-repeat: no-repeat, repeat;
+                   mask-image: linear-gradient(black, black), radial-gradient(circle at 8px 8px, transparent 5px, black 5.5px);
+                   mask-size: calc(100% - 12px) calc(100% - 12px), 16px 16px;
+                   mask-position: center center, -8px -8px;
+                   mask-repeat: no-repeat, repeat;
+                 ">
+            
+            <!-- Left side Ticket styling -->
+            <div class="w-2/3 p-8 relative" style="border-right: 2px dashed #e5e7eb;">
+
+              <div class="flex justify-between items-start mb-6 pb-4">
+                <div>
+                  <h3 class="text-sm font-bold text-gray-500 uppercase tracking-widest mb-1">Receipt Details</h3>
+                  <h2 class="text-2xl font-bold text-gray-900">{{ voucher.voucherNumber }}</h2>
                 </div>
-                <div class="grid grid-cols-3 gap-2 border-b border-gray-100 pb-2">
-                  <span class="text-gray-500">Date:</span>
-                  <span class="col-span-2 font-medium">{{ voucher.receiptDate | date:'mediumDate' }}</span>
+                <span class="px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm"
+                      [ngClass]="voucher.voucherType === 'Receipt' ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-red-100 text-red-700 border border-red-200'">
+                  {{ voucher.voucherType || 'Receipt' }}
+                </span>
+              </div>
+
+              <div class="grid grid-cols-2 gap-y-6 gap-x-8 text-sm">
+                <div>
+                  <span class="block text-xs text-gray-400 font-medium uppercase mb-1">Customer</span>
+                  <span class="block font-semibold text-gray-900 text-base">{{ voucher.customerName || 'Unknown' }}</span>
                 </div>
-                <div class="grid grid-cols-3 gap-2 border-b border-gray-100 pb-2">
-                  <span class="text-gray-500">Ref No:</span>
-                  <span class="col-span-2 font-medium">{{ voucher.referenceNumber || '-' }}</span>
+                <div>
+                  <span class="block text-xs text-gray-400 font-medium uppercase mb-1">Date</span>
+                  <span class="block font-semibold text-gray-900 text-base">{{ voucher.receiptDate | date:'mediumDate' }}</span>
                 </div>
-                <div class="grid grid-cols-3 gap-2">
-                  <span class="text-gray-500">Narration:</span>
-                  <span class="col-span-2 font-medium">{{ voucher.narration || '-' }}</span>
+                <div>
+                  <span class="block text-xs text-gray-400 font-medium uppercase mb-1">Reference No</span>
+                  <span class="block font-semibold text-gray-900 text-base">{{ voucher.referenceNumber || 'N/A' }}</span>
+                </div>
+                <div>
+                  <span class="block text-xs text-gray-400 font-medium uppercase mb-1">Narration</span>
+                  <span class="block font-medium text-gray-800">{{ voucher.narration || '-' }}</span>
                 </div>
               </div>
             </div>
             
-            <div class="flex flex-col items-end justify-center bg-green-50 p-6 rounded-lg border border-green-100">
-              <span class="text-sm text-green-700 font-medium uppercase tracking-wider">Receipt Amount</span>
-              <span class="text-4xl font-bold text-green-700 mt-2">{{ voucher.amount | currency:'INR' }}</span>
-              <span class="text-xs text-green-600 mt-2 flex items-center gap-1">
-                <span class="material-symbols-outlined text-[16px]">verified_user</span>
-                Payment Recorded
+            <!-- Right side Ticket styling -->
+            <div class="w-1/3 relative flex flex-col justify-center items-center text-center p-8"
+                 [ngClass]="voucher.voucherType === 'Receipt' ? 'bg-green-100' : 'bg-red-100'">
+              <span class="text-xs font-bold uppercase tracking-widest mb-2"
+                    [ngClass]="voucher.voucherType === 'Receipt' ? 'text-green-600' : 'text-red-600'">
+                Amount
               </span>
+              <span class="text-4xl font-extrabold tracking-tight drop-shadow-sm"
+                    [ngClass]="voucher.voucherType === 'Receipt' ? 'text-green-700' : 'text-red-700'">
+                {{ voucher.amount | currency:'INR' }}
+              </span>
+              
+              <div class="mt-6 flex flex-col items-center gap-2">
+                <div class="w-12 h-12 rounded-full flex items-center justify-center bg-white shadow-sm border border-white"
+                     [ngClass]="voucher.voucherType === 'Receipt' ? 'text-green-500' : 'text-red-500'">
+                  <span class="material-symbols-outlined text-[28px]">
+                    {{ voucher.voucherType === 'Receipt' ? 'south_west' : 'north_east' }}
+                  </span>
+                </div>
+                <span class="text-xs font-semibold uppercase tracking-wider"
+                      [ngClass]="voucher.voucherType === 'Receipt' ? 'text-green-600' : 'text-red-600'">
+                  {{ voucher.voucherType === 'Receipt' ? 'Payment Received' : 'Payment Sent' }}
+                </span>
+              </div>
             </div>
+          </div>
           </div>
         </div>
       }
@@ -121,7 +174,7 @@ export class VoucherDetail implements OnInit {
 
   postVoucher() {
     if (!this.voucher || !confirm('Are you sure you want to post this receipt? It cannot be edited once posted.')) return;
-    
+
     this.posting = true;
     this.voucherService.postVoucher(this.voucher.voucherId).subscribe({
       next: () => {
