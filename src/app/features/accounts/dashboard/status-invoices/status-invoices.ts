@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../../environments/environment';
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination';
 
 @Component({
   selector: 'app-status-invoices',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, PaginationComponent],
   template: `
     <div class="space-y-6 animate-fade-in">
       <div class="flex items-center gap-4">
@@ -74,16 +75,13 @@ import { environment } from '../../../../../environments/environment';
           </table>
         </div>
         
-        <!-- Pagination controls -->
-        <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex items-center justify-between">
-          <div class="text-sm text-gray-500">
-            Showing <span class="font-medium text-gray-900">{{ (pageNumber - 1) * pageSize + (invoices.length > 0 ? 1 : 0) }}</span> to <span class="font-medium text-gray-900">{{ (pageNumber - 1) * pageSize + invoices.length }}</span> of <span class="font-medium text-gray-900">{{ totalCount }}</span> results
-          </div>
-          <div class="flex items-center gap-2">
-            <button class="btn flex items-center gap-2 text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-900 shadow-sm rounded-lg transition-all font-medium" [disabled]="pageNumber === 1" (click)="loadPage(pageNumber - 1)">Previous</button>
-            <button class="btn flex items-center gap-2 text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-900 shadow-sm rounded-lg transition-all font-medium" [disabled]="pageNumber === totalPages || totalPages === 0" (click)="loadPage(pageNumber + 1)">Next</button>
-          </div>
-        </div>
+        <app-pagination 
+          [page]="pageNumber"
+          [pageSize]="pageSize"
+          [totalCount]="totalCount"
+          (pageChange)="loadPage($event)"
+          (pageSizeChange)="pageSize = $event; loadInvoices()">
+        </app-pagination>
       </div>
     </div>
   `
@@ -93,7 +91,7 @@ export class StatusInvoices implements OnInit {
   invoices: any[] = [];
   loading = true;
   pageNumber = 1;
-  pageSize = 10;
+  pageSize = 25;
   totalCount = 0;
   totalPages = 0;
 

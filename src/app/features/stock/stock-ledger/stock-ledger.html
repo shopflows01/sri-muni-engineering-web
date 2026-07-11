@@ -110,13 +110,13 @@
               </table>
             </div>
             
-            <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
-              <span class="text-sm text-gray-500">Showing {{ (page() - 1) * pageSize() + 1 }} to {{ Math.min(page() * pageSize(), totalCount()) }} of {{ totalCount() }} entries</span>
-              <div class="flex gap-2">
-                <button [disabled]="page() === 1" (click)="changePage(page() - 1)" class="px-3 py-1 border border-gray-200 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Previous</button>
-                <button [disabled]="page() * pageSize() >= totalCount()" (click)="changePage(page() + 1)" class="px-3 py-1 border border-gray-200 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Next</button>
-              </div>
-            </div>
+            <app-pagination 
+              [page]="page()"
+              [pageSize]="pageSize()"
+              [totalCount]="totalCount()"
+              (pageChange)="page.set($event); loadLedger()"
+              (pageSizeChange)="pageSize.set($event); loadLedger()">
+            </app-pagination>
           } @else {
             <app-empty-state 
               title="No Delivery Challans Found" 
@@ -218,13 +218,13 @@
               </table>
             </div>
 
-            <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
-              <span class="text-sm text-gray-500">Showing {{ (txPage() - 1) * txPageSize() + 1 }} to {{ Math.min(txPage() * txPageSize(), txTotalCount()) }} of {{ txTotalCount() }} entries</span>
-              <div class="flex gap-2">
-                <button [disabled]="txPage() === 1" (click)="changeTxPage(txPage() - 1)" class="px-3 py-1 border border-gray-200 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Previous</button>
-                <button [disabled]="txPage() * txPageSize() >= txTotalCount()" (click)="changeTxPage(txPage() + 1)" class="px-3 py-1 border border-gray-200 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Next</button>
-              </div>
-            </div>
+            <app-pagination 
+              [page]="txPage()"
+              [pageSize]="txPageSize()"
+              [totalCount]="txTotalCount()"
+              (pageChange)="txPage.set($event); loadTransactions()"
+              (pageSizeChange)="txPageSize.set($event); loadTransactions()">
+            </app-pagination>
           } @else {
             <app-empty-state 
               title="No Movements Found" 

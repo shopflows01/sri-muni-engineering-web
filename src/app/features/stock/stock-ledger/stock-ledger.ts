@@ -7,11 +7,12 @@ import { CustomerService } from '../../../core/services/customer';
 import { ProductService } from '../../../core/services/product';
 import { JobWorkDC, Customer, Product } from '../../../shared/models/api.models';
 import { EmptyState } from '../../../shared/components/empty-state/empty-state';
+import { PaginationComponent } from '../../../shared/components/pagination/pagination';
 
 @Component({
   selector: 'app-stock-ledger',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, EmptyState],
+  imports: [CommonModule, RouterLink, FormsModule, EmptyState, PaginationComponent],
   templateUrl: './stock-ledger.html',
   styleUrl: './stock-ledger.css',
 })

@@ -4,11 +4,12 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CustomerLedgerService, LedgerEntry } from '../../../../core/services/customer-ledger.service';
 import { CustomerService } from '../../../../core/services/customer';
 import { Customer } from '../../../../shared/models/api.models';
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination';
 
 @Component({
   selector: 'app-ledger-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, PaginationComponent],
   template: `
     <div class="space-y-6 animate-fade-in max-w-6xl mx-auto pt-6">
       <div class="flex items-center justify-between">
@@ -100,16 +101,13 @@ import { Customer } from '../../../../shared/models/api.models';
           </table>
         </div>
         
-        <!-- Pagination -->
-        @if (totalCount > pageSize) {
-          <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-            <span class="text-sm text-gray-500">Showing {{ (pageNumber - 1) * pageSize + 1 }} to {{ Math.min(pageNumber * pageSize, totalCount) }} of {{ totalCount }}</span>
-            <div class="flex gap-2">
-              <button (click)="changePage(pageNumber - 1)" [disabled]="pageNumber === 1" class="px-3 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50 hover:bg-gray-50 transition-colors">Previous</button>
-              <button (click)="changePage(pageNumber + 1)" [disabled]="pageNumber * pageSize >= totalCount" class="px-3 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50 hover:bg-gray-50 transition-colors">Next</button>
-            </div>
-          </div>
-        }
+        <app-pagination 
+          [page]="pageNumber"
+          [pageSize]="pageSize"
+          [totalCount]="totalCount"
+          (pageChange)="changePage($event)"
+          (pageSizeChange)="pageSize = $event; loadLedger()">
+        </app-pagination>
       </div>
     </div>
   `
@@ -127,7 +125,7 @@ export class LedgerDetail implements OnInit {
   
   loading = true;
   pageNumber = 1;
-  pageSize = 20;
+  pageSize = 25;
   totalCount = 0;
   Math = Math;
 

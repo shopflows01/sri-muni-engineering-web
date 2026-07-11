@@ -5,10 +5,11 @@ import { DatePipe, DecimalPipe } from '@angular/common';
 import { InvoiceService } from '../../../core/services/invoice.service';
 import { Invoice } from '../../../shared/models/api.models';
 import { EmptyState } from '../../../shared/components/empty-state/empty-state';
+import { PaginationComponent } from '../../../shared/components/pagination/pagination';
 
 @Component({
   selector: 'app-invoice-list',
-  imports: [RouterLink, DatePipe, DecimalPipe, EmptyState, FormsModule],
+  imports: [RouterLink, DatePipe, DecimalPipe, EmptyState, FormsModule, PaginationComponent],
   templateUrl: './invoice-list.html',
   styleUrl: './invoice-list.css',
 })
@@ -20,6 +21,7 @@ export class InvoiceList implements OnInit {
   isLoading = signal(false);
   totalCount = signal(0);
   page = signal(1);
+  pageSize = signal(25);
   selectedIds = signal<Set<string>>(new Set());
 
   ngOnInit() {
@@ -28,7 +30,7 @@ export class InvoiceList implements OnInit {
 
   loadInvoices() {
     this.isLoading.set(true);
-    this.invoiceService.getAll({ page: this.page(), pageSize: 20 }).subscribe({
+    this.invoiceService.getAll({ page: this.page(), pageSize: this.pageSize(), sortBy: 'invoiceno', sortDirection: 'asc' }).subscribe({
       next: (res) => {
         this.invoices.set(res.items);
         this.totalCount.set(res.totalCount);

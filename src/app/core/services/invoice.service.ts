@@ -16,6 +16,8 @@ export interface InvoiceFilterRequest {
   page?: number;
   pageSize?: number;
   customerId?: string;
+  sortBy?: string;
+  sortDirection?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -30,6 +32,8 @@ export class InvoiceService {
       if (filter.pageSize) params = params.set('PageSize', filter.pageSize.toString());
       if (filter.search) params = params.set('Search', filter.search);
       if (filter.customerId) params = params.set('CustomerId', filter.customerId);
+      if (filter.sortBy) params = params.set('SortBy', filter.sortBy);
+      if (filter.sortDirection) params = params.set('SortDirection', filter.sortDirection);
     }
     return this.http.get<PaginatedResponse<Invoice>>(this.apiUrl, { params });
   }

@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AccountsDashboardService, CustomerOutstanding } from '../../../../core/services/accounts-dashboard.service';
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination';
 
 @Component({
   selector: 'app-ledger-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, PaginationComponent],
   template: `
     <div class="space-y-6 animate-fade-in max-w-6xl mx-auto pt-6">
       <div class="flex items-center justify-between">
@@ -100,16 +101,13 @@ import { AccountsDashboardService, CustomerOutstanding } from '../../../../core/
           </table>
         </div>
         
-        <!-- Pagination -->
-        @if (totalCount > pageSize) {
-          <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-            <span class="text-sm text-gray-500">Showing {{ (pageNumber - 1) * pageSize + 1 }} to {{ Math.min(pageNumber * pageSize, totalCount) }} of {{ totalCount }}</span>
-            <div class="flex gap-2">
-              <button (click)="changePage(pageNumber - 1)" [disabled]="pageNumber === 1" class="px-3 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50 hover:bg-gray-50 transition-colors">Previous</button>
-              <button (click)="changePage(pageNumber + 1)" [disabled]="pageNumber * pageSize >= totalCount" class="px-3 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50 hover:bg-gray-50 transition-colors">Next</button>
-            </div>
-          </div>
-        }
+        <app-pagination 
+          [page]="pageNumber"
+          [pageSize]="pageSize"
+          [totalCount]="totalCount"
+          (pageChange)="changePage($event)"
+          (pageSizeChange)="pageSize = $event; loadLedgers()">
+        </app-pagination>
       </div>
     </div>
   `
@@ -119,7 +117,7 @@ export class LedgerList implements OnInit {
   loading = true;
   searchTerm = '';
   pageNumber = 1;
-  pageSize = 10;
+  pageSize = 25;
   totalCount = 0;
   Math = Math;
 

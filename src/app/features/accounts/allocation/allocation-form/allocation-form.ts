@@ -116,8 +116,10 @@ export class AllocationForm implements OnInit {
   loadReceipts() {
     this.voucherService.getVouchers(1, 100).subscribe({
       next: (res) => {
-        // Only show vouchers that have unallocated amounts
-        this.receipts = (res.items || []).filter(v => (v.amount - (v as any).allocatedAmount) > 0);
+        // Only show receipt vouchers (credits) that have unallocated amounts
+        this.receipts = (res.items || []).filter(v => 
+          v.voucherType === 'Receipt' && (v.amount - (v as any).allocatedAmount) > 0
+        );
       }
     });
   }
