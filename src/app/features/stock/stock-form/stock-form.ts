@@ -161,7 +161,7 @@ export class StockForm implements OnInit {
     if (this.rejectQty() <= 0) return;
     
     this.stockService.addTransaction(dcItemId, {
-      transactionType: 2, // Rejected
+      transactionType: 3, // Rejected
       transactionDate: new Date().toISOString().split('T')[0],
       quantity: this.rejectQty()
     }).subscribe({
