@@ -138,6 +138,7 @@ import { VoucherService, ReceiptVoucher } from '../../../../core/services/vouche
           </div>
           </div>
         </div>
+        </div>
       }
     </div>
   `
