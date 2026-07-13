@@ -63,7 +63,7 @@ import { VoucherService, ReceiptVoucher } from '../../../../core/services/vouche
                mask-repeat: no-repeat;
                ">
             <!-- Inner mask: Wavy outer border -->
-            <div class="bg-white flex w-full overflow-hidden"
+            <div class="bg-white flex flex-col md:flex-row w-full overflow-hidden"
                  style="
                    -webkit-mask-image: linear-gradient(black, black), radial-gradient(circle at 8px 8px, transparent 5px, black 5.5px);
                    -webkit-mask-size: calc(100% - 12px) calc(100% - 12px), 16px 16px;
@@ -76,23 +76,23 @@ import { VoucherService, ReceiptVoucher } from '../../../../core/services/vouche
                  ">
             
             <!-- Left side Ticket styling -->
-            <div class="w-2/3 p-8 relative" style="border-right: 2px dashed #e5e7eb;">
+            <div class="w-full md:w-2/3 p-6 md:p-8 relative border-b-2 md:border-b-0 md:border-r-2 border-dashed border-gray-200">
 
-              <div class="flex justify-between items-start mb-6 pb-4">
+              <div class="flex flex-col sm:flex-row justify-between items-start mb-6 pb-4 gap-4">
                 <div>
                   <h3 class="text-sm font-bold text-gray-500 uppercase tracking-widest mb-1">Receipt Details</h3>
-                  <h2 class="text-2xl font-bold text-gray-900">{{ voucher.voucherNumber }}</h2>
+                  <h2 class="text-xl sm:text-2xl font-bold text-gray-900 break-all">{{ voucher.voucherNumber }}</h2>
                 </div>
-                <span class="px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm"
+                <span class="px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm shrink-0"
                       [ngClass]="voucher.voucherType === 'Receipt' ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-red-100 text-red-700 border border-red-200'">
                   {{ voucher.voucherType || 'Receipt' }}
                 </span>
               </div>
 
-              <div class="grid grid-cols-2 gap-y-6 gap-x-8 text-sm">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-8 text-sm">
                 <div>
                   <span class="block text-xs text-gray-400 font-medium uppercase mb-1">Customer</span>
-                  <span class="block font-semibold text-gray-900 text-base">{{ voucher.customerName || 'Unknown' }}</span>
+                  <span class="block font-semibold text-gray-900 text-base break-words">{{ voucher.customerName || 'Unknown' }}</span>
                 </div>
                 <div>
                   <span class="block text-xs text-gray-400 font-medium uppercase mb-1">Date</span>
@@ -100,17 +100,17 @@ import { VoucherService, ReceiptVoucher } from '../../../../core/services/vouche
                 </div>
                 <div>
                   <span class="block text-xs text-gray-400 font-medium uppercase mb-1">Reference No</span>
-                  <span class="block font-semibold text-gray-900 text-base">{{ voucher.referenceNumber || 'N/A' }}</span>
+                  <span class="block font-semibold text-gray-900 text-base break-words">{{ voucher.referenceNumber || 'N/A' }}</span>
                 </div>
                 <div>
                   <span class="block text-xs text-gray-400 font-medium uppercase mb-1">Narration</span>
-                  <span class="block font-medium text-gray-800">{{ voucher.narration || '-' }}</span>
+                  <span class="block font-medium text-gray-800 break-words">{{ voucher.narration || '-' }}</span>
                 </div>
               </div>
             </div>
             
             <!-- Right side Ticket styling -->
-            <div class="w-1/3 relative flex flex-col justify-center items-center text-center p-8"
+            <div class="w-full md:w-1/3 relative flex flex-col justify-center items-center text-center p-6 md:p-8"
                  [ngClass]="voucher.voucherType === 'Receipt' ? 'bg-green-100' : 'bg-red-100'">
               <span class="text-xs font-bold uppercase tracking-widest mb-2"
                     [ngClass]="voucher.voucherType === 'Receipt' ? 'text-green-600' : 'text-red-600'">
