@@ -24,6 +24,7 @@ export interface Product {
   gstPercent: number;
   hsnSac: string;
   unit: string;
+  openStock?: number;
   createdAt?: string;
 }
 

@@ -34,6 +34,7 @@
           <th class="px-6 py-4 font-medium">Part Name</th>
           <th class="px-6 py-4 font-medium">Part No</th>
           <th class="px-6 py-4 font-medium">Customer</th>
+          <th class="px-6 py-4 font-medium">Open Stock</th>
           <th class="px-6 py-4 font-medium">Rate/Unit</th>
           <th class="px-6 py-4 font-medium">Unit</th>
           <th class="px-6 py-4 font-medium text-right">Actions</th>
@@ -45,6 +46,7 @@
           <td class="px-6 py-4 font-medium text-gray-900">{{ product.partName }}</td>
           <td class="px-6 py-4 text-sm text-gray-600">{{ product.partNo }}</td>
           <td class="px-6 py-4 text-sm text-gray-600">{{ getCustomerNames(product) }}</td>
+          <td class="px-6 py-4 text-sm font-medium" [class.text-red-600]="product.openStock! < 0" [class.text-emerald-600]="product.openStock! > 0">{{ product.openStock || 0 }}</td>
           <td class="px-6 py-4 text-sm text-gray-600">{{ product.ratePerItem }}</td>
           <td class="px-6 py-4 text-sm text-gray-600">{{ product.unit }}</td>
           <td class="px-6 py-4 text-right">

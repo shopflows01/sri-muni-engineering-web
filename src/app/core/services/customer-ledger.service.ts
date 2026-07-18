@@ -76,7 +76,18 @@ export class CustomerLedgerService {
     if (fromDate) params = params.set('fromDate', fromDate);
     if (toDate) params = params.set('toDate', toDate);
     
-    return this.http.get(`${this.apiUrl}/${customerId}/export-excel`, {
+    return this.http.get(`${this.apiUrl}/${customerId}/export`, {
+      params,
+      responseType: 'blob'
+    });
+  }
+
+  exportTransactionStatementToExcel(customerId: string, fromDate?: string, toDate?: string): Observable<Blob> {
+    let params = new HttpParams();
+    if (fromDate) params = params.set('fromDate', fromDate);
+    if (toDate) params = params.set('toDate', toDate);
+    
+    return this.http.get(`${this.apiUrl}/${customerId}/transaction-statement`, {
       params,
       responseType: 'blob'
     });
