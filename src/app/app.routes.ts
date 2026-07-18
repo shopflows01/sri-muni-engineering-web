@@ -31,6 +31,10 @@ export const routes: Routes = [
       { path: 'invoices/:id', loadComponent: () => import('./features/invoice/invoice-detail/invoice-detail').then(m => m.InvoiceDetail) },
       { path: 'ewaybill', loadComponent: () => import('./features/ewaybill/eway-router/eway-router').then(m => m.EwayRouter) },
       { path: 'accounts', loadChildren: () => import('./features/accounts/accounts-router') },
+      { path: 'delivery-challans', loadComponent: () => import('./features/delivery-challan/delivery-challan-list/delivery-challan-list').then(m => m.DeliveryChallanList) },
+      { path: 'delivery-challans/new', loadComponent: () => import('./features/delivery-challan/delivery-challan-form/delivery-challan-form').then(m => m.DeliveryChallanForm) },
+      { path: 'delivery-challans/:id/edit', loadComponent: () => import('./features/delivery-challan/delivery-challan-form/delivery-challan-form').then(m => m.DeliveryChallanForm) },
+      { path: 'delivery-challans/:id', loadComponent: () => import('./features/delivery-challan/delivery-challan-detail/delivery-challan-detail').then(m => m.DeliveryChallanDetail) },
     ]
   },
   {

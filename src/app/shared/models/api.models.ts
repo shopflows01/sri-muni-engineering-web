@@ -169,3 +169,35 @@ export interface ProductAnalysisResponse {
   recentInvoiceHistory: any[];
   recentStockMovements: any[];
 }
+
+export interface DeliveryChallanItem {
+  id: string;
+  productId: string;
+  partNo: string;
+  partName: string;
+  quantity: number;
+  unit?: string;
+  remarks?: string;
+}
+
+export interface CreateDeliveryChallanItemRequest {
+  productId: string;
+  partNo: string;
+  partName: string;
+  quantity: number;
+  unit?: string;
+  remarks?: string;
+}
+
+export interface DeliveryChallan {
+  id: string;
+  dcNo: string;
+  customerId: string;
+  customerName: string;
+  dcDate: string;
+  yourDcNo?: string;
+  yourDcDate?: string;
+  poNo?: string;
+  remarks?: string;
+  items: DeliveryChallanItem[];
+}

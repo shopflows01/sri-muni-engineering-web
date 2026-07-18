@@ -64,6 +64,12 @@
         <span class="material-symbols-outlined flex-shrink-0 text-[20px]">account_balance</span>
         @if (sidebarExpanded()) { <span class="whitespace-nowrap text-sm">Accounts</span> }
       </a>
+      <a routerLink="/delivery-challans" routerLinkActive="bg-white/20 shadow-lg"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium"
+        [title]="sidebarExpanded() ? '' : 'Delivery Challans'">
+        <span class="material-symbols-outlined flex-shrink-0 text-[20px]">description</span>
+        @if (sidebarExpanded()) { <span class="whitespace-nowrap text-sm">Delivery Challans</span> }
+      </a>
     </nav>
     <div class="p-3 border-t border-white/10">
       <button (click)="openProfileDialog()"
@@ -131,6 +137,11 @@
         class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
         <span class="material-symbols-outlined text-[20px]">account_balance</span>
         Accounts
+      </a>
+      <a routerLink="/delivery-challans" routerLinkActive="bg-white/20" (click)="closeMenu()"
+        class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
+        <span class="material-symbols-outlined text-[20px]">description</span>
+        Delivery Challans
       </a>
     </nav>
     <div
@@ -209,6 +220,11 @@
       class="flex flex-col items-center justify-center p-2 text-gray-500 hover:text-brand transition-colors">
       <span class="material-symbols-outlined text-[22px]">account_balance</span>
       <span class="text-[10px] mt-1 font-medium">Accts</span>
+    </a>
+    <a routerLink="/delivery-challans" routerLinkActive="text-brand"
+      class="flex flex-col items-center justify-center p-2 text-gray-500 hover:text-brand transition-colors">
+      <span class="material-symbols-outlined text-[22px]">description</span>
+      <span class="text-[10px] mt-1 font-medium">DCs</span>
     </a>
   </nav>
 
