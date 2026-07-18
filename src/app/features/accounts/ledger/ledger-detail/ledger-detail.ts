@@ -51,7 +51,7 @@ import { PaginationComponent } from '../../../../shared/components/pagination/pa
               <img src="assets/excel-logo.png" alt="Excel" class="w-5 h-5 object-contain" />
               {{ exporting ? 'Exporting...' : 'Sales Report' }}
             </button>
-            <button (click)="exportTransactionStatement()" [disabled]="exportingStatement" class="btn flex items-center gap-2 bg-white hover:bg-gray-200 text-blue-700 border border-blue-200 rounded-lg px-4 py-2 transition-all shadow-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
+            <button (click)="exportTransactionStatement()" [disabled]="exportingStatement" class="btn flex items-center gap-2 bg-white hover:bg-gray-200 text-emerald-700 border border-emerald-200 rounded-lg px-4 py-2 transition-all shadow-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
               <img src="assets/excel-logo.png" alt="Excel" class="w-5 h-5 object-contain" />
               {{ exportingStatement ? 'Exporting...' : 'Transaction Statement' }}
             </button>
