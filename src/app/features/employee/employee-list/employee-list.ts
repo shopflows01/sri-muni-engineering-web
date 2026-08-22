@@ -10,13 +10,15 @@ import { DesignationService } from '../../../core/services/designation.service';
 import { Department, Designation, Employee, EMPLOYMENT_STATUS_OPTIONS, optionLabel } from '../../../shared/models/employee.models';
 import { EmptyState } from '../../../shared/components/empty-state/empty-state';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination';
+import { EmployeeSubnav } from '../employee-subnav/employee-subnav';
 
 @Component({
   selector: 'app-employee-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, ReactiveFormsModule, EmptyState, PaginationComponent],
+  imports: [CommonModule, RouterLink, FormsModule, ReactiveFormsModule, EmptyState, PaginationComponent, EmployeeSubnav],
   template: `
     <div class="space-y-6">
+      <app-employee-subnav></app-employee-subnav>
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-gray-200">
         <div>
           <h1 class="text-2xl font-bold text-brand">Employees</h1>

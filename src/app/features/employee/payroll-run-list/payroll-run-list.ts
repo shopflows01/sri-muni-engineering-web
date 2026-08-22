@@ -4,13 +4,15 @@ import { RouterLink, Router } from '@angular/router';
 import { PayrollService } from '../../../core/services/payroll.service';
 import { PayrollRun, PayrollRunStatus, monthName } from '../../../shared/models/employee.models';
 import { EmptyState } from '../../../shared/components/empty-state/empty-state';
+import { EmployeeSubnav } from '../employee-subnav/employee-subnav';
 
 @Component({
   selector: 'app-payroll-run-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, EmptyState],
+  imports: [CommonModule, RouterLink, EmptyState, EmployeeSubnav],
   template: `
     <div class="space-y-6">
+      <app-employee-subnav></app-employee-subnav>
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-gray-200">
         <div>
           <h1 class="text-2xl font-bold text-brand">Payroll</h1>

@@ -6,6 +6,7 @@ import { EmployeeService } from '../../../core/services/employee.service';
 import {
   ATTENDANCE_STATUS_OPTIONS, AttendanceStatus, Employee, EmployeeAttendance, optionLabel
 } from '../../../shared/models/employee.models';
+import { EmployeeSubnav } from '../employee-subnav/employee-subnav';
 
 interface AttendanceRow {
   employeeId: string;
@@ -20,9 +21,10 @@ interface AttendanceRow {
 @Component({
   selector: 'app-attendance',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, EmployeeSubnav],
   template: `
     <div class="space-y-6">
+      <app-employee-subnav></app-employee-subnav>
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-gray-200">
         <div>
           <h1 class="text-2xl font-bold text-brand">Attendance</h1>

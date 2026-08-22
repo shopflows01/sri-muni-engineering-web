@@ -5,13 +5,15 @@ import { EmployeeService } from '../../../core/services/employee.service';
 import { PayslipService } from '../../../core/services/payslip.service';
 import { Employee, MONTH_OPTIONS, PayoutStatus, PayslipListItem, monthName } from '../../../shared/models/employee.models';
 import { EmptyState } from '../../../shared/components/empty-state/empty-state';
+import { EmployeeSubnav } from '../employee-subnav/employee-subnav';
 
 @Component({
   selector: 'app-payslip-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, EmptyState],
+  imports: [CommonModule, FormsModule, EmptyState, EmployeeSubnav],
   template: `
     <div class="space-y-6">
+      <app-employee-subnav></app-employee-subnav>
       <div class="pb-4 border-b border-gray-200">
         <h1 class="text-2xl font-bold text-brand">Payslips</h1>
         <p class="text-gray-500 text-sm mt-1">Download employee payslips for a processed payroll run</p>

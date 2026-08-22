@@ -8,14 +8,16 @@ import {
   ATTENDANCE_STATUS_OPTIONS, Employee, EmployeeAttendance, EMPLOYMENT_STATUS_OPTIONS,
   EMPLOYMENT_TYPE_OPTIONS, GENDER_OPTIONS, optionLabel, SalaryStructure
 } from '../../../shared/models/employee.models';
+import { EmployeeSubnav } from '../employee-subnav/employee-subnav';
 
 @Component({
   selector: 'app-employee-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, EmployeeSubnav],
   template: `
     @if (employee()) {
       <div class="space-y-6 max-w-5xl mx-auto">
+        <app-employee-subnav></app-employee-subnav>
         <div class="flex items-center justify-between gap-4 pb-4 border-b border-gray-200">
           <div class="flex items-center gap-4">
             <button type="button" (click)="location.back()" class="p-2 hover:bg-gray-100 rounded-full transition-colors">

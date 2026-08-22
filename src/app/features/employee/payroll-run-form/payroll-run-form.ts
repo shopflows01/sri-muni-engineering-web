@@ -4,13 +4,15 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PayrollService } from '../../../core/services/payroll.service';
 import { MONTH_OPTIONS } from '../../../shared/models/employee.models';
+import { EmployeeSubnav } from '../employee-subnav/employee-subnav';
 
 @Component({
   selector: 'app-payroll-run-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, EmployeeSubnav],
   template: `
     <div class="space-y-6 max-w-lg mx-auto">
+      <app-employee-subnav></app-employee-subnav>
       <div class="flex items-center gap-4 pb-4 border-b border-gray-200">
         <button type="button" (click)="location.back()" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
           <span class="material-symbols-outlined text-gray-600">arrow_back</span>

@@ -71,30 +71,12 @@
         @if (sidebarExpanded()) { <span class="whitespace-nowrap text-sm">Delivery Challans</span> }
       </a>
 
-      @if (sidebarExpanded()) {
-        <button (click)="toggleEmployeeMenu()"
-          class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium">
-          <span class="material-symbols-outlined flex-shrink-0 text-[20px]">badge</span>
-          <span class="whitespace-nowrap text-sm flex-1 text-left">Employees</span>
-          <span class="material-symbols-outlined text-[18px] transition-transform duration-200" [class.rotate-180]="employeeMenuOpen()">expand_more</span>
-        </button>
-        @if (employeeMenuOpen()) {
-          <div class="ml-4 pl-4 border-l border-white/10 space-y-1">
-            @for (link of employeeSubLinks; track link.path) {
-              <a [routerLink]="link.path" routerLinkActive="bg-white/20 text-white"
-                class="block px-3 py-2 rounded-lg text-white/70 hover:bg-white/15 hover:text-white text-sm transition-all whitespace-nowrap">
-                {{ link.label }}
-              </a>
-            }
-          </div>
-        }
-      } @else {
-        <a routerLink="/employees/list" routerLinkActive="bg-white/20 shadow-lg"
-          class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium"
-          title="Employees">
-          <span class="material-symbols-outlined flex-shrink-0 text-[20px]">badge</span>
-        </a>
-      }
+      <a routerLink="/employees" routerLinkActive="bg-white/20 shadow-lg"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/15 hover:text-white transition-all duration-200 font-medium"
+        [title]="sidebarExpanded() ? '' : 'Employees'">
+        <span class="material-symbols-outlined flex-shrink-0 text-[20px]">badge</span>
+        @if (sidebarExpanded()) { <span class="whitespace-nowrap text-sm">Employees</span> }
+      </a>
     </nav>
     <div class="p-3 border-t border-white/10">
       <button (click)="openProfileDialog()"
@@ -169,22 +151,11 @@
         Delivery Challans
       </a>
 
-      <button (click)="toggleEmployeeMenu()"
-        class="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
+      <a routerLink="/employees" routerLinkActive="bg-white/20" (click)="closeMenu()"
+        class="flex items-center gap-3 px-3 py-3 rounded-lg text-white/80 hover:bg-white/15 hover:text-white font-medium">
         <span class="material-symbols-outlined text-[20px]">badge</span>
-        <span class="flex-1 text-left">Employees</span>
-        <span class="material-symbols-outlined text-[18px] transition-transform duration-200" [class.rotate-180]="employeeMenuOpen()">expand_more</span>
-      </button>
-      @if (employeeMenuOpen()) {
-        <div class="ml-4 pl-4 border-l border-white/10 space-y-1">
-          @for (link of employeeSubLinks; track link.path) {
-            <a [routerLink]="link.path" routerLinkActive="bg-white/20 text-white" (click)="closeMenu()"
-              class="block px-3 py-2.5 rounded-lg text-white/70 hover:bg-white/15 hover:text-white text-sm font-medium">
-              {{ link.label }}
-            </a>
-          }
-        </div>
-      }
+        Employees
+      </a>
     </nav>
     <div
       class="p-4 border-t border-white/10 flex items-center justify-between hover:bg-white/5 cursor-pointer transition-colors"

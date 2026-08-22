@@ -5,13 +5,15 @@ import { SalaryComponentService } from '../../../core/services/salary-component.
 import {
   SalaryComponent, SALARY_CALCULATION_TYPE_OPTIONS, SALARY_COMPONENT_TYPE_OPTIONS, optionLabel
 } from '../../../shared/models/employee.models';
+import { EmployeeSubnav } from '../employee-subnav/employee-subnav';
 
 @Component({
   selector: 'app-salary-component-master',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, EmployeeSubnav],
   template: `
     <div class="space-y-6 max-w-4xl mx-auto">
+      <app-employee-subnav></app-employee-subnav>
       <div class="flex items-center gap-4 pb-4 border-b border-gray-200">
         <button type="button" (click)="location.back()" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
           <span class="material-symbols-outlined text-gray-600">arrow_back</span>

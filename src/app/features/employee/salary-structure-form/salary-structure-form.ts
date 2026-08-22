@@ -7,14 +7,16 @@ import { EmployeeService } from '../../../core/services/employee.service';
 import { SalaryComponentService } from '../../../core/services/salary-component.service';
 import { SalaryStructureService } from '../../../core/services/salary-structure.service';
 import { Employee, SalaryComponent, SalaryStructure } from '../../../shared/models/employee.models';
+import { EmployeeSubnav } from '../employee-subnav/employee-subnav';
 
 @Component({
   selector: 'app-salary-structure-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, EmployeeSubnav],
   template: `
     @if (employee()) {
       <div class="space-y-6 max-w-4xl mx-auto">
+        <app-employee-subnav></app-employee-subnav>
         <div class="flex items-center justify-between gap-4 pb-4 border-b border-gray-200">
           <div class="flex items-center gap-4">
             <button type="button" (click)="location.back()" class="p-2 hover:bg-gray-100 rounded-full transition-colors">

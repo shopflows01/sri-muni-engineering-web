@@ -4,14 +4,16 @@ import { ActivatedRoute } from '@angular/router';
 import { PayrollService } from '../../../core/services/payroll.service';
 import { PayslipService } from '../../../core/services/payslip.service';
 import { PayoutStatus, PayrollRun, PayrollRunStatus, monthName } from '../../../shared/models/employee.models';
+import { EmployeeSubnav } from '../employee-subnav/employee-subnav';
 
 @Component({
   selector: 'app-payroll-run-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, EmployeeSubnav],
   template: `
     @if (run()) {
       <div class="space-y-6">
+        <app-employee-subnav></app-employee-subnav>
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-gray-200">
           <div class="flex items-center gap-4">
             <button type="button" (click)="location.back()" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
